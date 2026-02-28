@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const problems = await getCollection('problems');
+  return problems.map(problem => ({
+    params: { slug: problem.id },
+    props: { problem },
+  }));
+}
+
+const { problem } = Astro.props;
+const { Content } = await render(problem);
+
+const priorityLabels = {
+  high: 'Высокий',
+  medium: 'Средний',
+  low: 'Низкий',
+};
+
+const priorityColors = {
+  high: 'text-red-600',
+  medium: 'text-yellow-600',
+  low: 'text-green-600',
+};
+---
+
+<BaseLayout title={problem.data.title} description={problem.data.summary}>
+  <section class="max-w-4xl mx-auto px-4 py-12">
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm">
+      <a href="/problems" class="text-primary-600 hover:underline">Проблемы</a>
+      <span class="text-accent-400 mx-2">/</span>
+      <span class="text-accent-600">{problem.data.title}</span>
+    </nav>
+
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex flex-wrap items-center gap-3 mb-3">
+        <span class="text-sm font-medium text-accent-500 uppercase tracking-wide">{problem.data.category}</span>
+        <StatusBadge status={problem.data.status} size="md" />
+        <span class:list={['text-sm font-medium', priorityColors[problem.data.priority]]}>
+          Приоритет: {priorityLabels[problem.data.priority]}
+        </span>
+      </div>
+      <h1 class="text-3xl font-bold">{problem.data.title}</h1>
+      <p class="text-accent-600 mt-2">{problem.data.summary}</p>
+    </div>
+
+    <!-- Content -->
+    <article class="prose prose-lg max-w-none
+      prose-headings:text-primary-900
+      prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-accent-200
+      prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3
+      prose-p:text-accent-700
+      prose-strong:text-primary-800
+      prose-a:text-primary-600 prose-a:no-underline hover:prose-a:underline
+      prose-table:text-sm
+      prose-th:bg-accent-50 prose-th:px-4 prose-th:py-2 prose-th:text-left
+      prose-td:px-4 prose-td:py-2 prose-td:border-b prose-td:border-accent-100
+      prose-li:text-accent-700
+      prose-ul:list-disc prose-ul:pl-6
+    ">
+      <Content />
+    </article>
+
+    <!-- Back link -->
+    <div class="mt-12 pt-6 border-t border-accent-200">
+      <a href="/problems" class="text-primary-600 hover:underline font-medium">
+        &larr; Все проблемы
+      </a>
+    </div>
+  </section>
+</BaseLayout>
