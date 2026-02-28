@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { house } from '../data/house';
+---
+
+<BaseLayout title="Главная" description="Информационный портал для жителей ЖК Skandi Klubb — Аптекарский проспект, 18">
+  <!-- Hero -->
+  <section class="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-950 text-white py-20">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Skandi Klubb</h1>
+      <p class="text-xl text-primary-200 mb-2">{house.address}</p>
+      <p class="text-primary-300">Информационный портал для жителей</p>
+
+      <div class="grid grid-cols-3 gap-4 max-w-lg mx-auto mt-10">
+        <div class="bg-white/10 backdrop-blur rounded-lg p-4">
+          <div class="text-3xl font-bold">{house.apartments}</div>
+          <div class="text-sm text-primary-200">квартир</div>
+        </div>
+        <div class="bg-white/10 backdrop-blur rounded-lg p-4">
+          <div class="text-3xl font-bold">{house.entrances}</div>
+          <div class="text-sm text-primary-200">подъездов</div>
+        </div>
+        <div class="bg-white/10 backdrop-blur rounded-lg p-4">
+          <div class="text-3xl font-bold">9+</div>
+          <div class="text-sm text-primary-200">проблем</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick links -->
+  <section class="max-w-6xl mx-auto px-4 -mt-8 relative z-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <a href="/about" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
+        <h3 class="text-lg font-bold text-primary-900 mb-2 group-hover:text-primary-600 transition-colors">О доме</h3>
+        <p class="text-sm text-accent-600">Адрес, структура, 4 очереди, парадные, площадь</p>
+      </a>
+
+      <a href="/management" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
+        <h3 class="text-lg font-bold text-primary-900 mb-2 group-hover:text-primary-600 transition-colors">Управляющая компания</h3>
+        <p class="text-sm text-accent-600">ЭКВИДА-СЕРВИС: реквизиты, контакты, режим работы</p>
+      </a>
+
+      <a href="/problems" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
+        <h3 class="text-lg font-bold text-primary-900 mb-2 group-hover:text-primary-600 transition-colors">Проблемы</h3>
+        <p class="text-sm text-accent-600">9 категорий проблем с подробным описанием и статусами</p>
+      </a>
+
+      <a href="/complaints" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
+        <h3 class="text-lg font-bold text-primary-900 mb-2 group-hover:text-primary-600 transition-colors">Куда жаловаться</h3>
+        <p class="text-sm text-accent-600">8 инстанций с контактами и порядком эскалации</p>
+      </a>
+
+      <a href="/oss" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
+        <h3 class="text-lg font-bold text-primary-900 mb-2 group-hover:text-primary-600 transition-colors">ОСС 2025</h3>
+        <p class="text-sm text-accent-600">Проект повестки, 13 вопросов, кворумы, статусы</p>
+      </a>
+
+      <div class="bg-accent-50 rounded-xl shadow-lg p-6 border-2 border-dashed border-accent-200">
+        <h3 class="text-lg font-bold text-accent-500 mb-2">Генератор жалоб</h3>
+        <p class="text-sm text-accent-400">Скоро: автоматическая генерация документов для инстанций</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- About section -->
+  <section class="max-w-6xl mx-auto px-4 py-16">
+    <h2 class="text-2xl font-bold text-primary-900 mb-6">О проекте</h2>
+    <div class="prose max-w-none text-accent-700">
+      <p>
+        Этот портал создан инициативной группой жителей ЖК Skandi Klubb для решения
+        общих проблем дома. Здесь собрана информация о выявленных проблемах, контактах
+        инстанций для подачи жалоб и материалы для подготовки общего собрания собственников.
+      </p>
+      <p class="mt-4">
+        Наша цель — обеспечить прозрачность управления домом, зафиксировать и решить
+        комплекс проблем с управляющей компанией, и включить в повестку ОСС необходимые
+        вопросы.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

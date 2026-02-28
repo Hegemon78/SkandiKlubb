@@ -1,0 +1,49 @@
+---
+interface Props {
+  title: string;
+  slug: string;
+  category: string;
+  priority: 'high' | 'medium' | 'low';
+  status: string;
+  summary: string;
+}
+
+const { title, slug, category, priority, status, summary } = Astro.props;
+
+const priorityColors = {
+  high: 'bg-red-100 text-red-800',
+  medium: 'bg-yellow-100 text-yellow-800',
+  low: 'bg-green-100 text-green-800',
+};
+
+const priorityLabels = {
+  high: 'Высокий',
+  medium: 'Средний',
+  low: 'Низкий',
+};
+---
+
+<a
+  href={`/problems/${slug}`}
+  class="block bg-white rounded-xl border border-accent-200 p-5 hover:shadow-lg hover:border-primary-300 transition-all group"
+>
+  <div class="flex items-start justify-between mb-3">
+    <span class="text-xs font-medium text-accent-500 uppercase tracking-wide">{category}</span>
+    <span class:list={['text-xs font-medium px-2 py-0.5 rounded-full', priorityColors[priority]]}>
+      {priorityLabels[priority]}
+    </span>
+  </div>
+
+  <h3 class="text-lg font-bold text-primary-900 mb-2 group-hover:text-primary-600 transition-colors">
+    {title}
+  </h3>
+
+  <p class="text-sm text-accent-600 mb-3 line-clamp-2">{summary}</p>
+
+  <div class="flex items-center justify-between">
+    <span class="text-xs text-accent-400">{status}</span>
+    <span class="text-primary-500 text-sm font-medium group-hover:translate-x-1 transition-transform inline-block">
+      Подробнее &rarr;
+    </span>
+  </div>
+</a>

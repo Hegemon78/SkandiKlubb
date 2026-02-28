@@ -1,0 +1,87 @@
+---
+const currentPath = Astro.url.pathname;
+
+const navLinks = [
+  { href: '/', label: 'Главная' },
+  { href: '/about', label: 'О доме' },
+  { href: '/management', label: 'УК' },
+  { href: '/problems', label: 'Проблемы' },
+  { href: '/complaints', label: 'Куда жаловаться' },
+  { href: '/oss', label: 'ОСС 2025' },
+];
+
+function isActive(href: string): boolean {
+  if (href === '/') return currentPath === '/';
+  return currentPath.startsWith(href);
+}
+---
+
+<header class="bg-primary-900 text-white sticky top-0 z-50 shadow-lg">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <a href="/" class="text-xl font-bold tracking-tight hover:text-primary-200 transition-colors">
+        Skandi Klubb
+      </a>
+
+      <!-- Desktop nav -->
+      <nav class="hidden md:flex gap-1">
+        {navLinks.map(link => (
+          <a
+            href={link.href}
+            class:list={[
+              'px-3 py-2 rounded-md text-sm font-medium transition-colors',
+              isActive(link.href)
+                ? 'bg-primary-700 text-white'
+                : 'text-primary-100 hover:bg-primary-800 hover:text-white'
+            ]}
+          >
+            {link.label}
+          </a>
+        ))}
+      </nav>
+
+      <!-- Mobile burger -->
+      <button
+        id="mobile-menu-btn"
+        class="md:hidden p-2 rounded-md text-primary-100 hover:bg-primary-800 hover:text-white"
+        aria-label="Menu"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path id="burger-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          <path id="close-icon" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile nav -->
+    <nav id="mobile-menu" class="hidden md:hidden pb-4">
+      {navLinks.map(link => (
+        <a
+          href={link.href}
+          class:list={[
+            'block px-3 py-2 rounded-md text-base font-medium transition-colors',
+            isActive(link.href)
+              ? 'bg-primary-700 text-white'
+              : 'text-primary-100 hover:bg-primary-800 hover:text-white'
+          ]}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  const burgerIcon = document.getElementById('burger-icon');
+  const closeIcon = document.getElementById('close-icon');
+
+  btn?.addEventListener('click', () => {
+    const isOpen = !menu?.classList.contains('hidden');
+    menu?.classList.toggle('hidden');
+    burgerIcon?.classList.toggle('hidden', !isOpen);
+    closeIcon?.classList.toggle('hidden', isOpen);
+  });
+</script>
