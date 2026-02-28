@@ -31,7 +31,7 @@
 | 0.8 | Создать CLAUDE.md проекта | ✅ | main | CLAUDE.md |
 | 0.9 | Создать ROADMAP.md | ✅ | main | Этот файл |
 | 0.10 | Обновить MEMORY.md | ✅ | main | ~/.claude/.../memory/MEMORY.md |
-| 0.11 | Первый коммит | ⬜ | main | git add + commit |
+| 0.11 | Первый коммит | 🔄 | main | git add + commit |
 
 ---
 
@@ -41,12 +41,12 @@
 
 | # | Задача | Статус | Контекст |
 |---|--------|--------|----------|
-| 1.1 | Получить api_id/api_hash (my.telegram.org) | ⬜ | Ручное действие пользователя |
-| 1.2 | Настроить авторизацию Telethon | ⬜ | На основе TG bot posting/auth_userbot.py |
-| 1.3 | Получить список чатов от пользователя | ⬜ | Ручное — ссылки/ID чатов |
-| 1.4 | Создать parser/config.py | ⬜ | На основе ChannelSpy/config.py |
-| 1.5 | Создать parser/chat_parser.py | ⬜ | На основе ChatCompanion/telethon_reader.py |
-| 1.6 | Спарсить историю чатов → SQLite | ⬜ | data/chats/messages.db |
+| 1.1 | Получить api_id/api_hash (my.telegram.org) | ✅ | Взяты из ChannelSpy/ChatCompanion |
+| 1.2 | Настроить авторизацию Telethon | ✅ | parser/auth.py + сессия из ChatCompanion |
+| 1.3 | Получить список чатов от пользователя | ✅ | Собственники + УК Эквида |
+| 1.4 | Создать parser/config.py | ✅ | + db.py, list_chats.py, requirements.txt |
+| 1.5 | Создать parser/chat_parser.py | ✅ | Инкрементальный парсинг, rate limiting |
+| 1.6 | Спарсить историю чатов → SQLite | ✅ | 30,591 msgs (28,762 + 1,829), 9.9 MB |
 | 1.7 | Создать parser/data_processor.py | ⬜ | Категоризация: keyword matching |
 | 1.8 | Категоризировать сообщения | ⬜ | problem/solution/faq/contact/ad/info |
 | 1.9 | Отчёт: топ проблем, FAQ, контакты | ⬜ | Для наполнения сайта |
