@@ -4,13 +4,13 @@ import PageHeader from '../components/PageHeader.astro';
 import EscalationChain from '../components/EscalationChain.astro';
 import InstanceCard from '../components/InstanceCard.astro';
 import IconInfo from '../components/icons/IconInfo.astro';
-import { instances, escalationSteps } from '../data/instances';
+import { instances, escalationLevels } from '../data/instances';
 ---
 
-<BaseLayout title="Жалобы" description="Реестр инстанций Санкт-Петербурга для подачи жалоб на управляющую компанию">
+<BaseLayout title="Порядок обращений" description="Уровни воздействия на управляющую компанию — от обращения в УК до суда">
   <PageHeader
-    title="Куда жаловаться"
-    description="Реестр инстанций Санкт-Петербурга. Район: Петроградский."
+    title="Порядок обращений"
+    description="Уровни воздействия: от письма в УК до суда. Петроградский район, Санкт-Петербург."
     breadcrumbs={[{ label: 'Жалобы' }]}
   />
 
@@ -23,8 +23,8 @@ import { instances, escalationSteps } from '../data/instances';
 
     <!-- Escalation chain -->
     <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 p-6 md:p-8 mb-12">
-      <h2 class="text-xl font-bold text-primary-950 mb-6">Порядок эскалации</h2>
-      <EscalationChain steps={escalationSteps} />
+      <h2 class="text-xl font-bold text-primary-950 mb-6">Уровни воздействия</h2>
+      <EscalationChain levels={escalationLevels} />
     </div>
 
     <!-- Instances -->

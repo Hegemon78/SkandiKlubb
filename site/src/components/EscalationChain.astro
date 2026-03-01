@@ -1,22 +1,27 @@
 ---
+import type { EscalationLevel } from '../data/instances';
+
 interface Props {
-  steps: string[];
+  levels: EscalationLevel[];
 }
 
-const { steps } = Astro.props;
+const { levels } = Astro.props;
 ---
 
 <!-- Desktop: horizontal chain -->
 <div class="hidden md:flex items-center gap-0">
-  {steps.map((step, i) => (
+  {levels.map((lvl, i) => (
     <div class="flex items-center">
-      <div class="flex items-center gap-3 bg-white rounded-xl border border-accent-200 px-4 py-3 min-w-[180px]">
-        <div class="w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center text-sm font-bold shrink-0">
-          {i + 1}
+      <div class="flex flex-col bg-white rounded-xl border border-accent-200 px-4 py-3 min-w-[180px]">
+        <div class="flex items-center gap-3 mb-1.5">
+          <div class="w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center text-sm font-bold shrink-0">
+            {lvl.level}
+          </div>
+          <span class="text-sm font-semibold text-primary-950 leading-snug">{lvl.title}</span>
         </div>
-        <span class="text-sm text-accent-700 leading-snug">{step}</span>
+        <p class="text-xs text-accent-500 ml-11">{lvl.when}</p>
       </div>
-      {i < steps.length - 1 && (
+      {i < levels.length - 1 && (
         <div class="shrink-0 px-1">
           <svg class="w-6 h-6 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path d="M5 12h14" stroke-width="2" stroke-linecap="round"/>
@@ -31,13 +36,17 @@ const { steps } = Astro.props;
 <!-- Mobile: vertical chain -->
 <div class="md:hidden relative">
   <div class="absolute left-[15px] top-4 bottom-4 w-0.5 bg-gradient-to-b from-primary-400 via-primary-500 to-primary-600 rounded-full"></div>
-  <div class="space-y-4">
-    {steps.map((step, i) => (
+  <div class="space-y-5">
+    {levels.map((lvl) => (
       <div class="flex items-start gap-4 relative">
         <div class="w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center text-sm font-bold shrink-0 z-10 shadow-sm">
-          {i + 1}
+          {lvl.level}
         </div>
-        <p class="text-sm text-accent-700 pt-1.5 leading-relaxed">{step}</p>
+        <div class="pt-0.5">
+          <h4 class="font-semibold text-primary-950 text-sm">{lvl.title}</h4>
+          <p class="text-xs text-accent-600 mt-0.5 leading-relaxed">{lvl.description}</p>
+          <span class="text-[11px] text-accent-400 mt-1 block italic">{lvl.when}</span>
+        </div>
       </div>
     ))}
   </div>

@@ -172,6 +172,39 @@ git push → GitHub Actions:
 
 ---
 
+## Дизайн-система (обязательно при UI-изменениях)
+
+### Палитра — ТОЛЬКО эти цвета
+```
+Sage Green:  #1E3126 (dark) → #2D4A3E → #3D6B56 → #8B9E7C → #A8B89A → #F5F8F6 (light)
+Linen:       #2a2622 (dark) → #8B7355 → #D4C4A8 → #EDE5D5 → #F5F0E8 → #FAFAF7 (light)
+Amber:       amber-500..600 (только для accent/CTA)
+```
+
+### ЗАПРЕЩЕНО в CSS/Tailwind
+- `blue-*`, `red-400+`, `yellow-400+`, `indigo-*`, `purple-*`
+- Emoji в интерфейсе (используй SVG из `site/src/components/icons/`)
+- `text-lg` и крупнее на mobile для body text
+
+### Карточки
+- `rounded-xl`, `shadow-sm`, `border border-sage-200`
+- Padding: `p-3` mobile / `p-4 md:p-5` desktop
+- Gap между карточками: `gap-3` mobile / `gap-4` desktop
+
+### Mobile-first (375px)
+- Текст: `text-sm` body, `text-base` заголовки секций, `text-lg` только h1
+- Отступы: `px-4` container, `py-2` buttons
+- Кнопки: `py-1.5 px-3 text-sm rounded-lg`
+
+### Иконки
+- SVG из `site/src/components/icons/` (22 компонента)
+- НЕ emoji, НЕ Lucide CDN, НЕ inline SVG strings
+
+### Стек-специфика
+- **ENV:** `import.meta.env.VARIABLE` — ТОЛЬКО build-time (Astro SSG). Для runtime: endpoint handler `Astro.locals`
+- **OpenRouter model:** `anthropic/claude-sonnet-4-20250514` (НЕ `claude-3.5-sonnet`)
+- **Build:** `npm run build` после КАЖДОГО UI-изменения. Проверяй ошибки.
+
 ## Правила для сессий
 
 1. **Сначала читай ROADMAP.md** — определи что нужно делать
@@ -181,3 +214,5 @@ git push → GitHub Actions:
 5. **Не коммить secrets** — .env, *.session, data/ в .gitignore
 6. **Юридическая точность** — ссылки на законы должны быть корректны
 7. **Палитра** — только sage green / linen / amber, zero blue-* classes
+8. **UI-изменения** — после правок: `npm run build` + Playwright скриншот 375px и 1280px
+9. **Batch UI-фиксы** — группируй мелкие правки в один промпт с чеклистом

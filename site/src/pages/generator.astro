@@ -37,28 +37,28 @@ const instancesJson = JSON.stringify(instances);
 ---
 
 <BaseLayout title="Генератор жалоб" description="Автоматическая генерация обращений в инстанции для жителей ЖК Skandi Klubb">
-  <PageHeader
-    title="Генератор жалоб"
-    description="Выберите проблему, заполните данные — получите готовые обращения во все нужные инстанции"
-    breadcrumbs={[{ label: 'Генератор' }]}
-  />
-
-  <section class="max-w-5xl mx-auto px-4 py-6 md:py-12">
-    <!-- Step indicators -->
-    <div class="flex items-center justify-center gap-1.5 md:gap-2 mb-6 md:mb-10">
+  <section class="max-w-5xl mx-auto px-4 pt-20 pb-6 md:pt-28 md:pb-12">
+    <!-- Compact inline header + step indicators -->
+    <div class="flex items-center justify-between mb-4 md:mb-6">
+      <div>
+        <nav class="text-xs text-accent-400 mb-0.5"><a href="/" class="hover:text-primary-600">Главная</a> / Генератор</nav>
+        <h1 class="text-lg md:text-2xl font-bold text-primary-950">Генератор жалоб</h1>
+      </div>
+      <div class="flex items-center gap-1.5">
       {[1, 2, 3, 4].map(step => (
-        <div class="flex items-center gap-1.5 md:gap-2">
+        <div class="flex items-center gap-1">
           <div
-            class="step-indicator w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-xs md:text-sm font-bold transition-all duration-300"
+            class="step-indicator w-7 h-7 md:w-9 md:h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300"
             data-step={step}
           >
             {step}
           </div>
           {step < 4 && (
-            <div class="w-8 md:w-12 h-0.5 bg-accent-200 step-connector" data-after={step}></div>
+            <div class="w-5 md:w-8 h-0.5 bg-accent-200 step-connector" data-after={step}></div>
           )}
         </div>
       ))}
+      </div>
     </div>
 
     <!-- Step 1: Select problem -->
@@ -95,104 +95,47 @@ const instancesJson = JSON.stringify(instances);
 
     <!-- Step 2: Enter resident data -->
     <div id="step-2" class="generator-step hidden">
-      <h2 class="text-lg md:text-2xl font-bold text-primary-950 mb-1">Ваши данные</h2>
-      <p class="text-sm text-accent-600 mb-4">Данные подставляются в обращение. Можно пропустить — в тексте будут плейсхолдеры.</p>
+      <h2 class="text-base md:text-xl font-bold text-primary-950 mb-3">Ваши данные</h2>
 
-      <!-- Mode toggle -->
-      <div class="flex items-center gap-2 mb-5 bg-accent-50 rounded-xl p-1.5">
-        <button type="button" id="mode-quick" class="mode-toggle flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-white text-primary-950 shadow-sm">
-          Быстрый режим
-        </button>
-        <button type="button" id="mode-full" class="mode-toggle flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all text-accent-600 hover:text-primary-950">
-          С моими данными
-        </button>
-      </div>
-
-      <!-- Quick mode hint -->
-      <div id="quick-mode-hint" class="bg-primary-50 border border-primary-100 rounded-xl p-4 mb-5">
-        <p class="text-sm text-primary-800">В тексте обращения будут плейсхолдеры <code class="bg-primary-100 px-1.5 py-0.5 rounded text-xs">[ФИО собственника]</code>, <code class="bg-primary-100 px-1.5 py-0.5 rounded text-xs">[кв. ___]</code> — заполните их перед отправкой.</p>
-      </div>
-
-      <form id="resident-form" class="bg-white rounded-2xl border border-accent-200 p-4 md:p-6 space-y-5">
-        <!-- Full mode fields (hidden in quick mode) -->
-        <div id="full-mode-fields" class="space-y-5 hidden">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
-            <div>
-              <label class="block text-sm font-medium text-primary-950 mb-1.5">ФИО полностью *</label>
-              <input
-                type="text" name="fullName"
-                placeholder="Иванов Иван Иванович"
-                class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-primary-950 mb-1.5">Квартира *</label>
-              <input
-                type="text" name="apartment"
-                placeholder="кв. 123"
-                class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-primary-950 mb-1.5">Площадь</label>
-              <input
-                type="text" name="area"
-                placeholder="65.5 м²"
-                class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-primary-950 mb-1.5">Парадная</label>
-              <input
-                type="text" name="entrance"
-                placeholder="парадная 10"
-                class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-primary-950 mb-1.5">Телефон</label>
-              <input
-                type="tel" name="phone"
-                placeholder="+7 (999) 123-45-67"
-                class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-primary-950 mb-1.5">Email</label>
-              <input
-                type="email" name="email"
-                placeholder="example@mail.ru"
-                class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
-              />
-            </div>
+      <form id="resident-form" class="bg-white rounded-2xl border border-accent-200 p-4 md:p-6 space-y-3 md:space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-accent-600 mb-1">ФИО</label>
+            <input type="text" name="fullName" placeholder="Иванов И.И."
+              class="w-full px-3 py-2 rounded-lg border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-primary-950 mb-1.5">Дата предыдущего обращения в УК (если было)</label>
-            <input
-              type="date" name="previousDate"
-              class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
-            />
+            <label class="block text-xs font-medium text-accent-600 mb-1">Квартира</label>
+            <input type="text" name="apartment" placeholder="123"
+              class="w-full px-3 py-2 rounded-lg border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-accent-600 mb-1">Телефон</label>
+            <input type="tel" name="phone" placeholder="+7 999 123-45-67"
+              class="w-full px-3 py-2 rounded-lg border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-accent-600 mb-1">Email</label>
+            <input type="email" name="email" placeholder="mail@example.ru"
+              class="w-full px-3 py-2 rounded-lg border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100" />
           </div>
         </div>
 
-        <!-- Custom description (both modes) -->
         <div>
-          <label class="block text-sm font-medium text-primary-950 mb-1.5">Опишите ситуацию своими словами <span class="text-accent-400 font-normal">(необязательно)</span></label>
-          <textarea
-            name="customDescription"
-            rows="3"
-            maxlength="1000"
-            placeholder="Например: вода с 12 этажа течёт уже 3 месяца, обращался в УК дважды — без результата"
-            class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100 resize-none"
+          <label class="block text-xs font-medium text-accent-600 mb-1">Опишите ситуацию</label>
+          <textarea name="customDescription" rows="3" maxlength="1000"
+            placeholder="Что случилось? Когда обращались в УК? Какой результат?"
+            class="w-full px-3 py-2 rounded-lg border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100 resize-none"
           ></textarea>
-          <p class="text-xs text-accent-400 mt-1">Используется для персонализации обращения</p>
         </div>
 
-        <div class="flex gap-3 pt-2">
-          <button type="button" id="btn-back-1" class="px-6 py-2.5 rounded-xl border border-accent-200 text-sm font-medium text-accent-700 hover:bg-accent-50 transition-colors">
+        <p class="text-[11px] text-accent-400">Все поля необязательные. Незаполненные данные можно вписать в готовый документ.</p>
+
+        <div class="flex gap-3">
+          <button type="button" id="btn-back-1" class="px-5 py-2 rounded-xl border border-accent-200 text-sm font-medium text-accent-700 hover:bg-accent-50 transition-colors">
             Назад
           </button>
-          <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors">
+          <button type="submit" class="flex-1 py-2 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors">
             Далее
           </button>
         </div>
@@ -297,37 +240,11 @@ const instancesJson = JSON.stringify(instances);
   let selectedSlug = '';
   let residentData = {};
   let currentComplaintText = '';
-  let quickMode = true;
 
   // DOM elements
   const steps = [1, 2, 3, 4].map(n => document.getElementById(`step-${n}`));
   const indicators = document.querySelectorAll('.step-indicator');
   const connectors = document.querySelectorAll('.step-connector');
-
-  // Quick / full mode toggle
-  const modeQuickBtn = document.getElementById('mode-quick');
-  const modeFullBtn = document.getElementById('mode-full');
-  const quickModeHint = document.getElementById('quick-mode-hint');
-  const fullModeFields = document.getElementById('full-mode-fields');
-
-  function setMode(isQuick) {
-    quickMode = isQuick;
-    if (isQuick) {
-      modeQuickBtn.className = 'mode-toggle flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-white text-primary-950 shadow-sm';
-      modeFullBtn.className = 'mode-toggle flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all text-accent-600 hover:text-primary-950';
-      quickModeHint?.classList.remove('hidden');
-      fullModeFields?.classList.add('hidden');
-    } else {
-      modeFullBtn.className = 'mode-toggle flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-white text-primary-950 shadow-sm';
-      modeQuickBtn.className = 'mode-toggle flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all text-accent-600 hover:text-primary-950';
-      quickModeHint?.classList.add('hidden');
-      fullModeFields?.classList.remove('hidden');
-      loadResidentData();
-    }
-  }
-
-  modeQuickBtn?.addEventListener('click', () => setMode(true));
-  modeFullBtn?.addEventListener('click', () => setMode(false));
 
   // Load saved resident data from localStorage
   function loadResidentData() {
@@ -358,16 +275,16 @@ const instancesJson = JSON.stringify(instances);
     indicators.forEach((el, i) => {
       const s = i + 1;
       if (s < step) {
-        el.className = 'step-indicator w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 bg-primary-600 text-white';
+        el.className = 'step-indicator w-7 h-7 md:w-9 md:h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 bg-primary-600 text-white';
       } else if (s === step) {
-        el.className = 'step-indicator w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 bg-primary-600 text-white ring-4 ring-primary-200';
+        el.className = 'step-indicator w-7 h-7 md:w-9 md:h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 bg-primary-600 text-white ring-3 ring-primary-200';
       } else {
-        el.className = 'step-indicator w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 bg-accent-100 text-accent-500';
+        el.className = 'step-indicator w-7 h-7 md:w-9 md:h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 bg-accent-100 text-accent-500';
       }
     });
     connectors.forEach(c => {
       const after = parseInt(c.dataset.after);
-      c.className = `w-12 h-0.5 step-connector ${after < step ? 'bg-primary-400' : 'bg-accent-200'}`;
+      c.className = `w-5 md:w-8 h-0.5 step-connector ${after < step ? 'bg-primary-400' : 'bg-accent-200'}`;
       c.dataset.after = String(after);
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -390,33 +307,11 @@ const instancesJson = JSON.stringify(instances);
 
   document.getElementById('resident-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
-    const form = e.target;
-    const formData = new FormData(form);
-
-    if (quickMode) {
-      // Quick mode: placeholders for personal data
-      residentData = {
-        fullName: '',
-        apartment: '',
-        area: '',
-        entrance: '',
-        phone: '',
-        email: '',
-        previousDate: '',
-        customDescription: formData.get('customDescription') || '',
-      };
-    } else {
-      residentData = Object.fromEntries(formData.entries());
-      // Validate required fields in full mode
-      if (!residentData.fullName || !residentData.apartment) {
-        const nameInput = form.querySelector('[name="fullName"]');
-        const aptInput = form.querySelector('[name="apartment"]');
-        if (!residentData.fullName) nameInput?.focus();
-        else if (!residentData.apartment) aptInput?.focus();
-        return;
-      }
-      saveResidentData(residentData);
-    }
+    const formData = new FormData(e.target);
+    residentData = Object.fromEntries(formData.entries());
+    // Save non-empty data for next time
+    const hasData = Object.values(residentData).some(v => v && v !== '');
+    if (hasData) saveResidentData(residentData);
     renderEscalation();
     goToStep(3);
   });
@@ -532,20 +427,13 @@ const instancesJson = JSON.stringify(instances);
       ? new Date(residentData.previousDate).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })
       : '__.__.____';
 
-    // Placeholders for quick mode
-    const ph = quickMode ? {
-      fullName: '[ФИО собственника]',
-      apartment: '[кв. ___]',
-      area: '[площадь]',
-      phone: '[телефон]',
-      email: '[email]',
-      entrance: '[парадная]',
-    } : {
-      fullName: residentData.fullName || '____',
-      apartment: residentData.apartment || '____',
+    // Use provided data or placeholders for empty fields
+    const ph = {
+      fullName: residentData.fullName || '[ФИО]',
+      apartment: residentData.apartment ? `кв. ${residentData.apartment}` : '[кв. ___]',
       area: residentData.area || '____',
-      phone: residentData.phone || '____',
-      email: residentData.email || '____',
+      phone: residentData.phone || '[телефон]',
+      email: residentData.email || '[email]',
       entrance: residentData.entrance || '____',
     };
 
@@ -553,8 +441,8 @@ const instancesJson = JSON.stringify(instances);
     let text = instHeader + '\n\n';
     text += `От: ${ph.fullName}\n`;
     text += `Адрес: Санкт-Петербург, Аптекарский пр-кт, д. 18, лит. А, ${ph.apartment}\n`;
-    if (!quickMode || residentData.phone) text += `Телефон: ${ph.phone}\n`;
-    if (!quickMode || residentData.email) text += `Email: ${ph.email}\n`;
+    text += `Телефон: ${ph.phone}\n`;
+    text += `Email: ${ph.email}\n`;
     text += '\n';
     text += `                    ЗАЯВЛЕНИЕ (ЖАЛОБА)\n\n`;
 
@@ -597,7 +485,7 @@ const instancesJson = JSON.stringify(instances);
         body: JSON.stringify({
           problemSlug: template.problemSlug,
           instanceId: template.instanceId,
-          residentData: quickMode ? {} : residentData,
+          residentData: residentData,
           customDescription: residentData.customDescription || '',
         }),
       });
