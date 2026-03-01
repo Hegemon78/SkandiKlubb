@@ -6,14 +6,14 @@ import IconInfo from '../components/icons/IconInfo.astro';
 import { ossBlocks, quorumTable, currentSituation, statusLabels } from '../data/oss';
 
 const statusColors: Record<string, string> = {
-  preparing: 'bg-blue-50 text-blue-700',
+  preparing: 'bg-primary-50 text-primary-700',
   clarifying: 'bg-amber-50 text-amber-700',
   investigation: 'bg-purple-50 text-purple-700',
   waiting: 'bg-orange-50 text-orange-700',
 };
 
 const statusDots: Record<string, string> = {
-  preparing: 'bg-blue-400',
+  preparing: 'bg-primary-400',
   clarifying: 'bg-amber-400',
   investigation: 'bg-purple-400',
   waiting: 'bg-orange-400',

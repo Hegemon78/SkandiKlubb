@@ -25,7 +25,7 @@ const priorityLabels = {
 
 const categoryBorders: Record<string, string> = {
   'Безопасность': 'border-l-red-500',
-  'Технические': 'border-l-blue-500',
+  'Технические': 'border-l-primary-500',
   'Финансовые': 'border-l-amber-500',
   'Организационные': 'border-l-purple-500',
 };
@@ -52,7 +52,7 @@ const borderClass = categoryBorders[category] || '';
 
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-3">
-      <span class="text-xs text-accent-400">{status}</span>
+      <span class="text-xs text-accent-400 truncate">{status}</span>
       {discussionCount && discussionCount > 0 && (
         <span class="text-xs text-primary-500 font-medium inline-flex items-center gap-1">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-width="1.5"/></svg>

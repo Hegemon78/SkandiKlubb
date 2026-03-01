@@ -40,7 +40,7 @@ const categoryLabels: Record<LawCard['category'], string> = {
 };
 
 const categoryColors: Record<LawCard['category'], string> = {
-  housing: 'bg-blue-50 text-blue-700 border-blue-200',
+  housing: 'bg-primary-50 text-primary-700 border-primary-200',
   consumer: 'bg-green-50 text-green-700 border-green-200',
   administrative: 'bg-red-50 text-red-700 border-red-200',
   civil: 'bg-purple-50 text-purple-700 border-purple-200',

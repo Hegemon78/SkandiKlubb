@@ -82,11 +82,11 @@ import {
                   </svg>
                 </div>
               </summary>
-              <div class="border-t border-accent-100">
-                <table class="w-full text-sm">
+              <div class="border-t border-accent-100 overflow-x-auto">
+                <table class="w-full text-sm min-w-[480px]">
                   <thead>
                     <tr class="border-b border-accent-100">
-                      <th class="text-left px-6 py-2 text-xs font-medium text-accent-500 uppercase tracking-wider">Вопрос</th>
+                      <th class="text-left px-4 md:px-6 py-2 text-xs font-medium text-accent-500 uppercase tracking-wider">Вопрос</th>
                       <th class="text-left px-4 py-2 text-xs font-medium text-accent-500 uppercase tracking-wider">Голоса</th>
                       <th class="text-left px-4 py-2 text-xs font-medium text-accent-500 uppercase tracking-wider hidden md:table-cell">Основание</th>
                     </tr>
@@ -94,7 +94,7 @@ import {
                   <tbody>
                     {group.items.map((item) => (
                       <tr class="border-b border-accent-50 last:border-0">
-                        <td class="px-6 py-3 text-accent-700">
+                        <td class="px-4 md:px-6 py-3 text-accent-700">
                           {item.question}
                           {item.example && <span class="block text-xs text-accent-400 mt-0.5">{item.example}</span>}
                         </td>
@@ -160,9 +160,9 @@ import {
         </div>
 
         <!-- 2025 change -->
-        <div class="animate-fade-in bg-blue-50 rounded-2xl border border-blue-200 p-5 mb-10">
-          <p class="text-sm font-semibold text-blue-800 mb-1">Изменение 2025 года</p>
-          <p class="text-sm text-blue-700">{registryInfo.change2025}</p>
+        <div class="animate-fade-in bg-primary-50 rounded-2xl border border-primary-200 p-5 mb-10">
+          <p class="text-sm font-semibold text-primary-800 mb-1">Изменение 2025 года</p>
+          <p class="text-sm text-primary-700">{registryInfo.change2025}</p>
         </div>
 
         <!-- Laws section -->
@@ -180,7 +180,7 @@ import {
         <h2 class="text-2xl font-bold text-primary-950 mb-4" id="crossref">Проблема — Закон — Инстанция</h2>
         <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden mb-10">
           <div class="overflow-x-auto">
-            <table class="w-full text-sm">
+            <table class="w-full min-w-[500px] text-sm">
               <thead>
                 <tr class="border-b border-accent-200 bg-accent-50">
                   <th class="text-left px-4 py-3 text-xs font-medium text-accent-500 uppercase tracking-wider">Проблема</th>
