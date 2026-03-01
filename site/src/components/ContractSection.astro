@@ -1,0 +1,37 @@
+---
+interface Props {
+  number: string;
+  title: string;
+  content: string;
+  open?: boolean;
+}
+
+const { number, title, content, open = false } = Astro.props;
+
+// Convert markdown-like formatting to HTML
+function formatContent(text: string): string {
+  return text
+    .replace(/### (.+)/g, '<h4 class="text-base font-bold text-primary-950 mt-4 mb-2">$1</h4>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong class="text-primary-800">$1</strong>')
+    .replace(/^- (.+)$/gm, '<li class="text-accent-700 text-sm ml-4">$1</li>')
+    .replace(/(<li[^>]*>.*<\/li>\n?)+/g, '<ul class="list-disc space-y-1 my-2">$&</ul>')
+    .replace(/\n\n/g, '</p><p class="text-sm text-accent-700 leading-relaxed mb-2">')
+    .replace(/\n(?!<)/g, '<br/>')
+    ;
+}
+---
+
+<details class="group bg-white rounded-2xl border border-accent-200 overflow-hidden" open={open}>
+  <summary class="flex items-center gap-3 px-6 py-4 cursor-pointer hover:bg-accent-50 transition-colors list-none">
+    <span class="w-8 h-8 rounded-lg bg-primary-50 text-primary-700 flex items-center justify-center text-sm font-bold shrink-0 border border-primary-200">
+      {number}
+    </span>
+    <span class="text-base font-semibold text-primary-950 flex-1">{title}</span>
+    <svg class="w-5 h-5 text-accent-400 transition-transform duration-200 group-open:rotate-180 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path d="m6 9 6 6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </summary>
+  <div class="px-6 pb-5 pt-2 border-t border-accent-100">
+    <div class="text-sm text-accent-700 leading-relaxed" set:html={formatContent(content)} />
+  </div>
+</details>

@@ -1,0 +1,251 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import LawCard from '../components/LawCard.astro';
+import IconInfo from '../components/icons/IconInfo.astro';
+import {
+  quorumInfo,
+  quorumTable,
+  importantThresholds,
+  registrySteps,
+  registryInfo,
+  laws,
+  problemLawLinks,
+} from '../data/rights';
+---
+
+<BaseLayout title="Ваши права" description="Законодательная база для жителей МКД — кворум, голосование, реестр собственников, ключевые законы">
+  <PageHeader
+    title="Ваши права"
+    description="Законодательная база для защиты интересов собственников"
+    breadcrumbs={[{ label: 'Ваши права' }]}
+  />
+
+  <section class="max-w-5xl mx-auto px-4 py-12">
+    <div class="lg:grid lg:grid-cols-[1fr_260px] lg:gap-10">
+      <!-- Main content -->
+      <div>
+        <!-- Quorum section -->
+        <h2 class="text-2xl font-bold text-primary-950 mb-4" id="quorum">Кворум и голосование</h2>
+
+        <!-- Key principle -->
+        <div class="animate-fade-in bg-primary-50 rounded-2xl border border-primary-200 p-5 mb-4">
+          <p class="text-sm font-semibold text-primary-800 mb-1">Основной принцип</p>
+          <p class="text-lg font-bold text-primary-950">{quorumInfo.principle}</p>
+          <p class="text-sm text-primary-700 mt-2">{quorumInfo.quorumThreshold}</p>
+        </div>
+
+        <!-- Common mistake -->
+        <div class="animate-fade-in bg-red-50 rounded-2xl border border-red-200 p-5 mb-6">
+          <p class="text-sm font-semibold text-red-800 mb-1 flex items-center gap-2">
+            <IconInfo size={16} class="text-red-500" />
+            Частая ошибка
+          </p>
+          <p class="text-sm text-red-700">{quorumInfo.commonMistake}</p>
+        </div>
+
+        <!-- Important thresholds -->
+        <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 p-6 mb-6">
+          <h3 class="text-lg font-bold text-primary-950 mb-4">Важные пороги</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-accent-200">
+                  <th class="text-left py-3 pr-4 text-xs font-medium text-accent-500 uppercase tracking-wider">Порог</th>
+                  <th class="text-left py-3 pr-4 text-xs font-medium text-accent-500 uppercase tracking-wider">Для чего</th>
+                  <th class="text-left py-3 text-xs font-medium text-accent-500 uppercase tracking-wider">Основание</th>
+                </tr>
+              </thead>
+              <tbody>
+                {importantThresholds.map((row) => (
+                  <tr class="border-b border-accent-100 last:border-0">
+                    <td class="py-3 pr-4 font-bold text-primary-700 whitespace-nowrap">{row.threshold}</td>
+                    <td class="py-3 pr-4 text-accent-700">{row.purpose}</td>
+                    <td class="py-3 text-xs text-accent-500">{row.law}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Full quorum table -->
+        <div class="space-y-4 mb-10">
+          {quorumTable.map((group) => (
+            <details class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden group">
+              <summary class="flex items-center justify-between px-6 py-4 cursor-pointer hover:bg-accent-50 transition-colors list-none">
+                <span class="text-base font-semibold text-primary-950">{group.category}</span>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-accent-400">{group.items.length} вопросов</span>
+                  <svg class="w-5 h-5 text-accent-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="m6 9 6 6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </summary>
+              <div class="border-t border-accent-100">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="border-b border-accent-100">
+                      <th class="text-left px-6 py-2 text-xs font-medium text-accent-500 uppercase tracking-wider">Вопрос</th>
+                      <th class="text-left px-4 py-2 text-xs font-medium text-accent-500 uppercase tracking-wider">Голоса</th>
+                      <th class="text-left px-4 py-2 text-xs font-medium text-accent-500 uppercase tracking-wider hidden md:table-cell">Основание</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {group.items.map((item) => (
+                      <tr class="border-b border-accent-50 last:border-0">
+                        <td class="px-6 py-3 text-accent-700">
+                          {item.question}
+                          {item.example && <span class="block text-xs text-accent-400 mt-0.5">{item.example}</span>}
+                        </td>
+                        <td class="px-4 py-3 font-semibold text-primary-700 whitespace-nowrap">{item.votes}</td>
+                        <td class="px-4 py-3 text-xs text-accent-500 hidden md:table-cell">{item.law}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </details>
+          ))}
+        </div>
+
+        <!-- Registry section -->
+        <h2 class="text-2xl font-bold text-primary-950 mb-4" id="registry">Как запросить реестр собственников</h2>
+
+        <!-- Key facts -->
+        <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 p-6 mb-6">
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="bg-accent-50 rounded-xl p-4">
+              <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Срок</dt>
+              <dd class="font-bold text-primary-950">{registryInfo.deadline}</dd>
+            </div>
+            <div class="bg-accent-50 rounded-xl p-4">
+              <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Штраф за отказ</dt>
+              <dd class="font-bold text-red-600">{registryInfo.penaltyForRefusal}</dd>
+            </div>
+            <div class="bg-accent-50 rounded-xl p-4">
+              <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Основание</dt>
+              <dd class="font-semibold text-primary-950 text-sm">{registryInfo.legalBasis}</dd>
+            </div>
+          </div>
+          <p class="text-sm text-accent-600 mt-4 flex items-start gap-2">
+            <IconInfo size={16} class="text-primary-500 shrink-0 mt-0.5" />
+            {registryInfo.personalDataNote}
+          </p>
+        </div>
+
+        <!-- Timeline steps -->
+        <div class="animate-fade-in space-y-0 mb-6">
+          {registrySteps.map((step, i) => (
+            <div class="relative flex gap-4 pb-6 last:pb-0">
+              {/* Vertical line */}
+              {i < registrySteps.length - 1 && (
+                <div class="absolute left-[19px] top-10 bottom-0 w-px bg-accent-200"></div>
+              )}
+              <div class="w-10 h-10 rounded-full bg-primary-600 text-white flex items-center justify-center text-sm font-bold shrink-0 relative z-10">
+                {step.step}
+              </div>
+              <div class="flex-1 bg-white rounded-xl border border-accent-200 p-4">
+                <h4 class="text-sm font-bold text-primary-950 mb-1">{step.title}</h4>
+                <p class="text-sm text-accent-600">{step.description}</p>
+                {step.tip && (
+                  <p class="text-xs text-primary-600 mt-2 flex items-start gap-1.5">
+                    <IconInfo size={14} class="text-primary-400 shrink-0 mt-0.5" />
+                    {step.tip}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- 2025 change -->
+        <div class="animate-fade-in bg-blue-50 rounded-2xl border border-blue-200 p-5 mb-10">
+          <p class="text-sm font-semibold text-blue-800 mb-1">Изменение 2025 года</p>
+          <p class="text-sm text-blue-700">{registryInfo.change2025}</p>
+        </div>
+
+        <!-- Laws section -->
+        <h2 class="text-2xl font-bold text-primary-950 mb-4" id="laws">Законодательная база</h2>
+        <p class="text-sm text-accent-600 mb-6">
+          Ключевые нормативные акты для защиты прав собственников МКД.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+          {laws.map((law) => (
+            <LawCard law={law} />
+          ))}
+        </div>
+
+        <!-- Problem → Law → Instance table -->
+        <h2 class="text-2xl font-bold text-primary-950 mb-4" id="crossref">Проблема — Закон — Инстанция</h2>
+        <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden mb-10">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-accent-200 bg-accent-50">
+                  <th class="text-left px-4 py-3 text-xs font-medium text-accent-500 uppercase tracking-wider">Проблема</th>
+                  <th class="text-left px-4 py-3 text-xs font-medium text-accent-500 uppercase tracking-wider">Законы</th>
+                  <th class="text-left px-4 py-3 text-xs font-medium text-accent-500 uppercase tracking-wider">Куда жаловаться</th>
+                </tr>
+              </thead>
+              <tbody>
+                {problemLawLinks.map((link) => (
+                  <tr class="border-b border-accent-100 last:border-0">
+                    <td class="px-4 py-3">
+                      <a href={`/problems/${link.problemSlug}`} class="text-primary-600 hover:text-primary-800 font-medium transition-colors">
+                        {link.problem}
+                      </a>
+                    </td>
+                    <td class="px-4 py-3 text-accent-700">
+                      {link.laws.map((law, i) => (
+                        <span>
+                          {law}{i < link.laws.length - 1 && ', '}
+                        </span>
+                      ))}
+                    </td>
+                    <td class="px-4 py-3">
+                      <a href={link.instanceHref} class="text-primary-600 hover:text-primary-800 transition-colors">
+                        {link.instance}
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Back link -->
+        <div class="mt-8 pt-6 border-t border-accent-200">
+          <a href="/" class="inline-flex items-center gap-2 text-primary-600 hover:text-primary-800 font-medium transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 12H5" stroke-width="2" stroke-linecap="round"/><path d="m12 19-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            На главную
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="hidden lg:block">
+        <div class="sticky top-24 space-y-4">
+          <div class="bg-white rounded-2xl border border-accent-200 p-5">
+            <h4 class="text-sm font-semibold text-accent-500 uppercase tracking-wider mb-3">Содержание</h4>
+            <nav class="space-y-2">
+              <a href="#quorum" class="block text-sm text-accent-600 hover:text-primary-600 transition-colors">Кворум и голосование</a>
+              <a href="#registry" class="block text-sm text-accent-600 hover:text-primary-600 transition-colors">Реестр собственников</a>
+              <a href="#laws" class="block text-sm text-accent-600 hover:text-primary-600 transition-colors">Законодательная база</a>
+              <a href="#crossref" class="block text-sm text-accent-600 hover:text-primary-600 transition-colors">Проблема — Закон</a>
+            </nav>
+          </div>
+          <div class="bg-white rounded-2xl border border-accent-200 p-5">
+            <h4 class="text-sm font-semibold text-accent-500 uppercase tracking-wider mb-3">Связанные</h4>
+            <nav class="space-y-2">
+              <a href="/contract" class="block text-sm text-primary-600 hover:text-primary-800 font-medium transition-colors">Договор УК &rarr;</a>
+              <a href="/complaints" class="block text-sm text-primary-600 hover:text-primary-800 font-medium transition-colors">Куда жаловаться &rarr;</a>
+              <a href="/oss" class="block text-sm text-primary-600 hover:text-primary-800 font-medium transition-colors">ОСС 2025 &rarr;</a>
+            </nav>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
