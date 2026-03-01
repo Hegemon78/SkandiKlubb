@@ -24,20 +24,23 @@ const topProblems = highPriority.slice(0, 3);
 ---
 
 <BaseLayout title="Главная" description="Информационный портал для жителей ЖК Skandi Klubb — Аптекарский проспект, 18" transparentHeader={true}>
-  <!-- Hero — compact -->
-  <section class="relative bg-primary-950 text-white pt-16 pb-14 md:pt-20 md:pb-16 overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-primary-900 to-primary-950"></div>
+  <!-- Hero -->
+  <section class="relative bg-primary-950 text-white pt-18 pb-16 md:pt-24 md:pb-20 overflow-hidden">
+    <div class="absolute inset-0 bg-linear-to-b from-primary-900/80 to-primary-950"></div>
+    <!-- Geometric pattern -->
+    <div class="absolute inset-0 opacity-[0.035]" style="background-image: url(&quot;data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E&quot;);"></div>
 
     <div class="relative max-w-6xl mx-auto px-4 text-center">
-      <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur rounded-full px-4 py-1.5 text-sm text-primary-200 mb-5">
-        <span class="w-2 h-2 rounded-full bg-primary-400"></span>
-        Для жителей ЖК
-      </div>
-
-      <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-3 tracking-tight">
+      <!-- Desktop: full brand name -->
+      <h1 class="hidden md:block text-5xl font-extrabold text-white mb-2 tracking-tight">
         Skandi Klubb
       </h1>
-      <p class="text-lg text-primary-200 font-light">{house.address}</p>
+      <!-- Mobile: address as hero (brand already in header) -->
+      <h1 class="md:hidden text-2xl font-bold text-white mb-1">
+        Аптекарский проспект, 18
+      </h1>
+      <p class="hidden md:block text-lg text-primary-200/90 font-light">{house.address}</p>
+      <p class="text-sm md:text-base text-primary-300/80 mt-1">Информация, документы, жалобы</p>
     </div>
 
     <!-- Wave transition -->
@@ -50,37 +53,37 @@ const topProblems = highPriority.slice(0, 3);
 
   <!-- Quick links with facts -->
   <section class="max-w-6xl mx-auto px-4 -mt-4 relative z-10">
-    <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-      <QuickLinkCard href="/about" title="Дом" description="Паспорт здания, структура, очереди" fact={`4 очереди, ${house.entrances} парадных`}>
-        <IconHome size={22} class="text-primary-600" />
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-4">
+      <QuickLinkCard href="/about" title="Дом" fact="О здании и территории">
+        <IconHome size={18} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/management" title="УК" description="Эквида-Сервис: контакты" fact={`${managementCompany.phone} · @skandi_uk`}>
-        <IconBuilding size={22} class="text-primary-600" />
+      <QuickLinkCard href="/management" title="УК" fact="Контакты и приём">
+        <IconBuilding size={18} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/problems" title="Проблемы" description="Каталог проблем с описанием и статусами" fact={`${problems.length} проблем | ${highPriority.length} критических`}>
-        <IconAlertTriangle size={22} class="text-amber-600" />
+      <QuickLinkCard href="/problems" title="Проблемы" fact={`${problems.length} проблем дома`}>
+        <IconAlertTriangle size={18} class="text-amber-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/faq" title="FAQ" description="Вопросы жителей из Telegram-чатов" fact={`${summary.faqCount.toLocaleString('ru-RU')} вопросов | ${(summary.topSubcategories as any[]).length} тем`}>
-        <IconHelpCircle size={22} class="text-primary-600" />
+      <QuickLinkCard href="/faq" title="FAQ" fact={`${summary.faqCount.toLocaleString('ru-RU')} вопросов`}>
+        <IconHelpCircle size={18} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/contract" title="Договор" description="Текст договора с УК, чеклист обязательств" fact="12 разделов | 14 пунктов чеклиста">
-        <IconGavel size={22} class="text-primary-600" />
+      <QuickLinkCard href="/contract" title="Договор" fact="Текст и чеклист">
+        <IconGavel size={18} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/rights" title="Ваши права" description="Кворум, реестр, законодательная база" fact="12 законов | таблица кворумов">
-        <IconScale size={22} class="text-primary-600" />
+      <QuickLinkCard href="/rights" title="Ваши права" fact="Законы и кворумы">
+        <IconScale size={18} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/oss" title="ОСС 2025" description="Проект повестки, кворумы, статусы" fact="13 вопросов в 4 блоках">
-        <IconVote size={22} class="text-primary-600" />
+      <QuickLinkCard href="/oss" title="ОСС 2025" fact="Повестка и голосование">
+        <IconVote size={18} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/generator" title="Генератор жалоб" description="Генерация обращений в инстанции" fact={`${problems.length} проблем | 8 инстанций`}>
-        <IconFileText size={22} class="text-primary-600" />
+      <QuickLinkCard href="/generator" title="Генератор" fact="Создать жалобу">
+        <IconFileText size={18} class="text-amber-600" />
       </QuickLinkCard>
     </div>
   </section>
