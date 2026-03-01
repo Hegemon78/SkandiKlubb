@@ -54,51 +54,51 @@ const topProblems = highPriority.slice(0, 3);
   <!-- Quick links with facts -->
   <section class="max-w-6xl mx-auto px-4 -mt-4 relative z-10">
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-4">
-      <QuickLinkCard href="/about" title="Дом" fact="О здании и территории">
+      <QuickLinkCard href="/about" title="Дом" fact="1 222 кв.">
         <IconHome size={18} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/management" title="УК" fact="Контакты и приём">
+      <QuickLinkCard href="/management" title="УК" fact="Контакты">
         <IconBuilding size={18} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/problems" title="Проблемы" fact={`${problems.length} проблем дома`}>
+      <QuickLinkCard href="/problems" title="Проблемы" fact={`${problems.length} проблем`}>
         <IconAlertTriangle size={18} class="text-amber-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/faq" title="FAQ" fact={`${summary.faqCount.toLocaleString('ru-RU')} вопросов`}>
+      <QuickLinkCard href="/faq" title="FAQ" fact={`${summary.faqCount.toLocaleString('ru-RU')} FAQ`}>
         <IconHelpCircle size={18} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/contract" title="Договор" fact="Текст и чеклист">
+      <QuickLinkCard href="/contract" title="Договор" fact="Анализ">
         <IconGavel size={18} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/rights" title="Ваши права" fact="Законы и кворумы">
+      <QuickLinkCard href="/rights" title="Ваши права" fact="Памятка">
         <IconScale size={18} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/oss" title="ОСС 2025" fact="Повестка и голосование">
+      <QuickLinkCard href="/oss" title="ОСС 2025" fact="Повестка">
         <IconVote size={18} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/generator" title="Генератор" fact="Создать жалобу">
+      <QuickLinkCard href="/generator" title="Генератор" fact="Создать">
         <IconFileText size={18} class="text-amber-600" />
       </QuickLinkCard>
     </div>
   </section>
 
   <!-- Top problems -->
-  <section class="max-w-6xl mx-auto px-4 py-16">
+  <section class="max-w-6xl mx-auto px-4 pt-8 pb-12 md:pt-12 md:pb-16">
     <div class="animate-fade-in">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold text-primary-950">Приоритетные проблемы</h2>
+      <div class="flex items-center justify-between mb-4 md:mb-6">
+        <h2 class="text-lg md:text-2xl font-bold text-primary-950">Острые проблемы</h2>
         <a href="/problems" class="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors inline-flex items-center gap-1">
           Все проблемы
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 md:gap-4">
         {topProblems.map(p => (
           <ProblemMiniCard
             title={p.data.title}
@@ -112,7 +112,7 @@ const topProblems = highPriority.slice(0, 3);
   </section>
 
   <!-- Quick contacts -->
-  <section class="max-w-6xl mx-auto px-4 pb-16">
+  <section class="max-w-6xl mx-auto px-4 pb-10 md:pb-16">
     <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 p-6">
       <h2 class="text-lg font-bold text-primary-950 mb-4">Контакты диспетчерской УК</h2>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">

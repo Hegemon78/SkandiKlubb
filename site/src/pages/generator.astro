@@ -16,6 +16,11 @@ const problems = allProblems.sort((a, b) => a.data.order - b.data.order);
 const availableSlugs = [...new Set(complaintTemplates.map(t => t.problemSlug))];
 const availableProblems = problems.filter(p => availableSlugs.includes(p.id));
 
+// Count templates per problem
+const templateCounts: Record<string, number> = Object.fromEntries(
+  availableProblems.map(p => [p.id, complaintTemplates.filter(t => t.problemSlug === p.id).length])
+);
+
 // Category → icon mapping
 const categoryIcons: Record<string, string> = {
   'Безопасность': 'shield',
@@ -80,7 +85,7 @@ const instancesJson = JSON.stringify(instances);
             </div>
             <div class="min-w-0 flex-1">
               <h3 class="text-[13px] md:text-sm font-semibold text-primary-950 leading-snug">{p.data.title}</h3>
-              <p class="text-[11px] text-accent-500 mt-0.5 uppercase tracking-wide">{p.data.category}</p>
+              <p class="text-[11px] text-accent-500 mt-0.5">{templateCounts[p.id]} {templateCounts[p.id] === 1 ? 'шаблон' : templateCounts[p.id]! < 5 ? 'шаблона' : 'шаблонов'}</p>
             </div>
             <svg class="w-4 h-4 text-accent-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>

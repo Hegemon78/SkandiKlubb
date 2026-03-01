@@ -9,7 +9,6 @@ const allProblems = await getCollection('problems');
 const problems = allProblems.sort((a, b) => a.data.order - b.data.order);
 
 const categories = [...new Set(problems.map(p => p.data.category))];
-const highCount = problems.filter(p => p.data.priority === 'high').length;
 
 // Map problem slugs to discussion counts from parser data
 const discussionCounts: Record<string, number> = {};
@@ -34,16 +33,9 @@ for (const [subcat, count] of Object.entries(problemStats.discussionCounts as Re
     breadcrumbs={[{ label: 'Проблемы' }]}
   />
 
-  <section class="max-w-6xl mx-auto px-4 py-12">
-    <!-- Summary -->
-    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 p-5 mb-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
-      <span class="font-bold text-primary-950">{problems.length} проблем</span>
-      <span class="text-red-600 font-medium">{highCount} высокий приоритет</span>
-      <span class="text-accent-600">{categories.length} категории</span>
-    </div>
-
+  <section class="max-w-6xl mx-auto px-4 py-6 md:py-12">
     <!-- Category filter -->
-    <div class="flex flex-wrap gap-2 mb-8">
+    <div class="flex flex-wrap gap-2 mb-6">
       <button class="category-btn active px-4 py-2 rounded-full text-sm font-medium bg-primary-600 text-white transition-all duration-200" data-category="all">
         Все ({problems.length})
       </button>
@@ -61,7 +53,7 @@ for (const [subcat, count] of Object.entries(problemStats.discussionCounts as Re
     </div>
 
     <!-- Problems grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="problems-grid">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4" id="problems-grid">
       {problems.map((problem, i) => (
         <div class="problem-item animate-fade-in" data-category={problem.data.category} style={`transition-delay: ${i * 50}ms`}>
           <ProblemCard

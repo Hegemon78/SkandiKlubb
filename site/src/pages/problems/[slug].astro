@@ -115,8 +115,11 @@ const priorityColors = {
         {quotes.length > 0 && (
           <div class="mt-12 pt-8 border-t border-accent-200">
             <h2 class="text-xl font-bold text-primary-950 mb-1">Что говорят жители</h2>
-            <p class="text-sm text-accent-500 mb-6">
+            <p class="text-sm text-accent-500 mb-4">
               Обсуждалось {discussionCount.toLocaleString('ru-RU')} раз в Telegram-чатах
+            </p>
+            <p class="text-xs text-accent-400 italic mb-6">
+              Приводятся мнения жителей из Telegram-чата ЖК. Имена не раскрываются.
             </p>
             <div class="space-y-3">
               {quotes.slice(0, 5).map(quote => (
