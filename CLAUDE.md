@@ -55,7 +55,7 @@ SkandiKlubb/
 ├── site/                      # Astro-сайт (задеплоен)
 │   ├── src/pages/             # 11 страниц + /problems/[slug] (9 проблем)
 │   ├── src/pages/api/         # API endpoint: /api/generate
-│   ├── src/components/        # 17 компонентов + 21 иконка
+│   ├── src/components/        # 17 компонентов + 22 иконки
 │   ├── src/data/              # TS-данные + generated/ JSONs
 │   └── src/content/problems/  # 9 MD-файлов (Content Collections)
 ├── bot/                       # Telegram-бот (Фаза 3, пока пустой)
@@ -98,7 +98,7 @@ SkandiKlubb/
 |-----------|------|--------|
 | Парсер | Python 3.13+, Telethon, SQLite | Готов |
 | Сайт | Astro 5.18 (hybrid), Tailwind 4, @astrojs/node | Задеплоен |
-| API | /api/generate — OpenRouter → Claude Haiku | Задеплоен |
+| API | /api/generate — OpenRouter → Claude Sonnet 4 | Задеплоен |
 | Генератор | 4-step form, AI + fallback шаблоны, мульти-инстанция | Готов |
 | Бот | Python 3.13+, aiogram 3.22+ (на основе ChatCompanion) | Фаза 3 |
 | Категоризация | regex v1 (готов), Claude Haiku v2 (TODO) | Частично |
@@ -143,7 +143,7 @@ git push → GitHub Actions:
   2. rsync dist/client/ → VPS:client/
   3. rsync dist/server/ → VPS:server/
   4. rsync package.json → VPS
-  5. SSH: npm ci --production + pm2 restart skklubb
+  5. SSH: npm ci --production + pm2 start --env-file=.env
 ```
 
 Подробно: `docs/DEPLOY_HYBRID.md`

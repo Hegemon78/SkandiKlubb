@@ -733,9 +733,10 @@ const instancesJson = JSON.stringify(instances);
       });
     });
 
-    // Show current tab
+    // Show current tab content
     const current = allResults[currentTabId];
     currentComplaintText = current.text;
+    renderResult(current.template, current.text, current.mode);
   }
 
   // Copy to clipboard
