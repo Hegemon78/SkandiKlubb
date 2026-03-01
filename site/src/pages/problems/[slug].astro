@@ -2,8 +2,10 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
+import ComplaintCTA from '../../components/ComplaintCTA.astro';
 import { getCollection, render } from 'astro:content';
 import { problemLawLinks } from '../../data/rights';
+import { complaintTemplates } from '../../data/complaint-templates';
 import problemStats from '../../data/generated/problem-stats.json';
 import solutionsData from '../../data/generated/solutions.json';
 
@@ -64,6 +66,9 @@ const priorityColors = {
   medium: 'text-amber-600',
   low: 'text-green-600',
 };
+
+const templateCount = complaintTemplates.filter(t => t.problemSlug === problem.id).length;
+const hasTemplates = templateCount > 0;
 ---
 
 <BaseLayout title={problem.data.title} description={problem.data.summary}>
@@ -89,6 +94,12 @@ const priorityColors = {
         </div>
 
         <p class="text-base md:text-lg text-accent-600 mb-6 leading-relaxed">{problem.data.summary}</p>
+
+        {hasTemplates && (
+          <div class="mb-8">
+            <ComplaintCTA slug={problem.id} templateCount={templateCount} variant="banner" />
+          </div>
+        )}
 
         <!-- Article -->
         <article class="prose md:prose-lg max-w-none
@@ -150,6 +161,12 @@ const priorityColors = {
           </div>
         )}
 
+        {hasTemplates && (
+          <div class="mt-10 pt-8 border-t border-accent-200">
+            <ComplaintCTA slug={problem.id} templateCount={templateCount} variant="banner" />
+          </div>
+        )}
+
         <!-- Back link -->
         <div class="mt-12 pt-6 border-t border-accent-200">
           <a href="/problems" class="inline-flex items-center gap-2 text-primary-600 hover:text-primary-800 font-medium transition-colors">
@@ -195,6 +212,9 @@ const priorityColors = {
             </>
           )}
           <hr class="border-accent-100" />
+          {hasTemplates && (
+            <ComplaintCTA slug={problem.id} templateCount={templateCount} variant="compact" />
+          )}
           <a href="/complaints" class="block text-sm text-primary-600 hover:text-primary-800 font-medium transition-colors">
             Куда жаловаться &rarr;
           </a>

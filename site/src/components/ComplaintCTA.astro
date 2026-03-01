@@ -1,0 +1,42 @@
+---
+import IconFileText from './icons/IconFileText.astro';
+
+interface Props {
+  slug: string;
+  templateCount: number;
+  variant?: 'banner' | 'compact';
+}
+
+const { slug, templateCount, variant = 'banner' } = Astro.props;
+
+const pluralTemplates = templateCount === 1
+  ? '1 шаблон'
+  : templateCount < 5
+    ? `${templateCount} шаблона`
+    : `${templateCount} шаблонов`;
+---
+
+{variant === 'banner' ? (
+  <div class="bg-primary-50 border border-primary-200 rounded-2xl p-4 md:p-5 flex items-center gap-4">
+    <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center shrink-0">
+      <IconFileText size={20} class="text-primary-700" />
+    </div>
+    <div class="flex-1 min-w-0">
+      <p class="text-sm font-semibold text-primary-900">Составить жалобу по этой проблеме</p>
+      <p class="text-xs text-primary-600 mt-0.5">{pluralTemplates} для разных инстанций</p>
+    </div>
+    <a
+      href={`/generator?problem=${slug}`}
+      class="shrink-0 px-4 py-2 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 active:scale-[0.97] transition-all"
+    >
+      Пожаловаться
+    </a>
+  </div>
+) : (
+  <a
+    href={`/generator?problem=${slug}`}
+    class="block text-sm text-primary-600 hover:text-primary-800 font-medium transition-colors"
+  >
+    Составить жалобу &rarr;
+  </a>
+)}

@@ -803,6 +803,22 @@ const instancesJson = JSON.stringify(instances);
     goToStep(1);
   });
 
-  // Init: set step 1 active
-  goToStep(1);
+  // Init: check URL params for pre-selected problem
+  function selectProblem(slug) {
+    const btn = document.querySelector(`.problem-select-btn[data-slug="${slug}"]`);
+    if (!btn) return false;
+    selectedSlug = slug;
+    btn.classList.add('border-primary-400', 'bg-primary-50');
+    return true;
+  }
+
+  (function init() {
+    const params = new URLSearchParams(window.location.search);
+    const problemSlug = params.get('problem');
+    if (problemSlug && /^[a-z0-9-]+$/.test(problemSlug) && selectProblem(problemSlug)) {
+      goToStep(2);
+    } else {
+      goToStep(1);
+    }
+  })();
 </script>
