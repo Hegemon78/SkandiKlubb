@@ -1,0 +1,43 @@
+---
+interface Props {
+  subcategory: string;
+  label: string;
+  count: number;
+  problemSlug: string | null;
+  questions: string[];
+}
+
+const { subcategory, label, count, problemSlug, questions } = Astro.props;
+---
+
+<div class="faq-cluster bg-white rounded-2xl border border-accent-200 p-6" data-subcategory={subcategory}>
+  <div class="flex items-start justify-between mb-4">
+    <div>
+      <h3 class="text-lg font-bold text-primary-950">{label}</h3>
+      <span class="text-xs text-accent-500">{count} вопросов от жителей</span>
+    </div>
+    {problemSlug && (
+      <a
+        href={`/problems/${problemSlug}`}
+        class="text-xs font-medium text-primary-600 hover:text-primary-800 bg-primary-50 px-3 py-1.5 rounded-full transition-colors shrink-0"
+      >
+        Проблема
+      </a>
+    )}
+  </div>
+
+  <ul class="space-y-3">
+    {questions.map((q) => (
+      <li class="flex gap-3 text-sm text-accent-700 leading-relaxed">
+        <span class="text-primary-400 mt-0.5 shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke-width="1.5"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>{q}</span>
+      </li>
+    ))}
+  </ul>
+</div>

@@ -6,9 +6,10 @@ interface Props {
   priority: 'high' | 'medium' | 'low';
   status: string;
   summary: string;
+  discussionCount?: number;
 }
 
-const { title, slug, category, priority, status, summary } = Astro.props;
+const { title, slug, category, priority, status, summary, discussionCount } = Astro.props;
 
 const priorityColors = {
   high: 'bg-red-50 text-red-700 border border-red-200',
@@ -50,7 +51,15 @@ const borderClass = categoryBorders[category] || '';
   <p class="text-sm text-accent-600 mb-4 line-clamp-2 leading-relaxed">{summary}</p>
 
   <div class="flex items-center justify-between">
-    <span class="text-xs text-accent-400">{status}</span>
+    <div class="flex items-center gap-3">
+      <span class="text-xs text-accent-400">{status}</span>
+      {discussionCount && discussionCount > 0 && (
+        <span class="text-xs text-primary-500 font-medium inline-flex items-center gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-width="1.5"/></svg>
+          {discussionCount}
+        </span>
+      )}
+    </div>
     <span class="text-primary-600 text-sm font-medium group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
       Подробнее
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 12h14" stroke-width="2" stroke-linecap="round"/><path d="m12 5 7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>

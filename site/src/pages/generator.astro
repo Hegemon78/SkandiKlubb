@@ -1,0 +1,449 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { getCollection } from 'astro:content';
+import { complaintTemplates, instanceHeaders, complaintHeader } from '../data/complaint-templates';
+import { instances } from '../data/instances';
+
+const allProblems = await getCollection('problems');
+const problems = allProblems.sort((a, b) => a.data.order - b.data.order);
+
+// Get unique problem slugs that have templates
+const availableSlugs = [...new Set(complaintTemplates.map(t => t.problemSlug))];
+const availableProblems = problems.filter(p => availableSlugs.includes(p.id));
+
+// Serialize data for client-side JS
+const templatesJson = JSON.stringify(complaintTemplates);
+const instanceHeadersJson = JSON.stringify(instanceHeaders);
+const complaintHeaderJson = JSON.stringify(complaintHeader);
+const instancesJson = JSON.stringify(instances);
+---
+
+<BaseLayout title="Генератор жалоб" description="Автоматическая генерация обращений в инстанции для жителей ЖК Skandi Klubb">
+  <PageHeader
+    title="Генератор жалоб"
+    description="Выберите проблему, заполните данные — получите готовые обращения во все нужные инстанции"
+    breadcrumbs={[{ label: 'Генератор' }]}
+  />
+
+  <section class="max-w-5xl mx-auto px-4 py-12">
+    <!-- Step indicators -->
+    <div class="flex items-center justify-center gap-2 mb-10">
+      {[1, 2, 3, 4].map(step => (
+        <div class="flex items-center gap-2">
+          <div
+            class="step-indicator w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300"
+            data-step={step}
+          >
+            {step}
+          </div>
+          {step < 4 && (
+            <div class="w-12 h-0.5 bg-accent-200 step-connector" data-after={step}></div>
+          )}
+        </div>
+      ))}
+    </div>
+
+    <!-- Step 1: Select problem -->
+    <div id="step-1" class="generator-step">
+      <h2 class="text-2xl font-bold text-primary-950 mb-2">Выберите проблему</h2>
+      <p class="text-accent-600 mb-6">Нажмите на карточку проблемы, для которой нужно сгенерировать обращение</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {availableProblems.map(p => (
+          <button
+            class="problem-select-btn text-left bg-white rounded-2xl border border-accent-200 p-5 hover:shadow-lg hover:border-primary-300 transition-all duration-200"
+            data-slug={p.id}
+          >
+            <span class="text-xs font-semibold text-accent-500 uppercase tracking-wider">{p.data.category}</span>
+            <h3 class="text-base font-bold text-primary-950 mt-1 mb-2">{p.data.title}</h3>
+            <p class="text-sm text-accent-600 line-clamp-2">{p.data.summary}</p>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Step 2: Enter resident data -->
+    <div id="step-2" class="generator-step hidden">
+      <h2 class="text-2xl font-bold text-primary-950 mb-2">Ваши данные</h2>
+      <p class="text-accent-600 mb-6">Заполните данные для подстановки в обращение. Данные сохраняются в браузере для повторного использования.</p>
+
+      <form id="resident-form" class="bg-white rounded-2xl border border-accent-200 p-6 space-y-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <label class="block text-sm font-medium text-primary-950 mb-1.5">ФИО полностью *</label>
+            <input
+              type="text" name="fullName" required
+              placeholder="Иванов Иван Иванович"
+              class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-primary-950 mb-1.5">Квартира *</label>
+            <input
+              type="text" name="apartment" required
+              placeholder="кв. 123"
+              class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-primary-950 mb-1.5">Площадь</label>
+            <input
+              type="text" name="area"
+              placeholder="65.5 м²"
+              class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-primary-950 mb-1.5">Парадная</label>
+            <input
+              type="text" name="entrance"
+              placeholder="парадная 10"
+              class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-primary-950 mb-1.5">Телефон *</label>
+            <input
+              type="tel" name="phone" required
+              placeholder="+7 (999) 123-45-67"
+              class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-primary-950 mb-1.5">Email *</label>
+            <input
+              type="email" name="email" required
+              placeholder="example@mail.ru"
+              class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+            />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-primary-950 mb-1.5">Дата предыдущего обращения в УК (если было)</label>
+          <input
+            type="date" name="previousDate"
+            class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+          />
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button type="button" id="btn-back-1" class="px-6 py-2.5 rounded-xl border border-accent-200 text-sm font-medium text-accent-700 hover:bg-accent-50 transition-colors">
+            Назад
+          </button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors">
+            Далее
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Step 3: Escalation ladder -->
+    <div id="step-3" class="generator-step hidden">
+      <h2 class="text-2xl font-bold text-primary-950 mb-2">Лестница эскалации</h2>
+      <p class="text-accent-600 mb-6">Для выбранной проблемы доступны обращения в следующие инстанции. Начинайте с первой ступени.</p>
+
+      <div id="escalation-list" class="space-y-4"></div>
+
+      <div class="flex gap-3 mt-6">
+        <button type="button" id="btn-back-2" class="px-6 py-2.5 rounded-xl border border-accent-200 text-sm font-medium text-accent-700 hover:bg-accent-50 transition-colors">
+          Назад
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 4: Generated complaint -->
+    <div id="step-4" class="generator-step hidden">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-bold text-primary-950">Готовое обращение</h2>
+        <div class="flex gap-2">
+          <button type="button" id="btn-copy" class="px-4 py-2 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors inline-flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke-width="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke-width="2"/></svg>
+            Копировать
+          </button>
+          <button type="button" id="btn-download" class="px-4 py-2 rounded-xl border border-accent-200 text-sm font-medium text-accent-700 hover:bg-accent-50 transition-colors inline-flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke-width="2"/><polyline points="7 10 12 15 17 10" stroke-width="2"/><line x1="12" y1="15" x2="12" y2="3" stroke-width="2"/></svg>
+            Скачать TXT
+          </button>
+        </div>
+      </div>
+
+      <div id="complaint-info" class="bg-white rounded-2xl border border-accent-200 p-5 mb-4">
+        <div class="flex flex-wrap gap-3 text-sm">
+          <span id="info-instance" class="bg-primary-50 text-primary-700 px-3 py-1 rounded-full font-medium"></span>
+          <span id="info-basis" class="text-accent-600"></span>
+        </div>
+      </div>
+
+      <div id="complaint-text" class="bg-white rounded-2xl border border-accent-200 p-6 font-mono text-sm whitespace-pre-wrap leading-relaxed text-accent-800"></div>
+
+      <div id="complaint-attachments" class="mt-4 bg-amber-50 rounded-2xl border border-amber-200 p-5 hidden">
+        <h4 class="text-sm font-bold text-amber-800 mb-2">Рекомендуемые приложения:</h4>
+        <ul id="attachments-list" class="text-sm text-amber-700 space-y-1"></ul>
+      </div>
+
+      <div id="complaint-instructions" class="mt-4 bg-primary-50 rounded-2xl border border-primary-200 p-5">
+        <h4 class="text-sm font-bold text-primary-800 mb-2">Как подать обращение:</h4>
+        <div id="instructions-content" class="text-sm text-primary-700 space-y-1"></div>
+      </div>
+
+      <div class="flex gap-3 mt-6">
+        <button type="button" id="btn-back-3" class="px-6 py-2.5 rounded-xl border border-accent-200 text-sm font-medium text-accent-700 hover:bg-accent-50 transition-colors">
+          Назад к инстанциям
+        </button>
+        <button type="button" id="btn-restart" class="px-6 py-2.5 rounded-xl border border-accent-200 text-sm font-medium text-accent-700 hover:bg-accent-50 transition-colors">
+          Новая жалоба
+        </button>
+      </div>
+    </div>
+
+    <!-- Copy success toast -->
+    <div id="copy-toast" class="fixed bottom-6 right-6 bg-green-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+      Текст скопирован в буфер обмена
+    </div>
+  </section>
+</BaseLayout>
+
+<script define:vars={{ templatesJson, instanceHeadersJson, complaintHeaderJson, instancesJson }}>
+  const templates = JSON.parse(templatesJson);
+  const instanceHeadersData = JSON.parse(instanceHeadersJson);
+  const headerTemplate = JSON.parse(complaintHeaderJson);
+  const instancesData = JSON.parse(instancesJson);
+
+  // State
+  let selectedSlug = '';
+  let residentData = {};
+  let currentComplaintText = '';
+
+  // DOM elements
+  const steps = [1, 2, 3, 4].map(n => document.getElementById(`step-${n}`));
+  const indicators = document.querySelectorAll('.step-indicator');
+  const connectors = document.querySelectorAll('.step-connector');
+
+  // Load saved resident data from localStorage
+  function loadResidentData() {
+    try {
+      const saved = localStorage.getItem('skandiklubb_resident');
+      if (saved) {
+        const data = JSON.parse(saved);
+        const form = document.getElementById('resident-form');
+        for (const [key, value] of Object.entries(data)) {
+          const input = form?.querySelector(`[name="${key}"]`);
+          if (input) input.value = value;
+        }
+      }
+    } catch {}
+  }
+
+  function saveResidentData(data) {
+    try {
+      localStorage.setItem('skandiklubb_resident', JSON.stringify(data));
+    } catch {}
+  }
+
+  // Step navigation
+  function goToStep(step) {
+    steps.forEach((el, i) => {
+      el?.classList.toggle('hidden', i !== step - 1);
+    });
+    indicators.forEach((el, i) => {
+      const s = i + 1;
+      if (s < step) {
+        el.className = 'step-indicator w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 bg-primary-600 text-white';
+      } else if (s === step) {
+        el.className = 'step-indicator w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 bg-primary-600 text-white ring-4 ring-primary-200';
+      } else {
+        el.className = 'step-indicator w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 bg-accent-100 text-accent-500';
+      }
+    });
+    connectors.forEach(c => {
+      const after = parseInt(c.dataset.after);
+      c.className = `w-12 h-0.5 step-connector ${after < step ? 'bg-primary-400' : 'bg-accent-200'}`;
+      c.dataset.after = String(after);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Step 1: Problem selection
+  document.querySelectorAll('.problem-select-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedSlug = btn.dataset.slug;
+      document.querySelectorAll('.problem-select-btn').forEach(b => {
+        b.classList.remove('border-primary-400', 'bg-primary-50');
+      });
+      btn.classList.add('border-primary-400', 'bg-primary-50');
+      goToStep(2);
+    });
+  });
+
+  // Step 2: Resident form
+  loadResidentData();
+
+  document.getElementById('resident-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    residentData = Object.fromEntries(formData.entries());
+    saveResidentData(residentData);
+    renderEscalation();
+    goToStep(3);
+  });
+
+  // Render escalation ladder
+  function renderEscalation() {
+    const container = document.getElementById('escalation-list');
+    if (!container) return;
+
+    const problemTemplates = templates
+      .filter(t => t.problemSlug === selectedSlug)
+      .sort((a, b) => a.escalationStep - b.escalationStep);
+
+    container.innerHTML = problemTemplates.map((t, i) => {
+      const instance = instancesData.find(inst => inst.id === t.instanceId);
+      const instanceName = instance?.name || t.instanceId;
+
+      return `
+        <div class="bg-white rounded-2xl border border-accent-200 p-5 hover:shadow-md transition-shadow">
+          <div class="flex items-start justify-between">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-bold text-sm shrink-0">
+                ${t.escalationStep}
+              </div>
+              <div>
+                <h3 class="font-bold text-primary-950">${instanceName}</h3>
+                <p class="text-sm text-accent-600 mt-1">${t.title}</p>
+                <div class="flex flex-wrap gap-1.5 mt-2">
+                  ${t.legalBasis.map(law => `<span class="text-xs bg-accent-50 text-accent-600 px-2 py-0.5 rounded">${law}</span>`).join('')}
+                </div>
+              </div>
+            </div>
+            <button
+              class="generate-btn px-4 py-2 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors shrink-0"
+              data-index="${templates.indexOf(t)}"
+            >
+              Сгенерировать
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Add click handlers
+    container.querySelectorAll('.generate-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.index);
+        generateComplaint(templates[idx]);
+      });
+    });
+  }
+
+  // Generate complaint text
+  function generateComplaint(template) {
+    const instance = instancesData.find(inst => inst.id === template.instanceId);
+    const instHeader = instanceHeadersData[template.instanceId] || `Руководителю\n${instance?.name || template.instanceId}`;
+
+    const today = new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const prevDate = residentData.previousDate
+      ? new Date(residentData.previousDate).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      : '__.__.____';
+
+    // Build full text
+    let text = instHeader + '\n\n';
+    text += `От: ${residentData.fullName || '____'}\n`;
+    text += `Адрес: Санкт-Петербург, Аптекарский пр-кт, д. 18, лит. А, ${residentData.apartment || '____'}\n`;
+    text += `Телефон: ${residentData.phone || '____'}\n`;
+    text += `Email: ${residentData.email || '____'}\n\n`;
+    text += `                    ЗАЯВЛЕНИЕ (ЖАЛОБА)\n\n`;
+
+    // Replace placeholders in body
+    let body = template.bodyTemplate;
+    body = body.replace(/\{\{fullName\}\}/g, residentData.fullName || '____');
+    body = body.replace(/\{\{apartment\}\}/g, residentData.apartment || '____');
+    body = body.replace(/\{\{area\}\}/g, residentData.area || '____');
+    body = body.replace(/\{\{phone\}\}/g, residentData.phone || '____');
+    body = body.replace(/\{\{email\}\}/g, residentData.email || '____');
+    body = body.replace(/\{\{entrance\}\}/g, residentData.entrance || '____');
+    body = body.replace(/\{\{previousDate\}\}/g, prevDate);
+
+    text += body + '\n\n';
+    text += `На основании вышеизложенного, руководствуясь ${template.legalBasis.join(', ')},\n\n`;
+    text += `                    ПРОШУ:\n\n`;
+    template.demands.forEach((d, i) => {
+      text += `${i + 1}. ${d}\n`;
+    });
+
+    if (template.attachments.length > 0) {
+      text += `\nПриложения:\n`;
+      template.attachments.forEach((a, i) => {
+        text += `${i + 1}. ${a}\n`;
+      });
+    }
+
+    text += `\nДата: ${today}\n`;
+    text += `Подпись: ${residentData.fullName || '____'}`;
+
+    currentComplaintText = text;
+
+    // Render
+    document.getElementById('complaint-text').textContent = text;
+    document.getElementById('info-instance').textContent = instance?.name || template.instanceId;
+    document.getElementById('info-basis').textContent = `Основание: ${template.legalBasis.join(', ')}`;
+
+    // Attachments
+    const attachDiv = document.getElementById('complaint-attachments');
+    const attachList = document.getElementById('attachments-list');
+    if (template.attachments.length > 0) {
+      attachDiv?.classList.remove('hidden');
+      attachList.innerHTML = template.attachments.map(a => `<li>• ${a}</li>`).join('');
+    } else {
+      attachDiv?.classList.add('hidden');
+    }
+
+    // Instructions
+    const instrDiv = document.getElementById('instructions-content');
+    const methods = [];
+    if (instance?.email) methods.push(`<p>• <strong>Email:</strong> отправить на ${instance.email}</p>`);
+    if (instance?.onlineForm) methods.push(`<p>• <strong>Онлайн:</strong> <a href="${instance.onlineForm}" target="_blank" rel="noopener" class="underline">${instance.onlineForm}</a></p>`);
+    if (instance?.address) methods.push(`<p>• <strong>Лично:</strong> ${instance.address}</p>`);
+    methods.push(`<p>• <strong>Почтой:</strong> заказное письмо с уведомлением</p>`);
+    if (instance?.deadline) methods.push(`<p>• <strong>Срок ответа:</strong> ${instance.deadline}</p>`);
+    instrDiv.innerHTML = methods.join('');
+
+    goToStep(4);
+  }
+
+  // Copy to clipboard
+  document.getElementById('btn-copy')?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(currentComplaintText);
+      const toast = document.getElementById('copy-toast');
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2000);
+    } catch {}
+  });
+
+  // Download TXT
+  document.getElementById('btn-download')?.addEventListener('click', () => {
+    const blob = new Blob([currentComplaintText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `complaint_${selectedSlug}_${new Date().toISOString().slice(0, 10)}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // Back buttons
+  document.getElementById('btn-back-1')?.addEventListener('click', () => goToStep(1));
+  document.getElementById('btn-back-2')?.addEventListener('click', () => goToStep(2));
+  document.getElementById('btn-back-3')?.addEventListener('click', () => goToStep(3));
+  document.getElementById('btn-restart')?.addEventListener('click', () => {
+    selectedSlug = '';
+    document.querySelectorAll('.problem-select-btn').forEach(b => {
+      b.classList.remove('border-primary-400', 'bg-primary-50');
+    });
+    goToStep(1);
+  });
+
+  // Init: set step 1 active
+  goToStep(1);
+</script>

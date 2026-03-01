@@ -3,12 +3,28 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import ProblemCard from '../../components/ProblemCard.astro';
 import { getCollection } from 'astro:content';
+import problemStats from '../../data/generated/problem-stats.json';
 
 const allProblems = await getCollection('problems');
 const problems = allProblems.sort((a, b) => a.data.order - b.data.order);
 
 const categories = [...new Set(problems.map(p => p.data.category))];
 const highCount = problems.filter(p => p.data.priority === 'high').length;
+
+// Map problem slugs to discussion counts from parser data
+const discussionCounts: Record<string, number> = {};
+for (const [subcat, count] of Object.entries(problemStats.discussionCounts as Record<string, number>)) {
+  const slugMap: Record<string, string> = {
+    parking: 'parking', skud: 'skud', water: 'communications', elevator: 'communications',
+    repair: 'repair', territory: 'territory', cameras: 'video', security: 'security',
+    uk: 'management-quality', fees: 'capital-repair', cleaning: 'territory',
+    intercom: 'skud', lighting: 'territory',
+  };
+  const slug = slugMap[subcat];
+  if (slug) {
+    discussionCounts[slug] = (discussionCounts[slug] || 0) + count;
+  }
+}
 ---
 
 <BaseLayout title="Проблемы" description="Каталог проблем ЖК Skandi Klubb — безопасность, технические, финансовые, организационные">
@@ -57,6 +73,7 @@ const highCount = problems.filter(p => p.data.priority === 'high').length;
                     problem.data.status === 'preparing' ? 'Подготовка' :
                     problem.data.status === 'investigation' ? 'Требуются изыскания' : 'Готово'}
             summary={problem.data.summary}
+            discussionCount={discussionCounts[problem.id]}
           />
         </div>
       ))}

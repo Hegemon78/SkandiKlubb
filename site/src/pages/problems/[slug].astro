@@ -4,6 +4,8 @@ import PageHeader from '../../components/PageHeader.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import { getCollection, render } from 'astro:content';
 import { problemLawLinks } from '../../data/rights';
+import problemStats from '../../data/generated/problem-stats.json';
+import solutionsData from '../../data/generated/solutions.json';
 
 export async function getStaticPaths() {
   const problems = await getCollection('problems');
@@ -16,6 +18,40 @@ export async function getStaticPaths() {
 const { problem } = Astro.props;
 const { Content } = await render(problem);
 const lawLink = problemLawLinks.find(l => l.problemSlug === problem.id);
+
+// Find matching parser data for this problem slug
+const slugToSubcats: Record<string, string[]> = {
+  parking: ['parking'],
+  skud: ['skud', 'intercom'],
+  communications: ['water', 'elevator'],
+  repair: ['repair'],
+  territory: ['territory', 'cleaning', 'lighting'],
+  video: ['cameras'],
+  security: ['security'],
+  'management-quality': ['uk'],
+  'capital-repair': ['fees'],
+};
+const matchingSubcats = slugToSubcats[problem.id] || [];
+
+// Collect quotes from matching subcategories
+const quotes: string[] = [];
+const discussionCount = matchingSubcats.reduce((acc, subcat) => {
+  return acc + ((problemStats.discussionCounts as Record<string, number>)[subcat] || 0);
+}, 0);
+
+for (const stat of (problemStats.bySubcategory as any[])) {
+  if (matchingSubcats.includes(stat.subcategory) && stat.quotes) {
+    quotes.push(...stat.quotes);
+  }
+}
+
+// Collect solutions
+const solutions: Array<{text: string; date: string | null}> = [];
+for (const sol of (solutionsData as any[])) {
+  if (matchingSubcats.includes(sol.subcategory) && sol.items) {
+    solutions.push(...sol.items.slice(0, 5));
+  }
+}
 
 const priorityLabels = {
   high: 'Высокий',
@@ -71,6 +107,44 @@ const priorityColors = {
           <Content />
         </article>
 
+        <!-- Resident quotes -->
+        {quotes.length > 0 && (
+          <div class="mt-12 pt-8 border-t border-accent-200">
+            <h2 class="text-xl font-bold text-primary-950 mb-1">Что говорят жители</h2>
+            <p class="text-sm text-accent-500 mb-6">
+              Обсуждалось {discussionCount.toLocaleString('ru-RU')} раз в Telegram-чатах
+            </p>
+            <div class="space-y-3">
+              {quotes.slice(0, 5).map(quote => (
+                <blockquote class="border-l-4 border-primary-200 pl-4 py-2 text-sm text-accent-700 bg-accent-50 rounded-r-lg">
+                  {quote}
+                </blockquote>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Solutions -->
+        {solutions.length > 0 && (
+          <div class="mt-10 pt-8 border-t border-accent-200">
+            <h2 class="text-xl font-bold text-primary-950 mb-4">Решения и результаты</h2>
+            <div class="space-y-3">
+              {solutions.slice(0, 5).map(sol => (
+                <div class="flex gap-3 p-3 bg-green-50 rounded-lg border border-green-100">
+                  <svg class="w-5 h-5 text-green-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke-width="2" stroke-linecap="round"/>
+                    <path d="m9 11 3 3L22 4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <div>
+                    <p class="text-sm text-accent-700">{sol.text}</p>
+                    {sol.date && <span class="text-xs text-accent-400 mt-1 block">{sol.date}</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <!-- Back link -->
         <div class="mt-12 pt-6 border-t border-accent-200">
           <a href="/problems" class="inline-flex items-center gap-2 text-primary-600 hover:text-primary-800 font-medium transition-colors">
@@ -84,6 +158,12 @@ const priorityColors = {
       <aside class="hidden lg:block">
         <div class="sticky top-24 bg-white rounded-2xl border border-accent-200 p-5 space-y-4">
           <h4 class="text-sm font-semibold text-accent-500 uppercase tracking-wider">Информация</h4>
+          {discussionCount > 0 && (
+            <div class="bg-primary-50 rounded-lg p-3 text-center">
+              <div class="text-2xl font-bold text-primary-700">{discussionCount.toLocaleString('ru-RU')}</div>
+              <div class="text-xs text-primary-500">упоминаний в чатах</div>
+            </div>
+          )}
           <div>
             <dt class="text-xs text-accent-400 mb-1">Категория</dt>
             <dd class="font-medium text-primary-950 text-sm">{problem.data.category}</dd>

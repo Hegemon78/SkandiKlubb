@@ -1,0 +1,240 @@
+[
+  {
+    "month": "2023-05",
+    "total": 68,
+    "problems": 2,
+    "faq": 18,
+    "solutions": 0
+  },
+  {
+    "month": "2023-06",
+    "total": 66,
+    "problems": 0,
+    "faq": 12,
+    "solutions": 0
+  },
+  {
+    "month": "2023-07",
+    "total": 47,
+    "problems": 1,
+    "faq": 9,
+    "solutions": 0
+  },
+  {
+    "month": "2023-08",
+    "total": 12,
+    "problems": 0,
+    "faq": 2,
+    "solutions": 0
+  },
+  {
+    "month": "2023-09",
+    "total": 300,
+    "problems": 10,
+    "faq": 67,
+    "solutions": 0
+  },
+  {
+    "month": "2023-10",
+    "total": 53,
+    "problems": 1,
+    "faq": 15,
+    "solutions": 0
+  },
+  {
+    "month": "2023-11",
+    "total": 38,
+    "problems": 0,
+    "faq": 10,
+    "solutions": 0
+  },
+  {
+    "month": "2023-12",
+    "total": 670,
+    "problems": 21,
+    "faq": 146,
+    "solutions": 1
+  },
+  {
+    "month": "2024-01",
+    "total": 961,
+    "problems": 52,
+    "faq": 210,
+    "solutions": 7
+  },
+  {
+    "month": "2024-02",
+    "total": 525,
+    "problems": 22,
+    "faq": 123,
+    "solutions": 6
+  },
+  {
+    "month": "2024-03",
+    "total": 1149,
+    "problems": 20,
+    "faq": 259,
+    "solutions": 7
+  },
+  {
+    "month": "2024-04",
+    "total": 1826,
+    "problems": 32,
+    "faq": 362,
+    "solutions": 7
+  },
+  {
+    "month": "2024-05",
+    "total": 2214,
+    "problems": 61,
+    "faq": 500,
+    "solutions": 10
+  },
+  {
+    "month": "2024-06",
+    "total": 1817,
+    "problems": 37,
+    "faq": 395,
+    "solutions": 7
+  },
+  {
+    "month": "2024-07",
+    "total": 2052,
+    "problems": 43,
+    "faq": 471,
+    "solutions": 6
+  },
+  {
+    "month": "2024-08",
+    "total": 2104,
+    "problems": 58,
+    "faq": 449,
+    "solutions": 8
+  },
+  {
+    "month": "2024-09",
+    "total": 1754,
+    "problems": 24,
+    "faq": 316,
+    "solutions": 9
+  },
+  {
+    "month": "2024-10",
+    "total": 1231,
+    "problems": 27,
+    "faq": 250,
+    "solutions": 13
+  },
+  {
+    "month": "2024-11",
+    "total": 964,
+    "problems": 28,
+    "faq": 166,
+    "solutions": 3
+  },
+  {
+    "month": "2024-12",
+    "total": 831,
+    "problems": 23,
+    "faq": 163,
+    "solutions": 12
+  },
+  {
+    "month": "2025-01",
+    "total": 724,
+    "problems": 25,
+    "faq": 140,
+    "solutions": 3
+  },
+  {
+    "month": "2025-02",
+    "total": 983,
+    "problems": 27,
+    "faq": 196,
+    "solutions": 4
+  },
+  {
+    "month": "2025-03",
+    "total": 1154,
+    "problems": 17,
+    "faq": 229,
+    "solutions": 5
+  },
+  {
+    "month": "2025-04",
+    "total": 1507,
+    "problems": 34,
+    "faq": 314,
+    "solutions": 3
+  },
+  {
+    "month": "2025-05",
+    "total": 640,
+    "problems": 15,
+    "faq": 109,
+    "solutions": 7
+  },
+  {
+    "month": "2025-06",
+    "total": 1094,
+    "problems": 20,
+    "faq": 230,
+    "solutions": 8
+  },
+  {
+    "month": "2025-07",
+    "total": 633,
+    "problems": 19,
+    "faq": 141,
+    "solutions": 6
+  },
+  {
+    "month": "2025-08",
+    "total": 805,
+    "problems": 12,
+    "faq": 160,
+    "solutions": 4
+  },
+  {
+    "month": "2025-09",
+    "total": 577,
+    "problems": 18,
+    "faq": 144,
+    "solutions": 4
+  },
+  {
+    "month": "2025-10",
+    "total": 1219,
+    "problems": 25,
+    "faq": 275,
+    "solutions": 8
+  },
+  {
+    "month": "2025-11",
+    "total": 513,
+    "problems": 17,
+    "faq": 107,
+    "solutions": 5
+  },
+  {
+    "month": "2025-12",
+    "total": 1119,
+    "problems": 34,
+    "faq": 236,
+    "solutions": 10
+  },
+  {
+    "month": "2026-01",
+    "total": 529,
+    "problems": 25,
+    "faq": 113,
+    "solutions": 6
+  },
+  {
+    "month": "2026-02",
+    "total": 412,
+    "problems": 13,
+    "faq": 88,
+    "solutions": 8
+  }
+]

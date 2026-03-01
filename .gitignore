@@ -11,6 +11,7 @@
 data/chats/
 data/problems/
 data/templates/
+site/src/data/generated/contacts-services.json
 
 # Python
 __pycache__/

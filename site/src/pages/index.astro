@@ -10,11 +10,13 @@ import IconVote from '../components/icons/IconVote.astro';
 import IconFileText from '../components/icons/IconFileText.astro';
 import IconGavel from '../components/icons/IconGavel.astro';
 import IconScale from '../components/icons/IconScale.astro';
+import IconHelpCircle from '../components/icons/IconHelpCircle.astro';
 import IconPhone from '../components/icons/IconPhone.astro';
 import IconMail from '../components/icons/IconMail.astro';
 import IconClock from '../components/icons/IconClock.astro';
 import { house, managementCompany } from '../data/house';
 import { getCollection } from 'astro:content';
+import summary from '../data/generated/summary.json';
 
 const allProblems = await getCollection('problems');
 const problems = allProblems.sort((a, b) => a.data.order - b.data.order);
@@ -30,7 +32,7 @@ const topProblems = highPriority.slice(0, 3);
 
     <div class="relative max-w-6xl mx-auto px-4 text-center">
       <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur rounded-full px-4 py-1.5 text-sm text-primary-200 mb-6">
-        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+        <span class="w-2 h-2 rounded-full bg-primary-400"></span>
         Инициатива жителей
       </div>
 
@@ -39,14 +41,14 @@ const topProblems = highPriority.slice(0, 3);
       </h1>
       <p class="text-lg text-primary-200 mb-2 font-light">{house.address}</p>
       <p class="text-sm text-primary-400">
-        {problems.length} проблем зафиксировано &middot; {highPriority.length} высокий приоритет &middot; ОСС 2025 в подготовке
+        {summary.totalMessages.toLocaleString('ru-RU')} сообщений проанализировано &middot; {summary.faqCount.toLocaleString('ru-RU')} вопросов &middot; {problems.length} проблем
       </p>
     </div>
 
     <!-- Wave transition -->
     <div class="absolute bottom-0 left-0 right-0">
       <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
-        <path d="M0 60V30C240 8 480 0 720 15C960 30 1200 38 1440 22V60H0Z" fill="#fafaf8"/>
+        <path d="M0 60V30C240 8 480 0 720 15C960 30 1200 38 1440 22V60H0Z" fill="#FAFAF7"/>
       </svg>
     </div>
   </section>
@@ -66,8 +68,8 @@ const topProblems = highPriority.slice(0, 3);
         <IconAlertTriangle size={22} class="text-amber-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/complaints" title="Жалобы" description="Инстанции с контактами и эскалацией" fact="8 инстанций | от УК до суда">
-        <IconMegaphone size={22} class="text-red-500" />
+      <QuickLinkCard href="/faq" title="FAQ" description="Вопросы жителей из Telegram-чатов" fact={`${summary.faqCount.toLocaleString('ru-RU')} вопросов | ${(summary.topSubcategories as any[]).length} тем`}>
+        <IconHelpCircle size={22} class="text-primary-600" />
       </QuickLinkCard>
 
       <QuickLinkCard href="/contract" title="Договор" description="Текст договора с УК, чеклист обязательств" fact="12 разделов | 14 пунктов чеклиста">
@@ -82,8 +84,8 @@ const topProblems = highPriority.slice(0, 3);
         <IconVote size={22} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="#" title="Генератор жалоб" description="Скоро: автоматическая генерация документов" comingSoon={true}>
-        <IconFileText size={22} class="text-accent-400" />
+      <QuickLinkCard href="/generator" title="Генератор жалоб" description="Генерация обращений в инстанции" fact={`${problems.length} проблем | 8 инстанций`}>
+        <IconFileText size={22} class="text-primary-600" />
       </QuickLinkCard>
     </div>
   </section>

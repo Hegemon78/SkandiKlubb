@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import FaqCluster from '../components/FaqCluster.astro';
+import faqClusters from '../data/generated/faq-clusters.json';
+import summary from '../data/generated/summary.json';
+
+const totalQuestions = faqClusters.reduce((acc: number, c: any) => acc + c.count, 0);
+const subcategories = faqClusters.map((c: any) => c.subcategory);
+---
+
+<BaseLayout title="FAQ" description="Реальные вопросы жителей ЖК Skandi Klubb из Telegram-чатов — паркинг, СКУД, коммуникации, территория">
+  <PageHeader
+    title="Частые вопросы жителей"
+    description={`${totalQuestions.toLocaleString('ru-RU')} вопросов из Telegram-чатов собственников, сгруппированных по ${faqClusters.length} темам`}
+    breadcrumbs={[{ label: 'FAQ' }]}
+  />
+
+  <section class="max-w-6xl mx-auto px-4 py-12">
+    <!-- Summary -->
+    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 p-5 mb-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+      <span class="font-bold text-primary-950">{totalQuestions.toLocaleString('ru-RU')} вопросов</span>
+      <span class="text-accent-600">{faqClusters.length} тем</span>
+      <span class="text-accent-500">Источник: Telegram-чаты собственников</span>
+    </div>
+
+    <!-- Search -->
+    <div class="mb-6">
+      <div class="relative">
+        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8" stroke-width="2"/>
+          <path d="m21 21-4.35-4.35" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input
+          type="text"
+          id="faq-search"
+          placeholder="Поиск по вопросам..."
+          class="w-full pl-12 pr-4 py-3 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all"
+        />
+      </div>
+    </div>
+
+    <!-- Filter buttons -->
+    <div class="flex flex-wrap gap-2 mb-8">
+      <button
+        class="faq-filter-btn active px-4 py-2 rounded-full text-sm font-medium bg-primary-600 text-white transition-all duration-200"
+        data-subcategory="all"
+      >
+        Все ({faqClusters.length})
+      </button>
+      {faqClusters.map((c: any) => (
+        <button
+          class="faq-filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-accent-700 border border-accent-200 hover:border-primary-300 hover:text-primary-700 transition-all duration-200"
+          data-subcategory={c.subcategory}
+        >
+          {c.label} ({c.count})
+        </button>
+      ))}
+    </div>
+
+    <!-- No results message -->
+    <div id="no-results" class="hidden text-center py-12">
+      <p class="text-accent-500 text-lg">Ничего не найдено</p>
+      <p class="text-accent-400 text-sm mt-1">Попробуйте другой запрос</p>
+    </div>
+
+    <!-- FAQ clusters grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="faq-grid">
+      {faqClusters.map((cluster: any, i: number) => (
+        <div class="animate-fade-in" style={`transition-delay: ${i * 50}ms`}>
+          <FaqCluster
+            subcategory={cluster.subcategory}
+            label={cluster.label}
+            count={cluster.count}
+            problemSlug={cluster.problemSlug}
+            questions={cluster.questions}
+          />
+        </div>
+      ))}
+    </div>
+
+    <!-- Data source note -->
+    <div class="mt-12 text-center text-sm text-accent-400">
+      <p>Данные получены из анализа {summary.totalMessages.toLocaleString('ru-RU')} сообщений Telegram-чатов</p>
+      <p>Период: {summary.dateRange?.from} — {summary.dateRange?.to}</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Filter by subcategory
+  const filterBtns = document.querySelectorAll('.faq-filter-btn');
+  const clusters = document.querySelectorAll('.faq-cluster');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const subcat = (btn as HTMLElement).dataset.subcategory;
+
+      filterBtns.forEach(b => {
+        b.classList.remove('active', 'bg-primary-600', 'text-white');
+        b.classList.add('bg-white', 'text-accent-700', 'border', 'border-accent-200');
+      });
+      btn.classList.add('active', 'bg-primary-600', 'text-white');
+      btn.classList.remove('bg-white', 'text-accent-700', 'border', 'border-accent-200');
+
+      let visibleCount = 0;
+      clusters.forEach(cluster => {
+        const parent = cluster.closest('.animate-fade-in') as HTMLElement;
+        if (!parent) return;
+        if (subcat === 'all' || (cluster as HTMLElement).dataset.subcategory === subcat) {
+          parent.style.display = '';
+          visibleCount++;
+        } else {
+          parent.style.display = 'none';
+        }
+      });
+
+      const noResults = document.getElementById('no-results');
+      if (noResults) noResults.classList.toggle('hidden', visibleCount > 0);
+    });
+  });
+
+  // Text search
+  const searchInput = document.getElementById('faq-search') as HTMLInputElement;
+  searchInput?.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase().trim();
+
+    // Reset filter buttons
+    filterBtns.forEach(b => {
+      b.classList.remove('active', 'bg-primary-600', 'text-white');
+      b.classList.add('bg-white', 'text-accent-700', 'border', 'border-accent-200');
+    });
+    const allBtn = document.querySelector('[data-subcategory="all"]');
+    allBtn?.classList.add('active', 'bg-primary-600', 'text-white');
+    allBtn?.classList.remove('bg-white', 'text-accent-700', 'border', 'border-accent-200');
+
+    let visibleCount = 0;
+    clusters.forEach(cluster => {
+      const parent = cluster.closest('.animate-fade-in') as HTMLElement;
+      if (!parent) return;
+
+      if (!query) {
+        parent.style.display = '';
+        // Show all questions
+        cluster.querySelectorAll('li').forEach(li => {
+          (li as HTMLElement).style.display = '';
+        });
+        visibleCount++;
+        return;
+      }
+
+      let hasMatch = false;
+      cluster.querySelectorAll('li').forEach(li => {
+        const text = li.textContent?.toLowerCase() || '';
+        const matches = text.includes(query);
+        (li as HTMLElement).style.display = matches ? '' : 'none';
+        if (matches) hasMatch = true;
+      });
+
+      // Also check cluster title
+      const title = cluster.querySelector('h3')?.textContent?.toLowerCase() || '';
+      if (title.includes(query)) hasMatch = true;
+
+      parent.style.display = hasMatch ? '' : 'none';
+      if (hasMatch) visibleCount++;
+    });
+
+    const noResults = document.getElementById('no-results');
+    if (noResults) noResults.classList.toggle('hidden', visibleCount > 0);
+  });
+</script>

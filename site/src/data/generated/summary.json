@@ -1,0 +1,43 @@
+{
+  "totalMessages": 30591,
+  "faqCount": 6425,
+  "problemCount": 763,
+  "solutionCount": 177,
+  "topSubcategories": [
+    {
+      "subcategory": "territory",
+      "label": "Территория и благоустройство",
+      "count": 1350,
+      "problemSlug": "territory"
+    },
+    {
+      "subcategory": "parking",
+      "label": "Паркинг и кладовки",
+      "count": 924,
+      "problemSlug": "parking"
+    },
+    {
+      "subcategory": "uk",
+      "label": "Управляющая компания",
+      "count": 780,
+      "problemSlug": "management-quality"
+    },
+    {
+      "subcategory": "oss",
+      "label": "Общие собрания (ОСС)",
+      "count": 759,
+      "problemSlug": null
+    },
+    {
+      "subcategory": "skud",
+      "label": "СКУД и ворота",
+      "count": 732,
+      "problemSlug": "skud"
+    }
+  ],
+  "dateRange": {
+    "from": "2023-05-17",
+    "to": "2026-02-28"
+  },
+  "exportedAt": "2026-03-01T11:29:29"
+}
