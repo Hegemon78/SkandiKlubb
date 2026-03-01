@@ -13,10 +13,10 @@ export const house = {
   elevators: 31,
   floors: '2-11 этажей (разные секции)',
   queues: [
-    { number: 1, entrances: '1-8' },
-    { number: 2, entrances: '9-16' },
-    { number: 3, entrances: '17-25' },
-    { number: 4, entrances: '26-31' },
+    { number: 1, entrances: '1-8', count: 8, floors: '2-11', approxApartments: '~320' },
+    { number: 2, entrances: '9-16', count: 8, floors: '2-11', approxApartments: '~320' },
+    { number: 3, entrances: '17-25', count: 9, floors: '2-9', approxApartments: '~340' },
+    { number: 4, entrances: '26-31', count: 6, floors: '2-9', approxApartments: '~242' },
   ],
   facilities: [
     { type: 'Нежилые помещения', description: 'Магазины на 1 этаже' },

@@ -1,19 +1,30 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import QuickLinkCard from '../components/QuickLinkCard.astro';
+import ProblemMiniCard from '../components/ProblemMiniCard.astro';
 import IconHome from '../components/icons/IconHome.astro';
 import IconBuilding from '../components/icons/IconBuilding.astro';
 import IconAlertTriangle from '../components/icons/IconAlertTriangle.astro';
 import IconMegaphone from '../components/icons/IconMegaphone.astro';
 import IconVote from '../components/icons/IconVote.astro';
 import IconFileText from '../components/icons/IconFileText.astro';
-import { house } from '../data/house';
+import IconGavel from '../components/icons/IconGavel.astro';
+import IconScale from '../components/icons/IconScale.astro';
+import IconPhone from '../components/icons/IconPhone.astro';
+import IconMail from '../components/icons/IconMail.astro';
+import IconClock from '../components/icons/IconClock.astro';
+import { house, managementCompany } from '../data/house';
+import { getCollection } from 'astro:content';
+
+const allProblems = await getCollection('problems');
+const problems = allProblems.sort((a, b) => a.data.order - b.data.order);
+const highPriority = problems.filter(p => p.data.priority === 'high');
+const topProblems = highPriority.slice(0, 3);
 ---
 
 <BaseLayout title="Главная" description="Информационный портал для жителей ЖК Skandi Klubb — Аптекарский проспект, 18" transparentHeader={true}>
-  <!-- Hero -->
-  <section class="relative bg-primary-950 text-white pt-24 pb-28 overflow-hidden">
-    <!-- Background gradient -->
+  <!-- Hero — compact -->
+  <section class="relative bg-primary-950 text-white pt-24 pb-20 overflow-hidden">
     <div class="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-950 to-primary-900"></div>
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--color-primary-700)_0%,_transparent_50%)] opacity-40"></div>
 
@@ -23,85 +34,121 @@ import { house } from '../data/house';
         Инициатива жителей
       </div>
 
-      <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-4 tracking-tight">
+      <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-3 tracking-tight">
         Skandi Klubb
       </h1>
-      <p class="text-xl md:text-2xl text-primary-200 mb-2 font-light">{house.address}</p>
-      <p class="text-primary-300">Информационный портал для жителей</p>
-
-      <!-- Stats -->
-      <div class="grid grid-cols-3 gap-4 max-w-md mx-auto mt-12">
-        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-          <div class="text-3xl md:text-4xl font-extrabold">{house.apartments}</div>
-          <div class="text-sm text-primary-300 mt-1">квартир</div>
-        </div>
-        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-          <div class="text-3xl md:text-4xl font-extrabold">{house.entrances}</div>
-          <div class="text-sm text-primary-300 mt-1">подъездов</div>
-        </div>
-        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
-          <div class="text-3xl md:text-4xl font-extrabold">9+</div>
-          <div class="text-sm text-primary-300 mt-1">проблем</div>
-        </div>
-      </div>
+      <p class="text-lg text-primary-200 mb-2 font-light">{house.address}</p>
+      <p class="text-sm text-primary-400">
+        {problems.length} проблем зафиксировано &middot; {highPriority.length} высокий приоритет &middot; ОСС 2025 в подготовке
+      </p>
     </div>
 
     <!-- Wave transition -->
     <div class="absolute bottom-0 left-0 right-0">
-      <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
-        <path d="M0 80V40C240 10 480 0 720 20C960 40 1200 50 1440 30V80H0Z" fill="#fafaf8"/>
+      <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+        <path d="M0 60V30C240 8 480 0 720 15C960 30 1200 38 1440 22V60H0Z" fill="#fafaf8"/>
       </svg>
     </div>
   </section>
 
-  <!-- Quick links -->
-  <section class="max-w-6xl mx-auto px-4 -mt-6 relative z-10">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <QuickLinkCard href="/about" title="О доме" description="Адрес, структура, 4 очереди, парадные, площадь">
+  <!-- Quick links with facts -->
+  <section class="max-w-6xl mx-auto px-4 -mt-4 relative z-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <QuickLinkCard href="/about" title="Дом" description="Паспорт здания, структура, очереди" fact={`4 очереди, ${house.entrances} парадных`}>
         <IconHome size={22} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/management" title="Управляющая компания" description="ЭКВИДА-СЕРВИС: реквизиты, контакты, режим работы">
+      <QuickLinkCard href="/management" title="УК" description="ЭКВИДА-СЕРВИС: контакты, обязанности" fact={managementCompany.phone}>
         <IconBuilding size={22} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/problems" title="Проблемы" description="9 категорий проблем с подробным описанием и статусами">
+      <QuickLinkCard href="/problems" title="Проблемы" description="Каталог проблем с описанием и статусами" fact={`${problems.length} проблем | ${highPriority.length} критических`}>
         <IconAlertTriangle size={22} class="text-amber-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/complaints" title="Куда жаловаться" description="8 инстанций с контактами и порядком эскалации">
+      <QuickLinkCard href="/complaints" title="Жалобы" description="Инстанции с контактами и эскалацией" fact="8 инстанций | от УК до суда">
         <IconMegaphone size={22} class="text-red-500" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/oss" title="ОСС 2025" description="Проект повестки, 13 вопросов, кворумы, статусы">
+      <QuickLinkCard href="/contract" title="Договор" description="Текст договора с УК, чеклист обязательств" fact="12 разделов | 14 пунктов чеклиста">
+        <IconGavel size={22} class="text-primary-600" />
+      </QuickLinkCard>
+
+      <QuickLinkCard href="/rights" title="Ваши права" description="Кворум, реестр, законодательная база" fact="12 законов | таблица кворумов">
+        <IconScale size={22} class="text-primary-600" />
+      </QuickLinkCard>
+
+      <QuickLinkCard href="/oss" title="ОСС 2025" description="Проект повестки, кворумы, статусы" fact="13 вопросов в 4 блоках">
         <IconVote size={22} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="#" title="Генератор жалоб" description="Скоро: автоматическая генерация документов для инстанций" comingSoon={true}>
+      <QuickLinkCard href="#" title="Генератор жалоб" description="Скоро: автоматическая генерация документов" comingSoon={true}>
         <IconFileText size={22} class="text-accent-400" />
       </QuickLinkCard>
     </div>
   </section>
 
-  <!-- About section -->
-  <section class="max-w-5xl mx-auto px-4 py-20">
+  <!-- Top problems -->
+  <section class="max-w-6xl mx-auto px-4 py-16">
     <div class="animate-fade-in">
-      <div class="flex items-center gap-3 mb-6">
-        <div class="h-px flex-1 bg-accent-200"></div>
-        <h2 class="text-2xl font-bold text-primary-950">О проекте</h2>
-        <div class="h-px flex-1 bg-accent-200"></div>
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-primary-950">Приоритетные проблемы</h2>
+        <a href="/problems" class="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors inline-flex items-center gap-1">
+          Все проблемы
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
       </div>
-      <div class="max-w-3xl mx-auto text-center">
-        <p class="text-accent-600 leading-relaxed text-lg">
-          Этот портал создан инициативной группой жителей ЖК Skandi Klubb для решения
-          общих проблем дома. Здесь собрана информация о выявленных проблемах, контактах
-          инстанций для подачи жалоб и материалы для подготовки общего собрания собственников.
-        </p>
-        <p class="text-accent-600 leading-relaxed text-lg mt-4">
-          Наша цель — обеспечить прозрачность управления домом, зафиксировать и решить
-          комплекс проблем с управляющей компанией, и включить в повестку ОСС необходимые
-          вопросы.
-        </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {topProblems.map(p => (
+          <ProblemMiniCard
+            title={p.data.title}
+            slug={p.id}
+            category={p.data.category}
+            summary={p.data.summary}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick contacts -->
+  <section class="max-w-6xl mx-auto px-4 pb-16">
+    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 p-6">
+      <h2 class="text-lg font-bold text-primary-950 mb-4">Контакты диспетчерской УК</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <a
+          href={`tel:${managementCompany.phone.replace(/[^\d+]/g, '')}`}
+          class="flex items-center gap-3 text-sm text-accent-700 hover:text-primary-700 transition-colors"
+        >
+          <div class="w-9 h-9 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
+            <IconPhone size={18} class="text-primary-600" />
+          </div>
+          <div>
+            <div class="text-xs text-accent-500">Диспетчер</div>
+            <div class="font-semibold">{managementCompany.phone}</div>
+          </div>
+        </a>
+        <a
+          href={`mailto:${managementCompany.email}`}
+          class="flex items-center gap-3 text-sm text-accent-700 hover:text-primary-700 transition-colors"
+        >
+          <div class="w-9 h-9 rounded-lg bg-accent-50 flex items-center justify-center shrink-0">
+            <IconMail size={18} class="text-accent-600" />
+          </div>
+          <div>
+            <div class="text-xs text-accent-500">Email</div>
+            <div class="font-semibold">{managementCompany.email}</div>
+          </div>
+        </a>
+        <div class="flex items-center gap-3 text-sm text-accent-700">
+          <div class="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
+            <IconClock size={18} class="text-amber-600" />
+          </div>
+          <div>
+            <div class="text-xs text-accent-500">Приём граждан</div>
+            <div class="font-semibold">Чт, 09:00-16:00</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>

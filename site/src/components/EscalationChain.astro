@@ -1,0 +1,44 @@
+---
+interface Props {
+  steps: string[];
+}
+
+const { steps } = Astro.props;
+---
+
+<!-- Desktop: horizontal chain -->
+<div class="hidden md:flex items-center gap-0">
+  {steps.map((step, i) => (
+    <div class="flex items-center">
+      <div class="flex items-center gap-3 bg-white rounded-xl border border-accent-200 px-4 py-3 min-w-[180px]">
+        <div class="w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center text-sm font-bold shrink-0">
+          {i + 1}
+        </div>
+        <span class="text-sm text-accent-700 leading-snug">{step}</span>
+      </div>
+      {i < steps.length - 1 && (
+        <div class="shrink-0 px-1">
+          <svg class="w-6 h-6 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M5 12h14" stroke-width="2" stroke-linecap="round"/>
+            <path d="m12 5 7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      )}
+    </div>
+  ))}
+</div>
+
+<!-- Mobile: vertical chain -->
+<div class="md:hidden relative">
+  <div class="absolute left-[15px] top-4 bottom-4 w-0.5 bg-gradient-to-b from-primary-400 via-primary-500 to-primary-600 rounded-full"></div>
+  <div class="space-y-4">
+    {steps.map((step, i) => (
+      <div class="flex items-start gap-4 relative">
+        <div class="w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center text-sm font-bold shrink-0 z-10 shadow-sm">
+          {i + 1}
+        </div>
+        <p class="text-sm text-accent-700 pt-1.5 leading-relaxed">{step}</p>
+      </div>
+    ))}
+  </div>
+</div>

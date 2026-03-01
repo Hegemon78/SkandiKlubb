@@ -3,11 +3,12 @@ interface Props {
   href: string;
   title: string;
   description: string;
+  fact?: string;
   iconColor?: string;
   comingSoon?: boolean;
 }
 
-const { href, title, description, iconColor = 'text-primary-600', comingSoon = false } = Astro.props;
+const { href, title, description, fact, iconColor = 'text-primary-600', comingSoon = false } = Astro.props;
 ---
 
 {comingSoon ? (
@@ -31,6 +32,9 @@ const { href, title, description, iconColor = 'text-primary-600', comingSoon = f
     <div class="min-w-0">
       <h3 class="text-lg font-bold text-primary-950 mb-1 group-hover:text-primary-600 transition-colors">{title}</h3>
       <p class="text-sm text-accent-600">{description}</p>
+      {fact && (
+        <p class="text-xs text-primary-600 font-medium mt-2">{fact}</p>
+      )}
     </div>
   </a>
 )}

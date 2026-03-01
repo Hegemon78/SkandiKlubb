@@ -1,23 +1,90 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
+import StatBar from '../components/StatBar.astro';
+import DetailsBlock from '../components/DetailsBlock.astro';
 import { house } from '../data/house';
 ---
 
-<BaseLayout title="О доме" description="Информация о доме ЖК Skandi Klubb — адрес, структура, площадь, застройщик">
+<BaseLayout title="Дом" description="Паспорт дома ЖК Skandi Klubb — структура, очереди, площадь, застройщик">
   <PageHeader
-    title="О доме"
-    description="Основная информация о здании, структура и дополнительные помещения"
-    breadcrumbs={[{ label: 'О доме' }]}
+    title="Паспорт дома"
+    description="ЖК Skandi Klubb — основные характеристики, структура и инфраструктура"
+    breadcrumbs={[{ label: 'Дом' }]}
   />
 
   <section class="max-w-5xl mx-auto px-4 py-12">
-    <!-- Main info -->
+    <!-- Stat bar -->
+    <div class="animate-fade-in mb-8">
+      <StatBar stats={[
+        { value: house.apartments, label: 'квартир' },
+        { value: house.entrances, label: 'парадных' },
+        { value: 4, label: 'очереди' },
+        { value: house.elevators, label: 'лифтов' },
+        { value: house.yearBuilt, label: 'год постройки' },
+      ]} />
+    </div>
+
+    <!-- Queues -->
     <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden mb-8">
       <div class="px-6 py-4 border-b border-accent-100">
-        <h2 class="text-xl font-bold text-primary-950">Основная информация</h2>
+        <h2 class="text-xl font-bold text-primary-950">Структура дома (4 очереди)</h2>
+        <p class="text-sm text-accent-600 mt-1">
+          Дом фактически состоит из 4 корпусов (очередей) под одним адресом.
+        </p>
       </div>
       <div class="p-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {house.queues.map(q => (
+            <div class="rounded-xl border-l-4 border-primary-500 bg-primary-50/50 p-5">
+              <div class="text-lg font-bold text-primary-800 mb-2">{q.number} очередь</div>
+              <dl class="space-y-1.5 text-sm">
+                <div class="flex justify-between">
+                  <dt class="text-accent-500">Парадные</dt>
+                  <dd class="font-medium text-primary-950">{q.entrances}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt class="text-accent-500">Кол-во</dt>
+                  <dd class="font-medium text-primary-950">{q.count} шт.</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt class="text-accent-500">Этажи</dt>
+                  <dd class="font-medium text-primary-950">{q.floors}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt class="text-accent-500">Квартиры</dt>
+                  <dd class="font-medium text-primary-950">{q.approxApartments}</dd>
+                </div>
+              </dl>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Facilities -->
+    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden mb-8">
+      <div class="px-6 py-4 border-b border-accent-100">
+        <h2 class="text-xl font-bold text-primary-950">Дополнительные помещения</h2>
+      </div>
+      <div class="p-6">
+        <div class="space-y-4">
+          {house.facilities.map(f => (
+            <div class="flex items-start gap-3">
+              <div class="w-2 h-2 rounded-full bg-primary-500 mt-2 shrink-0"></div>
+              <div>
+                <span class="font-medium text-primary-950">{f.type}</span>
+                <span class="text-accent-600"> — {f.description}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Details: requisites -->
+    <div class="animate-fade-in">
+      <DetailsBlock summary="Реквизиты и справочные данные">
         <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
           <div>
             <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Адрес</dt>
@@ -30,10 +97,6 @@ import { house } from '../data/house';
           <div>
             <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Застройщик</dt>
             <dd class="font-medium text-primary-950">{house.developer}</dd>
-          </div>
-          <div>
-            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Год постройки</dt>
-            <dd class="font-medium text-primary-950">{house.yearBuilt}</dd>
           </div>
           <div>
             <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Район</dt>
@@ -58,59 +121,11 @@ import { house } from '../data/house';
             </dd>
           </div>
           <div>
-            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Подъездов (парадных)</dt>
-            <dd class="font-medium text-primary-950">{house.entrances}</dd>
-          </div>
-          <div>
-            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Лифтов</dt>
-            <dd class="font-medium text-primary-950">{house.elevators}</dd>
-          </div>
-          <div>
             <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Этажность</dt>
             <dd class="font-medium text-primary-950">{house.floors}</dd>
           </div>
         </dl>
-      </div>
-    </div>
-
-    <!-- Structure -->
-    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden mb-8">
-      <div class="px-6 py-4 border-b border-accent-100">
-        <h2 class="text-xl font-bold text-primary-950">Структура дома (4 очереди)</h2>
-      </div>
-      <div class="p-6">
-        <p class="text-sm text-accent-600 mb-5">
-          Дом фактически состоит из 4 корпусов (очередей) под одним адресом.
-        </p>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {house.queues.map(q => (
-            <div class="rounded-xl border-l-4 border-primary-500 bg-primary-50/50 p-4">
-              <div class="text-lg font-bold text-primary-800">{q.number} очередь</div>
-              <div class="text-sm text-accent-600 mt-1">Парадные {q.entrances}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-
-    <!-- Facilities -->
-    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden">
-      <div class="px-6 py-4 border-b border-accent-100">
-        <h2 class="text-xl font-bold text-primary-950">Дополнительные помещения</h2>
-      </div>
-      <div class="p-6">
-        <div class="space-y-4">
-          {house.facilities.map(f => (
-            <div class="flex items-start gap-3">
-              <div class="w-2 h-2 rounded-full bg-primary-500 mt-2 shrink-0"></div>
-              <div>
-                <span class="font-medium text-primary-950">{f.type}</span>
-                <span class="text-accent-600"> — {f.description}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      </DetailsBlock>
     </div>
   </section>
 </BaseLayout>

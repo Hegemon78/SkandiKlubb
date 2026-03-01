@@ -21,7 +21,10 @@ interface Props {
 const { step, name, description, phone, email, address, url, deadline, basis } = Astro.props;
 ---
 
-<div class="bg-white rounded-2xl border border-accent-200 p-6 relative hover:shadow-md transition-all duration-300">
+<div class:list={[
+  'bg-white rounded-2xl p-6 relative hover:shadow-md transition-all duration-300',
+  (email?.startsWith('TODO') || address?.startsWith('TODO')) ? 'border-2 border-dashed border-accent-300' : 'border border-accent-200'
+]}>
   <div class="absolute -top-3 -left-2 w-8 h-8 bg-primary-600 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-md">
     {step}
   </div>

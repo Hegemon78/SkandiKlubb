@@ -1,37 +1,30 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
+import EscalationChain from '../components/EscalationChain.astro';
 import InstanceCard from '../components/InstanceCard.astro';
 import IconInfo from '../components/icons/IconInfo.astro';
 import { instances, escalationSteps } from '../data/instances';
 ---
 
-<BaseLayout title="Куда жаловаться" description="Реестр инстанций Санкт-Петербурга для подачи жалоб на управляющую компанию">
+<BaseLayout title="Жалобы" description="Реестр инстанций Санкт-Петербурга для подачи жалоб на управляющую компанию">
   <PageHeader
     title="Куда жаловаться"
     description="Реестр инстанций Санкт-Петербурга. Район: Петроградский."
-    breadcrumbs={[{ label: 'Куда жаловаться' }]}
+    breadcrumbs={[{ label: 'Жалобы' }]}
   />
 
   <section class="max-w-5xl mx-auto px-4 py-12">
-    <!-- Escalation timeline -->
+    <!-- Summary -->
+    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 p-5 mb-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+      <span class="font-bold text-primary-950">{instances.length} инстанций</span>
+      <span class="text-accent-600">от 10 до 30 дней на ответ</span>
+    </div>
+
+    <!-- Escalation chain -->
     <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 p-6 md:p-8 mb-12">
       <h2 class="text-xl font-bold text-primary-950 mb-6">Порядок эскалации</h2>
-      <div class="relative">
-        <!-- Vertical line -->
-        <div class="absolute left-[15px] top-4 bottom-4 w-0.5 bg-gradient-to-b from-primary-400 via-primary-500 to-primary-600 rounded-full"></div>
-
-        <div class="space-y-5">
-          {escalationSteps.map((step, i) => (
-            <div class="flex items-start gap-4 relative">
-              <div class="w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center text-sm font-bold shrink-0 z-10 shadow-sm">
-                {i + 1}
-              </div>
-              <p class="text-accent-700 pt-1 leading-relaxed">{step}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+      <EscalationChain steps={escalationSteps} />
     </div>
 
     <!-- Instances -->

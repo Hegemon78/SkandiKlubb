@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
+import ProgressBar from '../components/ProgressBar.astro';
 import IconInfo from '../components/icons/IconInfo.astro';
 import { ossBlocks, quorumTable, currentSituation, statusLabels } from '../data/oss';
 
@@ -17,6 +18,9 @@ const statusDots: Record<string, string> = {
   investigation: 'bg-purple-400',
   waiting: 'bg-orange-400',
 };
+
+const totalQuestions = ossBlocks.reduce((sum, b) => sum + b.questions.length, 0);
+const readyQuestions = ossBlocks.reduce((sum, b) => sum + b.questions.filter(q => q.status === 'preparing').length, 0);
 ---
 
 <BaseLayout title="ОСС 2025" description="Проект повестки общего собрания собственников ЖК Skandi Klubb 2025">
@@ -27,6 +31,11 @@ const statusDots: Record<string, string> = {
   />
 
   <section class="max-w-5xl mx-auto px-4 py-12">
+    <!-- Progress -->
+    <div class="animate-fade-in mb-8">
+      <ProgressBar current={readyQuestions} total={totalQuestions} label="Подготовка вопросов" />
+    </div>
+
     <!-- Current situation -->
     <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 p-6 mb-8">
       <h2 class="text-lg font-bold text-primary-950 mb-4">Текущая ситуация</h2>

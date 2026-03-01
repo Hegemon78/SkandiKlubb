@@ -1,0 +1,20 @@
+---
+interface Props {
+  summary: string;
+  open?: boolean;
+}
+
+const { summary, open = false } = Astro.props;
+---
+
+<details class="group bg-white rounded-2xl border border-accent-200 overflow-hidden" open={open}>
+  <summary class="px-6 py-4 cursor-pointer select-none flex items-center justify-between hover:bg-accent-50 transition-colors">
+    <h2 class="text-xl font-bold text-primary-950">{summary}</h2>
+    <svg class="w-5 h-5 text-accent-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path d="m6 9 6 6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </summary>
+  <div class="px-6 pb-6 border-t border-accent-100 pt-4">
+    <slot />
+  </div>
+</details>

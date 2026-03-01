@@ -1,57 +1,30 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
+import DetailsBlock from '../components/DetailsBlock.astro';
 import IconPhone from '../components/icons/IconPhone.astro';
 import IconMail from '../components/icons/IconMail.astro';
 import IconClock from '../components/icons/IconClock.astro';
 import { managementCompany } from '../data/house';
+import { managementDuties, statusLabels, statusColors } from '../data/management-duties';
+import { getCollection } from 'astro:content';
+
+const allProblems = await getCollection('problems');
+const orgProblems = allProblems
+  .filter(p => p.data.category === 'Организационные')
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
 ---
 
-<BaseLayout title="Управляющая компания" description="ООО ЭКВИДА-СЕРВИС — реквизиты, контакты, режим работы">
+<BaseLayout title="Управляющая компания" description="ООО ЭКВИДА-СЕРВИС — контакты, обязанности, режим работы">
   <PageHeader
     title="Управляющая компания"
-    description="ООО «ЭКВИДА-СЕРВИС» — реквизиты, контакты, режим работы"
+    description="ООО «ЭКВИДА-СЕРВИС» — контакты, обязанности по договору, режим работы"
     breadcrumbs={[{ label: 'Управляющая компания' }]}
   />
 
   <section class="max-w-5xl mx-auto px-4 py-12">
-    <!-- Company info -->
-    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden mb-8">
-      <div class="px-6 py-4 border-b border-accent-100">
-        <h2 class="text-xl font-bold text-primary-950">{managementCompany.name}</h2>
-      </div>
-      <div class="p-6">
-        <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
-          <div>
-            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">ИНН</dt>
-            <dd class="font-medium font-mono text-primary-950">{managementCompany.inn}</dd>
-          </div>
-          <div>
-            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">ОГРН</dt>
-            <dd class="font-medium font-mono text-primary-950">{managementCompany.ogrn}</dd>
-          </div>
-          <div>
-            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Юридический адрес</dt>
-            <dd class="font-medium text-sm text-primary-950">{managementCompany.legalAddress}</dd>
-          </div>
-          <div>
-            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Адрес офиса</dt>
-            <dd class="font-medium text-sm text-primary-950">{managementCompany.officeAddress}</dd>
-          </div>
-          <div>
-            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Директор</dt>
-            <dd class="font-medium text-primary-950">{managementCompany.director}</dd>
-            <dd class="text-xs text-accent-400 mt-0.5">с {managementCompany.directorSince}</dd>
-          </div>
-          <div>
-            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Управляет домом с</dt>
-            <dd class="font-medium text-primary-950">{managementCompany.managingSince}</dd>
-          </div>
-        </dl>
-      </div>
-    </div>
-
-    <!-- Contacts -->
+    <!-- Contacts — first -->
     <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden mb-8">
       <div class="px-6 py-4 border-b border-accent-100">
         <h2 class="text-xl font-bold text-primary-950">Контакты</h2>
@@ -91,7 +64,7 @@ import { managementCompany } from '../data/house';
     </div>
 
     <!-- Schedule -->
-    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden">
+    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden mb-8">
       <div class="px-6 py-4 border-b border-accent-100">
         <h2 class="text-xl font-bold text-primary-950 flex items-center gap-2">
           <IconClock size={20} class="text-primary-600" />
@@ -114,6 +87,91 @@ import { managementCompany } from '../data/house';
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Duties checklist -->
+    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden mb-8">
+      <div class="px-6 py-4 border-b border-accent-100">
+        <h2 class="text-xl font-bold text-primary-950">Обязанности УК по договору</h2>
+        <p class="text-sm text-accent-600 mt-1">Оценка выполнения по данным жителей (по договору управления МКД)</p>
+      </div>
+      <div class="divide-y divide-accent-100">
+        {managementDuties.map(duty => {
+          const colors = statusColors[duty.status];
+          return (
+            <div class="px-6 py-4 flex items-start gap-4">
+              <div class:list={['shrink-0 mt-0.5 w-3 h-3 rounded-full', colors.dot]}></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-start justify-between gap-3">
+                  <span class="text-sm font-medium text-primary-950">{duty.obligation}</span>
+                  <span class:list={['text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap', colors.bg, colors.text]}>
+                    {statusLabels[duty.status]}
+                  </span>
+                </div>
+                <div class="flex items-center gap-3 mt-1">
+                  <span class="text-xs text-accent-400">{duty.clause}</span>
+                  {duty.comment && <span class="text-xs text-accent-500">{duty.comment}</span>}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+
+    <!-- Related problems -->
+    {orgProblems.length > 0 && (
+      <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden mb-8">
+        <div class="px-6 py-4 border-b border-accent-100">
+          <h2 class="text-xl font-bold text-primary-950">Связанные проблемы</h2>
+        </div>
+        <div class="p-6">
+          <div class="space-y-3">
+            {orgProblems.map(p => (
+              <a href={`/problems/${p.id}`} class="group flex items-start gap-3 p-3 rounded-xl hover:bg-accent-50 transition-colors">
+                <div class="w-2 h-2 rounded-full bg-purple-500 mt-2 shrink-0"></div>
+                <div>
+                  <span class="text-sm font-medium text-primary-950 group-hover:text-primary-600 transition-colors">{p.data.title}</span>
+                  <p class="text-xs text-accent-600 mt-0.5">{p.data.summary}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+
+    <!-- Requisites — collapsed -->
+    <div class="animate-fade-in">
+      <DetailsBlock summary="Реквизиты компании">
+        <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+          <div>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">ИНН</dt>
+            <dd class="font-medium font-mono text-primary-950">{managementCompany.inn}</dd>
+          </div>
+          <div>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">ОГРН</dt>
+            <dd class="font-medium font-mono text-primary-950">{managementCompany.ogrn}</dd>
+          </div>
+          <div>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Юридический адрес</dt>
+            <dd class="font-medium text-sm text-primary-950">{managementCompany.legalAddress}</dd>
+          </div>
+          <div>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Адрес офиса</dt>
+            <dd class="font-medium text-sm text-primary-950">{managementCompany.officeAddress}</dd>
+          </div>
+          <div>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Директор</dt>
+            <dd class="font-medium text-primary-950">{managementCompany.director}</dd>
+            <dd class="text-xs text-accent-400 mt-0.5">с {managementCompany.directorSince}</dd>
+          </div>
+          <div>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Управляет домом с</dt>
+            <dd class="font-medium text-primary-950">{managementCompany.managingSince}</dd>
+          </div>
+        </dl>
+      </DetailsBlock>
     </div>
   </section>
 </BaseLayout>
