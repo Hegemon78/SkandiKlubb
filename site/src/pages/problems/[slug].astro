@@ -75,12 +75,12 @@ const priorityColors = {
     ]}
   />
 
-  <section class="max-w-5xl mx-auto px-4 py-12">
+  <section class="max-w-5xl mx-auto px-4 py-6 md:py-12">
     <div class="lg:grid lg:grid-cols-[1fr_260px] lg:gap-10">
       <!-- Content -->
       <div>
         <!-- Meta -->
-        <div class="flex flex-wrap items-center gap-3 mb-8">
+        <div class="flex flex-wrap items-center gap-3 mb-6">
           <span class="text-sm font-semibold text-accent-500 uppercase tracking-wider">{problem.data.category}</span>
           <StatusBadge status={problem.data.status} size="md" />
           <span class:list={['text-sm font-medium', priorityColors[problem.data.priority]]}>
@@ -88,27 +88,25 @@ const priorityColors = {
           </span>
         </div>
 
-        <p class="text-lg text-accent-600 mb-8 leading-relaxed">{problem.data.summary}</p>
+        <p class="text-base md:text-lg text-accent-600 mb-6 leading-relaxed">{problem.data.summary}</p>
 
         <!-- Article -->
         <article class="prose md:prose-lg max-w-none
           prose-headings:text-primary-950
-          prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-3 prose-h2:pb-2 prose-h2:border-b prose-h2:border-accent-200
-          md:prose-h2:text-2xl md:prose-h2:mt-10 md:prose-h2:mb-4
-          prose-h3:text-lg prose-h3:mt-5 prose-h3:mb-2
-          md:prose-h3:text-xl md:prose-h3:mt-6 md:prose-h3:mb-3
-          prose-p:text-accent-700 prose-p:leading-relaxed
-          prose-strong:text-primary-800
+          prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-accent-200
+          md:prose-h2:text-2xl md:prose-h2:mt-12 md:prose-h2:mb-5
+          prose-h3:text-base prose-h3:mt-6 prose-h3:mb-2
+          md:prose-h3:text-lg md:prose-h3:mt-8 md:prose-h3:mb-3
+          prose-p:text-accent-700 prose-p:leading-relaxed prose-p:text-[15px] md:prose-p:text-base
+          prose-strong:text-primary-900
           prose-a:text-primary-600 prose-a:no-underline hover:prose-a:underline
           prose-table:text-sm
-          prose-th:bg-accent-50 prose-th:px-4 prose-th:py-2 prose-th:text-left
-          prose-td:px-4 prose-td:py-2 prose-td:border-b prose-td:border-accent-100
-          prose-li:text-accent-700
-          prose-ul:list-disc prose-ul:pl-6
+          prose-th:bg-accent-50 prose-th:text-left prose-th:font-semibold
+          prose-td:border-b prose-td:border-accent-100
+          prose-li:text-accent-700 prose-li:text-[15px] md:prose-li:text-base prose-li:leading-relaxed
+          prose-ul:list-disc prose-ul:pl-5 prose-ul:space-y-1
         ">
-          <div class="overflow-x-auto">
-            <Content />
-          </div>
+          <Content />
         </article>
 
         <!-- Resident quotes -->
@@ -211,3 +209,23 @@ const priorityColors = {
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  article.prose :where(table) {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+  article.prose :where(table) :where(th, td) {
+    white-space: nowrap;
+  }
+  @media (max-width: 767px) {
+    article.prose :where(table) {
+      font-size: 0.8125rem;
+    }
+    article.prose :where(th, td) {
+      padding: 0.5rem 0.75rem;
+    }
+  }
+</style>
