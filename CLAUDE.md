@@ -7,10 +7,10 @@
 ## Назначение проекта
 
 Полноценная экосистема для жителей ЖК Skandi Klubb (Санкт-Петербург, Аптекарский пр-кт, 18):
-- Сайт с информацией о доме, проблемах, контактах
-- Генератор жалоб — автоматическая генерация документов для инстанций
-- Telegram-бот — альтернативный интерфейс для генерации жалоб
-- Парсинг Telegram-чатов — сбор и анализ данных от жителей
+- **Сайт** — информация о доме, проблемах, контактах, правах жителей
+- **Генератор жалоб** — AI-генерация документов для 6 инстанций (встроен в сайт)
+- **Telegram-бот** — альтернативный интерфейс для генерации жалоб (Фаза 3)
+- **Парсинг Telegram-чатов** — сбор и анализ данных от жителей (30,591 msg)
 
 ## Источник данных
 
@@ -34,22 +34,35 @@
 
 ```
 SkandiKlubb/
-├── CLAUDE.md              # Этот файл
-├── ROADMAP.md             # Дорожная карта (для координации параллельных сессий)
-├── docs/                  # Планы и документация
-│   ├── VISION.md          # Полное описание идеи (A-E)
-│   ├── SITE_PLAN.md       # Контент-план сайта
-│   ├── TELEGRAM_PARSING.md # План парсинга чатов
+├── CLAUDE.md                  # Этот файл
+├── ROADMAP.md                 # Дорожная карта
+├── docs/                      # Планы и документация
+│   ├── VISION.md              # Полное описание идеи (A-E)
+│   ├── SITE_PLAN.md           # Контент-план сайта
+│   ├── TELEGRAM_PARSING.md    # План парсинга чатов
 │   ├── COMPLAINT_GENERATOR.md # Концепция генератора жалоб
-│   ├── MONETIZATION.md    # Идеи монетизации
-│   └── INSTANCES.md       # Реестр инстанций СПб
-├── parser/                # Telethon-парсер (Фаза 1)
-├── site/                  # Сайт (Фаза 1)
-├── bot/                   # Telegram-бот (Фаза 3)
-└── data/                  # Собранные данные (в .gitignore)
-    ├── chats/             # Дампы из Telegram
-    ├── problems/          # Структурированные проблемы
-    └── templates/         # Шаблоны жалоб
+│   ├── MONETIZATION.md        # Идеи монетизации
+│   ├── INSTANCES.md           # Реестр инстанций СПб (6 шт)
+│   ├── DEPLOY_HYBRID.md       # Инструкция деплоя hybrid (nginx + PM2)
+│   ├── LEGAL_AUDIT.md         # Юридический аудит контента
+│   ├── BRANDING_RESEARCH.md   # Исследование брендинга Bonava/Skandi
+│   └── IDEAS_BACKLOG.md       # Бэклог идей
+├── parser/                    # Telethon-парсер (готов)
+│   ├── chat_parser.py         # Инкрементальный парсинг чатов
+│   ├── data_processor.py      # Keyword-категоризация
+│   ├── export_for_site.py     # SQLite → 6 JSON для сайта
+│   └── ...
+├── site/                      # Astro-сайт (задеплоен)
+│   ├── src/pages/             # 11 страниц + /problems/[slug] (9 проблем)
+│   ├── src/pages/api/         # API endpoint: /api/generate
+│   ├── src/components/        # 17 компонентов + 21 иконка
+│   ├── src/data/              # TS-данные + generated/ JSONs
+│   └── src/content/problems/  # 9 MD-файлов (Content Collections)
+├── bot/                       # Telegram-бот (Фаза 3, пока пустой)
+└── data/                      # Собранные данные (в .gitignore)
+    ├── chats/messages.db      # SQLite: 30,591 сообщений
+    ├── problems/              # Структурированные проблемы
+    └── templates/             # Шаблоны жалоб
 ```
 
 ## Координация параллельных сессий
@@ -73,9 +86,9 @@ SkandiKlubb/
 |------|-----|--------|
 | **0** | Структура + документация | Готово |
 | **1** | Сайт (19 страниц) + парсинг чатов (30,591 msgs) | Готово |
-| **2** | Наполнение сайта + генератор жалоб (простой) | Готово |
-| **3** | Telegram-бот + регистрация на сайте | Планируется |
-| **4** | Монетизация + расширенные фичи | Планируется |
+| **2** | Наполнение (FAQ, дизайн) + генератор жалоб (AI) | Готово (кроме PDF и "Полезное") |
+| **3** | Telegram-бот жалоб + доработки сайта | В планах |
+| **4** | Монетизация + расширенные фичи | В планах |
 
 ---
 
@@ -84,10 +97,11 @@ SkandiKlubb/
 | Компонент | Стек | Статус |
 |-----------|------|--------|
 | Парсер | Python 3.13+, Telethon, SQLite | Готов |
-| Сайт | Astro 5.18, Tailwind 4, Content Collections | Задеплоен |
-| Бот | Python 3.13+, aiogram 3.22+ | Планируется |
-| Генератор жалоб | Встроен в сайт (JS, 4-step form) | Готов |
-| Категоризация | regex v1, Claude Haiku v2 | regex готов |
+| Сайт | Astro 5.18 (hybrid), Tailwind 4, @astrojs/node | Задеплоен |
+| API | /api/generate — OpenRouter → Claude Haiku | Задеплоен |
+| Генератор | 4-step form, AI + fallback шаблоны, мульти-инстанция | Готов |
+| Бот | Python 3.13+, aiogram 3.22+ (на основе ChatCompanion) | Фаза 3 |
+| Категоризация | regex v1 (готов), Claude Haiku v2 (TODO) | Частично |
 
 ## Деплой
 
@@ -95,21 +109,52 @@ SkandiKlubb/
 |----------|----------|
 | **Домен** | https://skklubb.ru |
 | **VPS** | Beget, Ubuntu 24.04, 85.117.235.115 |
-| **CI/CD** | GitHub Actions → rsync |
+| **CI/CD** | GitHub Actions → rsync (client/ + server/) + PM2 restart |
+| **Архитектура** | nginx (static) → proxy /api/* → Node.js :4321 (PM2) |
 | **Repo** | Hegemon78/SkandiKlubb |
-| **Палитра** | Sage & Linen (sage green primary, linen warm accent) |
-| **Страниц** | 19 (/, /about, /management, /problems x10, /complaints, /oss, /contract, /rights, /faq, /generator) |
+| **Палитра** | Sage & Linen (sage green #1E3126..#F5F8F6, linen #FAFAF7..#2a2622) |
+| **Шрифт** | Inter |
+| **Страниц** | 19 + API /api/generate |
 | **Автор** | @Hegemon78 (Telegram) |
+
+### Переменные окружения (VPS)
+
+```
+# /var/www/skklubb.ru/app/.env
+OPENROUTER_API_KEY=sk-or-v1-...   # Bitwarden
+HOST=127.0.0.1
+PORT=4321
+```
+
+### GitHub Secrets
+
+| Secret | Назначение |
+|--------|-----------|
+| BEGET_HOST | 85.117.235.115 |
+| BEGET_USER | root |
+| BEGET_SSH_KEY | ed25519 private key |
+| BEGET_DEPLOY_PATH | /var/www/skklubb.ru/app/ |
+
+### Деплой-процесс
+
+```
+git push → GitHub Actions:
+  1. npm ci + astro build
+  2. rsync dist/client/ → VPS:client/
+  3. rsync dist/server/ → VPS:server/
+  4. rsync package.json → VPS
+  5. SSH: npm ci --production + pm2 restart skklubb
+```
+
+Подробно: `docs/DEPLOY_HYBRID.md`
 
 ## Переиспользуемый код
 
 | Компонент | Источник | Для чего |
 |-----------|----------|----------|
 | Парсер чатов | `~/Desktop/ChatCompanion/services/telethon_reader.py` | Чтение групп, backfill |
-| Парсер каналов | `~/Desktop/ChannelSpy Bot/utils/channel_parser.py` | Метрики постов |
 | Авторизация | `~/Desktop/TG bot posting/scripts/auth_userbot.py` | Telethon auth |
-| Конфиг | `~/Desktop/ChannelSpy Bot/config.py` | Паттерн .env |
-| Архитектура бота | `~/Desktop/ChatCompanion/` | Структура handlers/, services/ |
+| Архитектура бота | `~/Desktop/ChatCompanion/` | Структура handlers/, services/ для Фазы 3 |
 
 ---
 
@@ -135,3 +180,4 @@ SkandiKlubb/
 4. **Отмечай прогресс** — обновляй ROADMAP.md при завершении задач
 5. **Не коммить secrets** — .env, *.session, data/ в .gitignore
 6. **Юридическая точность** — ссылки на законы должны быть корректны
+7. **Палитра** — только sage green / linen / amber, zero blue-* classes

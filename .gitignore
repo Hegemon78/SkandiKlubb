@@ -44,6 +44,9 @@ Thumbs.db
 # Docker
 docker-compose.override.yml
 
+# Design utilities
+docs/palette-*.html
+
 # Logs
 *.log
 logs/
