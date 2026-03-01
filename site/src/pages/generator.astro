@@ -95,67 +95,99 @@ const instancesJson = JSON.stringify(instances);
 
     <!-- Step 2: Enter resident data -->
     <div id="step-2" class="generator-step hidden">
-      <h2 class="text-2xl font-bold text-primary-950 mb-2">Ваши данные</h2>
-      <p class="text-accent-600 mb-6">Заполните данные для подстановки в обращение. Данные сохраняются в браузере для повторного использования.</p>
+      <h2 class="text-lg md:text-2xl font-bold text-primary-950 mb-1">Ваши данные</h2>
+      <p class="text-sm text-accent-600 mb-4">Данные подставляются в обращение. Можно пропустить — в тексте будут плейсхолдеры.</p>
 
-      <form id="resident-form" class="bg-white rounded-2xl border border-accent-200 p-6 space-y-5">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div>
-            <label class="block text-sm font-medium text-primary-950 mb-1.5">ФИО полностью *</label>
-            <input
-              type="text" name="fullName" required
-              placeholder="Иванов Иван Иванович"
-              class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
-            />
+      <!-- Mode toggle -->
+      <div class="flex items-center gap-2 mb-5 bg-accent-50 rounded-xl p-1.5">
+        <button type="button" id="mode-quick" class="mode-toggle flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-white text-primary-950 shadow-sm">
+          Быстрый режим
+        </button>
+        <button type="button" id="mode-full" class="mode-toggle flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all text-accent-600 hover:text-primary-950">
+          С моими данными
+        </button>
+      </div>
+
+      <!-- Quick mode hint -->
+      <div id="quick-mode-hint" class="bg-primary-50 border border-primary-100 rounded-xl p-4 mb-5">
+        <p class="text-sm text-primary-800">В тексте обращения будут плейсхолдеры <code class="bg-primary-100 px-1.5 py-0.5 rounded text-xs">[ФИО собственника]</code>, <code class="bg-primary-100 px-1.5 py-0.5 rounded text-xs">[кв. ___]</code> — заполните их перед отправкой.</p>
+      </div>
+
+      <form id="resident-form" class="bg-white rounded-2xl border border-accent-200 p-4 md:p-6 space-y-5">
+        <!-- Full mode fields (hidden in quick mode) -->
+        <div id="full-mode-fields" class="space-y-5 hidden">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+            <div>
+              <label class="block text-sm font-medium text-primary-950 mb-1.5">ФИО полностью *</label>
+              <input
+                type="text" name="fullName"
+                placeholder="Иванов Иван Иванович"
+                class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-primary-950 mb-1.5">Квартира *</label>
+              <input
+                type="text" name="apartment"
+                placeholder="кв. 123"
+                class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-primary-950 mb-1.5">Площадь</label>
+              <input
+                type="text" name="area"
+                placeholder="65.5 м²"
+                class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-primary-950 mb-1.5">Парадная</label>
+              <input
+                type="text" name="entrance"
+                placeholder="парадная 10"
+                class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-primary-950 mb-1.5">Телефон</label>
+              <input
+                type="tel" name="phone"
+                placeholder="+7 (999) 123-45-67"
+                class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-primary-950 mb-1.5">Email</label>
+              <input
+                type="email" name="email"
+                placeholder="example@mail.ru"
+                class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+              />
+            </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-primary-950 mb-1.5">Квартира *</label>
+            <label class="block text-sm font-medium text-primary-950 mb-1.5">Дата предыдущего обращения в УК (если было)</label>
             <input
-              type="text" name="apartment" required
-              placeholder="кв. 123"
-              class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-primary-950 mb-1.5">Площадь</label>
-            <input
-              type="text" name="area"
-              placeholder="65.5 м²"
-              class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-primary-950 mb-1.5">Парадная</label>
-            <input
-              type="text" name="entrance"
-              placeholder="парадная 10"
-              class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-primary-950 mb-1.5">Телефон *</label>
-            <input
-              type="tel" name="phone" required
-              placeholder="+7 (999) 123-45-67"
-              class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-primary-950 mb-1.5">Email *</label>
-            <input
-              type="email" name="email" required
-              placeholder="example@mail.ru"
+              type="date" name="previousDate"
               class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
             />
           </div>
         </div>
+
+        <!-- Custom description (both modes) -->
         <div>
-          <label class="block text-sm font-medium text-primary-950 mb-1.5">Дата предыдущего обращения в УК (если было)</label>
-          <input
-            type="date" name="previousDate"
-            class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
-          />
+          <label class="block text-sm font-medium text-primary-950 mb-1.5">Опишите ситуацию своими словами <span class="text-accent-400 font-normal">(необязательно)</span></label>
+          <textarea
+            name="customDescription"
+            rows="3"
+            maxlength="1000"
+            placeholder="Например: вода с 12 этажа течёт уже 3 месяца, обращался в УК дважды — без результата"
+            class="w-full px-4 py-2.5 rounded-xl border border-accent-200 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100 resize-none"
+          ></textarea>
+          <p class="text-xs text-accent-400 mt-1">Используется для персонализации обращения</p>
         </div>
+
         <div class="flex gap-3 pt-2">
           <button type="button" id="btn-back-1" class="px-6 py-2.5 rounded-xl border border-accent-200 text-sm font-medium text-accent-700 hover:bg-accent-50 transition-colors">
             Назад
@@ -169,10 +201,16 @@ const instancesJson = JSON.stringify(instances);
 
     <!-- Step 3: Escalation ladder -->
     <div id="step-3" class="generator-step hidden">
-      <h2 class="text-2xl font-bold text-primary-950 mb-2">Лестница эскалации</h2>
-      <p class="text-accent-600 mb-6">Для выбранной проблемы доступны обращения в следующие инстанции. Начинайте с первой ступени.</p>
+      <div class="flex items-center justify-between mb-1">
+        <h2 class="text-lg md:text-2xl font-bold text-primary-950">Лестница эскалации</h2>
+        <button type="button" id="btn-generate-all" class="px-4 py-2 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors inline-flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke-width="2"/><rect x="9" y="3" width="6" height="4" rx="1" stroke-width="2"/></svg>
+          Сгенерировать все
+        </button>
+      </div>
+      <p class="text-sm text-accent-600 mb-4">Начинайте с первой ступени. AI персонализирует обращение, шаблон — стандартный текст.</p>
 
-      <div id="escalation-list" class="space-y-4"></div>
+      <div id="escalation-list" class="space-y-3"></div>
 
       <div class="flex gap-3 mt-6">
         <button type="button" id="btn-back-2" class="px-6 py-2.5 rounded-xl border border-accent-200 text-sm font-medium text-accent-700 hover:bg-accent-50 transition-colors">
@@ -183,28 +221,44 @@ const instancesJson = JSON.stringify(instances);
 
     <!-- Step 4: Generated complaint -->
     <div id="step-4" class="generator-step hidden">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-bold text-primary-950">Готовое обращение</h2>
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <h2 class="text-lg md:text-2xl font-bold text-primary-950">Готовое обращение</h2>
         <div class="flex gap-2">
-          <button type="button" id="btn-copy" class="px-4 py-2 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors inline-flex items-center gap-2">
+          <button type="button" id="btn-copy" class="px-3 md:px-4 py-2 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors inline-flex items-center gap-1.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke-width="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke-width="2"/></svg>
-            Копировать
+            <span class="hidden sm:inline">Копировать</span>
           </button>
-          <button type="button" id="btn-download" class="px-4 py-2 rounded-xl border border-accent-200 text-sm font-medium text-accent-700 hover:bg-accent-50 transition-colors inline-flex items-center gap-2">
+          <button type="button" id="btn-copy-all" class="hidden px-3 md:px-4 py-2 rounded-xl border border-primary-200 text-primary-700 text-sm font-medium hover:bg-primary-50 transition-colors inline-flex items-center gap-1.5">
+            Копировать все
+          </button>
+          <button type="button" id="btn-download" class="px-3 md:px-4 py-2 rounded-xl border border-accent-200 text-sm font-medium text-accent-700 hover:bg-accent-50 transition-colors inline-flex items-center gap-1.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke-width="2"/><polyline points="7 10 12 15 17 10" stroke-width="2"/><line x1="12" y1="15" x2="12" y2="3" stroke-width="2"/></svg>
-            Скачать TXT
+            <span class="hidden sm:inline">Скачать TXT</span>
           </button>
         </div>
       </div>
 
-      <div id="complaint-info" class="bg-white rounded-2xl border border-accent-200 p-5 mb-4">
-        <div class="flex flex-wrap gap-3 text-sm">
+      <!-- Instance tabs (for multi-instance results) -->
+      <div id="result-tabs" class="hidden flex gap-1 overflow-x-auto pb-2 mb-4">
+        <!-- tabs injected dynamically -->
+      </div>
+
+      <div id="complaint-info" class="bg-white rounded-2xl border border-accent-200 p-4 md:p-5 mb-4">
+        <div class="flex flex-wrap gap-2 md:gap-3 text-sm items-center">
+          <span id="info-mode" class="px-2.5 py-0.5 rounded-full text-xs font-medium"></span>
           <span id="info-instance" class="bg-primary-50 text-primary-700 px-3 py-1 rounded-full font-medium"></span>
-          <span id="info-basis" class="text-accent-600"></span>
+          <span id="info-basis" class="text-accent-600 text-xs md:text-sm"></span>
         </div>
       </div>
 
-      <div id="complaint-text" class="bg-white rounded-2xl border border-accent-200 p-6 font-mono text-sm whitespace-pre-wrap leading-relaxed text-accent-800"></div>
+      <!-- Loading spinner for AI -->
+      <div id="ai-loading" class="hidden bg-white rounded-2xl border border-accent-200 p-12 text-center">
+        <div class="inline-block w-8 h-8 border-3 border-primary-200 border-t-primary-600 rounded-full animate-spin mb-3"></div>
+        <p class="text-sm text-accent-600">AI генерирует обращение...</p>
+        <p class="text-xs text-accent-400 mt-1">Обычно это занимает 3-5 секунд</p>
+      </div>
+
+      <div id="complaint-text" class="bg-white rounded-2xl border border-accent-200 p-4 md:p-6 font-mono text-sm whitespace-pre-wrap leading-relaxed text-accent-800"></div>
 
       <div id="complaint-attachments" class="mt-4 bg-amber-50 rounded-2xl border border-amber-200 p-5 hidden">
         <h4 class="text-sm font-bold text-amber-800 mb-2">Рекомендуемые приложения:</h4>
@@ -243,11 +297,37 @@ const instancesJson = JSON.stringify(instances);
   let selectedSlug = '';
   let residentData = {};
   let currentComplaintText = '';
+  let quickMode = true;
 
   // DOM elements
   const steps = [1, 2, 3, 4].map(n => document.getElementById(`step-${n}`));
   const indicators = document.querySelectorAll('.step-indicator');
   const connectors = document.querySelectorAll('.step-connector');
+
+  // Quick / full mode toggle
+  const modeQuickBtn = document.getElementById('mode-quick');
+  const modeFullBtn = document.getElementById('mode-full');
+  const quickModeHint = document.getElementById('quick-mode-hint');
+  const fullModeFields = document.getElementById('full-mode-fields');
+
+  function setMode(isQuick) {
+    quickMode = isQuick;
+    if (isQuick) {
+      modeQuickBtn.className = 'mode-toggle flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-white text-primary-950 shadow-sm';
+      modeFullBtn.className = 'mode-toggle flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all text-accent-600 hover:text-primary-950';
+      quickModeHint?.classList.remove('hidden');
+      fullModeFields?.classList.add('hidden');
+    } else {
+      modeFullBtn.className = 'mode-toggle flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-white text-primary-950 shadow-sm';
+      modeQuickBtn.className = 'mode-toggle flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all text-accent-600 hover:text-primary-950';
+      quickModeHint?.classList.add('hidden');
+      fullModeFields?.classList.remove('hidden');
+      loadResidentData();
+    }
+  }
+
+  modeQuickBtn?.addEventListener('click', () => setMode(true));
+  modeFullBtn?.addEventListener('click', () => setMode(false));
 
   // Load saved resident data from localStorage
   function loadResidentData() {
@@ -312,16 +392,44 @@ const instancesJson = JSON.stringify(instances);
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
-    residentData = Object.fromEntries(formData.entries());
-    saveResidentData(residentData);
+
+    if (quickMode) {
+      // Quick mode: placeholders for personal data
+      residentData = {
+        fullName: '',
+        apartment: '',
+        area: '',
+        entrance: '',
+        phone: '',
+        email: '',
+        previousDate: '',
+        customDescription: formData.get('customDescription') || '',
+      };
+    } else {
+      residentData = Object.fromEntries(formData.entries());
+      // Validate required fields in full mode
+      if (!residentData.fullName || !residentData.apartment) {
+        const nameInput = form.querySelector('[name="fullName"]');
+        const aptInput = form.querySelector('[name="apartment"]');
+        if (!residentData.fullName) nameInput?.focus();
+        else if (!residentData.apartment) aptInput?.focus();
+        return;
+      }
+      saveResidentData(residentData);
+    }
     renderEscalation();
     goToStep(3);
   });
+
+  // Store all generated results for multi-instance
+  let allResults = {};
+  let currentTabId = '';
 
   // Render escalation ladder
   function renderEscalation() {
     const container = document.getElementById('escalation-list');
     if (!container) return;
+    allResults = {};
 
     const problemTemplates = templates
       .filter(t => t.problemSlug === selectedSlug)
@@ -332,42 +440,90 @@ const instancesJson = JSON.stringify(instances);
       const instanceName = instance?.name || t.instanceId;
 
       return `
-        <div class="bg-white rounded-2xl border border-accent-200 p-5 hover:shadow-md transition-shadow">
-          <div class="flex items-start justify-between">
-            <div class="flex items-start gap-4">
-              <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-bold text-sm shrink-0">
-                ${t.escalationStep}
-              </div>
-              <div>
-                <h3 class="font-bold text-primary-950">${instanceName}</h3>
-                <p class="text-sm text-accent-600 mt-1">${t.title}</p>
-                <div class="flex flex-wrap gap-1.5 mt-2">
-                  ${t.legalBasis.map(law => `<span class="text-xs bg-accent-50 text-accent-600 px-2 py-0.5 rounded">${law}</span>`).join('')}
-                </div>
+        <div class="bg-white rounded-2xl border border-accent-200 p-4 md:p-5 hover:shadow-md transition-shadow">
+          <div class="flex items-start gap-3 md:gap-4">
+            <div class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-bold text-sm shrink-0">
+              ${t.escalationStep}
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-bold text-primary-950 text-sm md:text-base">${instanceName}</h3>
+              <p class="text-xs md:text-sm text-accent-600 mt-0.5">${t.title}</p>
+              <div class="flex flex-wrap gap-1 mt-2">
+                ${t.legalBasis.map(law => `<span class="text-[10px] md:text-xs bg-accent-50 text-accent-600 px-1.5 py-0.5 rounded">${law}</span>`).join('')}
               </div>
             </div>
-            <button
-              class="generate-btn px-4 py-2 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors shrink-0"
-              data-index="${templates.indexOf(t)}"
-            >
-              Сгенерировать
-            </button>
+            <div class="flex flex-col gap-1.5 shrink-0">
+              <button
+                class="ai-gen-btn px-3 py-1.5 rounded-lg bg-primary-600 text-white text-xs font-medium hover:bg-primary-700 transition-colors"
+                data-index="${templates.indexOf(t)}"
+              >
+                AI
+              </button>
+              <button
+                class="tpl-gen-btn px-3 py-1.5 rounded-lg border border-accent-200 text-accent-700 text-xs font-medium hover:bg-accent-50 transition-colors"
+                data-index="${templates.indexOf(t)}"
+              >
+                Шаблон
+              </button>
+            </div>
           </div>
         </div>
       `;
     }).join('');
 
-    // Add click handlers
-    container.querySelectorAll('.generate-btn').forEach(btn => {
+    // Add click handlers for AI buttons
+    container.querySelectorAll('.ai-gen-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const idx = parseInt(btn.dataset.index);
-        generateComplaint(templates[idx]);
+        generateComplaint(templates[idx], 'ai');
+      });
+    });
+
+    // Add click handlers for template buttons
+    container.querySelectorAll('.tpl-gen-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.index);
+        generateComplaint(templates[idx], 'template');
       });
     });
   }
 
-  // Generate complaint text
-  function generateComplaint(template) {
+  // Generate All button
+  document.getElementById('btn-generate-all')?.addEventListener('click', async () => {
+    const problemTemplates = templates
+      .filter(t => t.problemSlug === selectedSlug)
+      .sort((a, b) => a.escalationStep - b.escalationStep);
+
+    if (problemTemplates.length === 0) return;
+
+    allResults = {};
+    goToStep(4);
+
+    const loadingEl = document.getElementById('ai-loading');
+    const textEl = document.getElementById('complaint-text');
+    loadingEl?.classList.remove('hidden');
+    textEl?.classList.add('hidden');
+
+    for (const t of problemTemplates) {
+      const instance = instancesData.find(inst => inst.id === t.instanceId);
+      const text = await generateAI(t);
+      const mode = text.mode;
+      allResults[t.instanceId] = {
+        text: text.text,
+        mode,
+        template: t,
+        instanceName: instance?.name || t.instanceId,
+      };
+    }
+
+    loadingEl?.classList.add('hidden');
+    textEl?.classList.remove('hidden');
+
+    renderTabs();
+  });
+
+  // Generate complaint text (template mode)
+  function generateComplaintFromTemplate(template) {
     const instance = instancesData.find(inst => inst.id === template.instanceId);
     const instHeader = instanceHeadersData[template.instanceId] || `Руководителю\n${instance?.name || template.instanceId}`;
 
@@ -376,22 +532,40 @@ const instancesJson = JSON.stringify(instances);
       ? new Date(residentData.previousDate).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })
       : '__.__.____';
 
+    // Placeholders for quick mode
+    const ph = quickMode ? {
+      fullName: '[ФИО собственника]',
+      apartment: '[кв. ___]',
+      area: '[площадь]',
+      phone: '[телефон]',
+      email: '[email]',
+      entrance: '[парадная]',
+    } : {
+      fullName: residentData.fullName || '____',
+      apartment: residentData.apartment || '____',
+      area: residentData.area || '____',
+      phone: residentData.phone || '____',
+      email: residentData.email || '____',
+      entrance: residentData.entrance || '____',
+    };
+
     // Build full text
     let text = instHeader + '\n\n';
-    text += `От: ${residentData.fullName || '____'}\n`;
-    text += `Адрес: Санкт-Петербург, Аптекарский пр-кт, д. 18, лит. А, ${residentData.apartment || '____'}\n`;
-    text += `Телефон: ${residentData.phone || '____'}\n`;
-    text += `Email: ${residentData.email || '____'}\n\n`;
+    text += `От: ${ph.fullName}\n`;
+    text += `Адрес: Санкт-Петербург, Аптекарский пр-кт, д. 18, лит. А, ${ph.apartment}\n`;
+    if (!quickMode || residentData.phone) text += `Телефон: ${ph.phone}\n`;
+    if (!quickMode || residentData.email) text += `Email: ${ph.email}\n`;
+    text += '\n';
     text += `                    ЗАЯВЛЕНИЕ (ЖАЛОБА)\n\n`;
 
     // Replace placeholders in body
     let body = template.bodyTemplate;
-    body = body.replace(/\{\{fullName\}\}/g, residentData.fullName || '____');
-    body = body.replace(/\{\{apartment\}\}/g, residentData.apartment || '____');
-    body = body.replace(/\{\{area\}\}/g, residentData.area || '____');
-    body = body.replace(/\{\{phone\}\}/g, residentData.phone || '____');
-    body = body.replace(/\{\{email\}\}/g, residentData.email || '____');
-    body = body.replace(/\{\{entrance\}\}/g, residentData.entrance || '____');
+    body = body.replace(/\{\{fullName\}\}/g, ph.fullName);
+    body = body.replace(/\{\{apartment\}\}/g, ph.apartment);
+    body = body.replace(/\{\{area\}\}/g, ph.area);
+    body = body.replace(/\{\{phone\}\}/g, ph.phone);
+    body = body.replace(/\{\{email\}\}/g, ph.email);
+    body = body.replace(/\{\{entrance\}\}/g, ph.entrance);
     body = body.replace(/\{\{previousDate\}\}/g, prevDate);
 
     text += body + '\n\n';
@@ -409,11 +583,94 @@ const instancesJson = JSON.stringify(instances);
     }
 
     text += `\nДата: ${today}\n`;
-    text += `Подпись: ${residentData.fullName || '____'}`;
+    text += `Подпись: ${ph.fullName}`;
+
+    return text;
+  }
+
+  // AI generation via server API
+  async function generateAI(template) {
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          problemSlug: template.problemSlug,
+          instanceId: template.instanceId,
+          residentData: quickMode ? {} : residentData,
+          customDescription: residentData.customDescription || '',
+        }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          return { text: generateComplaintFromTemplate(template), mode: 'template', warning: 'Лимит запросов исчерпан' };
+        }
+        return { text: generateComplaintFromTemplate(template), mode: 'template' };
+      }
+
+      const data = await response.json();
+      if (data.mode === 'ai' && data.text) {
+        return { text: data.text, mode: 'ai' };
+      }
+      // Fallback to template
+      return { text: generateComplaintFromTemplate(template), mode: 'template', warning: data.warning };
+    } catch {
+      return { text: generateComplaintFromTemplate(template), mode: 'template' };
+    }
+  }
+
+  async function generateComplaint(template, mode = 'template') {
+    const instance = instancesData.find(inst => inst.id === template.instanceId);
+    allResults = {};
+
+    goToStep(4);
+
+    const loadingEl = document.getElementById('ai-loading');
+    const textEl = document.getElementById('complaint-text');
+
+    let text, genMode;
+
+    if (mode === 'ai') {
+      loadingEl?.classList.remove('hidden');
+      textEl?.classList.add('hidden');
+      const result = await generateAI(template);
+      text = result.text;
+      genMode = result.mode;
+      loadingEl?.classList.add('hidden');
+      textEl?.classList.remove('hidden');
+    } else {
+      text = generateComplaintFromTemplate(template);
+      genMode = 'template';
+    }
 
     currentComplaintText = text;
 
-    // Render
+    allResults[template.instanceId] = {
+      text,
+      mode: genMode,
+      template,
+      instanceName: instance?.name || template.instanceId,
+    };
+
+    renderResult(template, text, genMode);
+  }
+
+  function renderResult(template, text, genMode) {
+    const instance = instancesData.find(inst => inst.id === template.instanceId);
+
+    // Mode badge
+    const modeEl = document.getElementById('info-mode');
+    if (modeEl) {
+      if (genMode === 'ai') {
+        modeEl.textContent = 'AI';
+        modeEl.className = 'px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700';
+      } else {
+        modeEl.textContent = 'Шаблон';
+        modeEl.className = 'px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent-100 text-accent-600';
+      }
+    }
+
     document.getElementById('complaint-text').textContent = text;
     document.getElementById('info-instance').textContent = instance?.name || template.instanceId;
     document.getElementById('info-basis').textContent = `Основание: ${template.legalBasis.join(', ')}`;
@@ -438,28 +695,100 @@ const instancesJson = JSON.stringify(instances);
     if (instance?.deadline) methods.push(`<p>• <strong>Срок ответа:</strong> ${instance.deadline}</p>`);
     instrDiv.innerHTML = methods.join('');
 
-    goToStep(4);
+    // Tabs
+    renderTabs();
+  }
+
+  function renderTabs() {
+    const tabsEl = document.getElementById('result-tabs');
+    const copyAllBtn = document.getElementById('btn-copy-all');
+    const keys = Object.keys(allResults);
+
+    if (keys.length <= 1) {
+      tabsEl?.classList.add('hidden');
+      copyAllBtn?.classList.add('hidden');
+      if (keys.length === 1) currentTabId = keys[0];
+      return;
+    }
+
+    tabsEl?.classList.remove('hidden');
+    copyAllBtn?.classList.remove('hidden');
+    if (!currentTabId || !allResults[currentTabId]) currentTabId = keys[0];
+
+    tabsEl.innerHTML = keys.map(id => {
+      const r = allResults[id];
+      const active = id === currentTabId;
+      return `<button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${active ? 'bg-primary-600 text-white' : 'bg-accent-100 text-accent-700 hover:bg-accent-200'}" data-tab="${id}">
+        ${r.instanceName}
+        ${r.mode === 'ai' ? '<span class="ml-1 text-[10px] opacity-70">AI</span>' : ''}
+      </button>`;
+    }).join('');
+
+    tabsEl.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentTabId = btn.dataset.tab;
+        const r = allResults[currentTabId];
+        currentComplaintText = r.text;
+        renderResult(r.template, r.text, r.mode);
+      });
+    });
+
+    // Show current tab
+    const current = allResults[currentTabId];
+    currentComplaintText = current.text;
   }
 
   // Copy to clipboard
+  function showToast(message = 'Текст скопирован в буфер обмена') {
+    const toast = document.getElementById('copy-toast');
+    toast.textContent = message;
+    toast.classList.remove('translate-y-20', 'opacity-0');
+    setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2000);
+  }
+
   document.getElementById('btn-copy')?.addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(currentComplaintText);
-      const toast = document.getElementById('copy-toast');
-      toast.classList.remove('translate-y-20', 'opacity-0');
-      setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2000);
+      showToast();
+    } catch {}
+  });
+
+  document.getElementById('btn-copy-all')?.addEventListener('click', async () => {
+    const keys = Object.keys(allResults);
+    if (keys.length === 0) return;
+    const allText = keys.map(id => {
+      const r = allResults[id];
+      return `=== ${r.instanceName} ===\n\n${r.text}`;
+    }).join('\n\n---\n\n');
+    try {
+      await navigator.clipboard.writeText(allText);
+      showToast(`Скопировано ${keys.length} обращений`);
     } catch {}
   });
 
   // Download TXT
-  document.getElementById('btn-download')?.addEventListener('click', () => {
-    const blob = new Blob([currentComplaintText], { type: 'text/plain;charset=utf-8' });
+  function downloadFile(text, filename) {
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `complaint_${selectedSlug}_${new Date().toISOString().slice(0, 10)}.txt`;
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  document.getElementById('btn-download')?.addEventListener('click', () => {
+    const keys = Object.keys(allResults);
+    if (keys.length > 1) {
+      // Download all as one file
+      const allText = keys.map(id => {
+        const r = allResults[id];
+        return `=== ${r.instanceName} ===\n\n${r.text}`;
+      }).join('\n\n---\n\n');
+      downloadFile(allText, `complaints_${selectedSlug}_${new Date().toISOString().slice(0, 10)}.txt`);
+    } else {
+      downloadFile(currentComplaintText, `complaint_${selectedSlug}_${new Date().toISOString().slice(0, 10)}.txt`);
+    }
   });
 
   // Back buttons

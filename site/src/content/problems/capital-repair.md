@@ -4,7 +4,7 @@ category: Финансовые
 priority: high
 status: preparing
 summary: Перевод фонда капремонта на спецсчёт дома, контроль над накопленными средствами
-order: 9
+order: 8
 ---
 
 ## Суть вопроса

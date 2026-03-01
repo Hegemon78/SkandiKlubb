@@ -29,12 +29,44 @@ jobs:
         working-directory: site
         run: npm run build
 
-      - name: Deploy to Beget via rsync
+      - name: Deploy static assets via rsync
         uses: burnett01/rsync-deployments@7.0.1
         with:
-          switches: -avz --delete --exclude='.htaccess'
-          path: site/dist/
+          switches: -avz --delete --exclude='.htaccess' --exclude='.env'
+          path: site/dist/client/
+          remote_path: ${{ secrets.BEGET_DEPLOY_PATH }}client/
+          remote_host: ${{ secrets.BEGET_HOST }}
+          remote_user: ${{ secrets.BEGET_USER }}
+          remote_key: ${{ secrets.BEGET_SSH_KEY }}
+
+      - name: Deploy server files via rsync
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avz --delete --exclude='node_modules' --exclude='.env'
+          path: site/dist/server/
+          remote_path: ${{ secrets.BEGET_DEPLOY_PATH }}server/
+          remote_host: ${{ secrets.BEGET_HOST }}
+          remote_user: ${{ secrets.BEGET_USER }}
+          remote_key: ${{ secrets.BEGET_SSH_KEY }}
+
+      - name: Deploy package.json for server dependencies
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avz
+          path: site/package.json
           remote_path: ${{ secrets.BEGET_DEPLOY_PATH }}
           remote_host: ${{ secrets.BEGET_HOST }}
           remote_user: ${{ secrets.BEGET_USER }}
           remote_key: ${{ secrets.BEGET_SSH_KEY }}
+
+      - name: Install server dependencies and restart PM2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.BEGET_HOST }}
+          username: ${{ secrets.BEGET_USER }}
+          key: ${{ secrets.BEGET_SSH_KEY }}
+          script: |
+            cd ${{ secrets.BEGET_DEPLOY_PATH }}
+            npm ci --production 2>/dev/null || npm install --production
+            pm2 restart skklubb 2>/dev/null || pm2 start server/entry.mjs --name skklubb -- --host 127.0.0.1 --port 4321
+            pm2 save
