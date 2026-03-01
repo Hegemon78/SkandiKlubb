@@ -24,16 +24,16 @@ const { href, title, description, fact, iconColor = 'text-primary-600', comingSo
 ) : (
   <a
     href={href}
-    class="group bg-white rounded-2xl border border-accent-200 p-4 md:p-6 flex items-start gap-3 md:gap-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+    class="group bg-white rounded-2xl border border-accent-200 p-4 md:p-6 flex items-start gap-2.5 md:gap-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
   >
-    <div class:list={['w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110', iconColor === 'text-primary-600' ? 'bg-primary-50' : 'bg-accent-50']}>
+    <div class:list={['w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110', iconColor === 'text-primary-600' ? 'bg-primary-50' : 'bg-accent-50']}>
       <slot />
     </div>
     <div class="min-w-0">
-      <h3 class="text-base md:text-lg font-bold text-primary-950 mb-1 group-hover:text-primary-600 transition-colors">{title}</h3>
-      <p class="text-sm text-accent-600">{description}</p>
+      <h3 class="text-sm md:text-lg font-bold text-primary-950 mb-0.5 md:mb-1 group-hover:text-primary-600 transition-colors">{title}</h3>
+      <p class="text-xs md:text-sm text-accent-600 line-clamp-2">{description}</p>
       {fact && (
-        <p class="text-xs text-primary-600 font-medium mt-2">{fact}</p>
+        <p class="text-[11px] md:text-xs text-primary-600 font-medium mt-1.5 md:mt-2">{fact}</p>
       )}
     </div>
   </a>

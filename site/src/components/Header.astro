@@ -93,7 +93,7 @@ function isActive(href: string): boolean {
           <a
             href={link.href}
             class:list={[
-              'block px-4 py-2.5 rounded-lg text-base font-medium transition-colors',
+              'block px-4 py-3 rounded-lg text-base font-medium transition-colors',
               isActive(link.href)
                 ? 'bg-primary-50 text-primary-700'
                 : 'text-accent-700 hover:bg-accent-100 hover:text-primary-700'
@@ -117,10 +117,13 @@ function isActive(href: string): boolean {
   const burgerIcon = document.getElementById('burger-icon');
   const closeIcon = document.getElementById('close-icon');
   const isTransparent = header?.dataset.transparent === 'true';
+  let menuOpen = false;
 
   // Scroll-aware header for transparent mode
   if (isTransparent && header) {
     const onScroll = () => {
+      // Don't restore transparency while mobile menu is open
+      if (menuOpen) return;
       if (window.scrollY > 50) {
         header.classList.remove('header-transparent');
         header.classList.add('bg-white', 'shadow-sm', 'header-scrolled');
@@ -135,17 +138,26 @@ function isActive(href: string): boolean {
 
   // Mobile menu toggle
   btn?.addEventListener('click', () => {
-    const isOpen = menu?.classList.contains('max-h-0');
-    if (isOpen) {
-      menu?.classList.remove('max-h-0');
+    menuOpen = !menuOpen;
+    if (menuOpen) {
+      menu?.classList.remove('max-h-0', 'hidden');
       menu?.classList.add('max-h-96');
-      menu?.classList.remove('hidden');
+      // Force white header when menu is open (even in transparent mode)
+      if (isTransparent && header) {
+        header.classList.remove('header-transparent');
+        header.classList.add('bg-white', 'shadow-sm', 'header-scrolled');
+      }
     } else {
       menu?.classList.add('max-h-0');
       menu?.classList.remove('max-h-96');
+      // Restore transparent header if at top
+      if (isTransparent && header && window.scrollY <= 50) {
+        header.classList.add('header-transparent');
+        header.classList.remove('bg-white', 'shadow-sm', 'header-scrolled');
+      }
     }
-    burgerIcon?.classList.toggle('hidden', !!isOpen);
-    closeIcon?.classList.toggle('hidden', !isOpen);
+    burgerIcon?.classList.toggle('hidden', menuOpen);
+    closeIcon?.classList.toggle('hidden', !menuOpen);
   });
 </script>
 

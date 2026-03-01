@@ -5,7 +5,6 @@ import ProblemMiniCard from '../components/ProblemMiniCard.astro';
 import IconHome from '../components/icons/IconHome.astro';
 import IconBuilding from '../components/icons/IconBuilding.astro';
 import IconAlertTriangle from '../components/icons/IconAlertTriangle.astro';
-import IconMegaphone from '../components/icons/IconMegaphone.astro';
 import IconVote from '../components/icons/IconVote.astro';
 import IconFileText from '../components/icons/IconFileText.astro';
 import IconGavel from '../components/icons/IconGavel.astro';
@@ -26,23 +25,19 @@ const topProblems = highPriority.slice(0, 3);
 
 <BaseLayout title="Главная" description="Информационный портал для жителей ЖК Skandi Klubb — Аптекарский проспект, 18" transparentHeader={true}>
   <!-- Hero — compact -->
-  <section class="relative bg-primary-950 text-white pt-24 pb-20 overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-950 to-primary-900"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--color-primary-700)_0%,_transparent_50%)] opacity-40"></div>
+  <section class="relative bg-primary-950 text-white pt-16 pb-14 md:pt-20 md:pb-16 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-primary-900 to-primary-950"></div>
 
     <div class="relative max-w-6xl mx-auto px-4 text-center">
-      <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur rounded-full px-4 py-1.5 text-sm text-primary-200 mb-6">
+      <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur rounded-full px-4 py-1.5 text-sm text-primary-200 mb-5">
         <span class="w-2 h-2 rounded-full bg-primary-400"></span>
-        Инициатива жителей
+        Для жителей ЖК
       </div>
 
       <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-3 tracking-tight">
         Skandi Klubb
       </h1>
-      <p class="text-lg text-primary-200 mb-2 font-light">{house.address}</p>
-      <p class="text-sm text-primary-400">
-        {summary.totalMessages.toLocaleString('ru-RU')} сообщений проанализировано &middot; {summary.faqCount.toLocaleString('ru-RU')} вопросов &middot; {problems.length} проблем
-      </p>
+      <p class="text-lg text-primary-200 font-light">{house.address}</p>
     </div>
 
     <!-- Wave transition -->
@@ -60,7 +55,7 @@ const topProblems = highPriority.slice(0, 3);
         <IconHome size={22} class="text-primary-600" />
       </QuickLinkCard>
 
-      <QuickLinkCard href="/management" title="УК" description="ЭКВИДА-СЕРВИС: контакты, обязанности" fact={managementCompany.phone}>
+      <QuickLinkCard href="/management" title="УК" description="Эквида-Сервис: контакты" fact={`${managementCompany.phone} · @skandi_uk`}>
         <IconBuilding size={22} class="text-primary-600" />
       </QuickLinkCard>
 
