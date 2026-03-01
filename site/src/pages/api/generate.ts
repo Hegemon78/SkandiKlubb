@@ -185,7 +185,7 @@ export const POST: APIRoute = async ({ request }) => {
         'X-Title': 'SkandiKlubb Complaint Generator',
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-sonnet-4',
+        model: 'anthropic/claude-sonnet-4-6',
         messages: [
           { role: 'user', content: prompt },
         ],
