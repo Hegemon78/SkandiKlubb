@@ -66,7 +66,9 @@ jobs:
           username: ${{ secrets.BEGET_USER }}
           key: ${{ secrets.BEGET_SSH_KEY }}
           script: |
+            export PATH=/usr/local/bin:/usr/bin:$PATH
             cd ${{ secrets.BEGET_DEPLOY_PATH }}
             npm ci --production 2>/dev/null || npm install --production
-            pm2 restart skklubb 2>/dev/null || pm2 start server/entry.mjs --name skklubb -- --host 127.0.0.1 --port 4321
+            pm2 delete skklubb 2>/dev/null || true
+            pm2 start server/entry.mjs --name skklubb --node-args="--env-file=${{ secrets.BEGET_DEPLOY_PATH }}.env" -- --host 127.0.0.1 --port 4321
             pm2 save
