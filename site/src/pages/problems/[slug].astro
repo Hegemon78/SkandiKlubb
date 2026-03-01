@@ -211,14 +211,31 @@ const priorityColors = {
 </BaseLayout>
 
 <style>
+  /* Tables: card wrapper with horizontal scroll */
   article.prose :where(table) {
     display: block;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--color-accent-200);
+    border-radius: 0.75rem;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  /* Only headers stay single-line; data cells can wrap */
+  article.prose :where(th) {
     white-space: nowrap;
   }
-  article.prose :where(table) :where(th, td) {
-    white-space: nowrap;
+  /* h3: sage green left border — visual section separator */
+  article.prose :where(h3) {
+    padding-left: 0.75rem;
+    border-left: 3px solid var(--color-primary-400);
+  }
+  /* List markers: sage green instead of grey */
+  article.prose :where(li)::marker {
+    color: var(--color-primary-500);
+  }
+  article.prose :where(ol > li)::marker {
+    font-weight: 600;
   }
   @media (max-width: 767px) {
     article.prose :where(table) {
