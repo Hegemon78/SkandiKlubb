@@ -24,67 +24,50 @@ const orgProblems = allProblems
   />
 
   <section class="max-w-5xl mx-auto px-4 py-12">
-    <!-- Contacts — first -->
+    <!-- Contacts + Schedule — unified block -->
     <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden mb-8">
-      <div class="px-6 py-4 border-b border-accent-100">
-        <h2 class="text-xl font-bold text-primary-950">Контакты</h2>
+      <!-- Contacts row -->
+      <div class="px-5 py-4 flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-accent-100">
+        <a
+          href={`tel:${managementCompany.phone.replace(/[^\d+]/g, '')}`}
+          class="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
+        >
+          <div class="w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center shrink-0">
+            <IconPhone size={16} class="text-primary-600" />
+          </div>
+          <div>
+            <div class="text-[10px] font-medium text-accent-400 uppercase tracking-wider leading-none mb-0.5">Диспетчер</div>
+            <div class="text-base font-bold text-primary-700">{managementCompany.phone}</div>
+          </div>
+        </a>
+        <div class="hidden sm:block w-px h-8 bg-accent-200"></div>
+        <a
+          href={`mailto:${managementCompany.email}`}
+          class="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
+        >
+          <div class="w-7 h-7 rounded-lg bg-accent-100 flex items-center justify-center shrink-0">
+            <IconMail size={14} class="text-accent-500" />
+          </div>
+          <span class="text-sm text-accent-600">{managementCompany.email}</span>
+        </a>
       </div>
-      <div class="p-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <a
-            href={`tel:${managementCompany.phone.replace(/[^\d+]/g, '')}`}
-            class="group flex items-center gap-4 bg-primary-50 rounded-xl p-5 border border-primary-100 hover:shadow-md transition-all duration-300"
-          >
-            <div class="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <IconPhone size={24} class="text-primary-600" />
-            </div>
-            <div>
-              <div class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Диспетчер</div>
-              <div class="text-xl font-bold text-primary-700 group-hover:text-primary-800 transition-colors">
-                {managementCompany.phone}
-              </div>
-            </div>
-          </a>
-          <a
-            href={`mailto:${managementCompany.email}`}
-            class="group flex items-center gap-4 bg-accent-50 rounded-xl p-5 border border-accent-200 hover:shadow-md transition-all duration-300"
-          >
-            <div class="w-12 h-12 rounded-xl bg-accent-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <IconMail size={24} class="text-accent-600" />
-            </div>
-            <div>
-              <div class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Email</div>
-              <div class="text-lg font-bold text-primary-700 group-hover:text-primary-800 transition-colors">
-                {managementCompany.email}
-              </div>
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
 
-    <!-- Schedule -->
-    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden mb-8">
-      <div class="px-6 py-4 border-b border-accent-100">
-        <h2 class="text-xl font-bold text-primary-950 flex items-center gap-2">
-          <IconClock size={20} class="text-primary-600" />
-          Режим работы офиса
-        </h2>
-      </div>
-      <div class="p-6">
-        <div class="space-y-3">
-          <div class="flex items-center gap-3">
-            <div class="w-2 h-2 rounded-full bg-green-500 shrink-0"></div>
-            <span class="text-accent-700">{managementCompany.schedule.weekdays}</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="w-2 h-2 rounded-full bg-green-500 shrink-0"></div>
-            <span class="text-accent-700">{managementCompany.schedule.friday}</span>
-          </div>
-          <div class="flex items-center gap-3 mt-4 p-3 bg-amber-50 rounded-xl border border-amber-200">
-            <div class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></div>
-            <span class="font-medium text-amber-800">{managementCompany.schedule.reception}</span>
-          </div>
+      <!-- Schedule grid -->
+      <div class="px-5 py-4">
+        <div class="flex items-center gap-2 mb-3">
+          <IconClock size={16} class="text-primary-600" />
+          <h2 class="text-sm font-semibold text-primary-950 uppercase tracking-wide">Режим работы офиса</h2>
+        </div>
+        <div class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
+          <span class="font-medium text-primary-800">Пн — Чт</span>
+          <span class="text-accent-600">09:00 – 18:00 <span class="text-accent-400">(перерыв 13–14)</span></span>
+          <span class="font-medium text-primary-800">Пт</span>
+          <span class="text-accent-600">09:00 – 17:00 <span class="text-accent-400">(перерыв 13–14)</span></span>
+          <span class="font-medium text-primary-800">Сб — Вс</span>
+          <span class="text-accent-400">выходной</span>
+        </div>
+        <div class="mt-3 px-3 py-2 bg-amber-50 rounded-lg border border-amber-200/60 text-sm font-medium text-amber-800 inline-block">
+          Приём граждан: Чт, 09:00 – 16:00
         </div>
       </div>
     </div>
@@ -143,7 +126,7 @@ const orgProblems = allProblems
 
     <!-- Requisites — collapsed -->
     <div class="animate-fade-in">
-      <DetailsBlock summary="Реквизиты компании">
+      <DetailsBlock summary="Реквизиты компании" open={true}>
         <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
           <div>
             <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">ИНН</dt>

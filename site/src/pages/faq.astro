@@ -9,21 +9,14 @@ const totalQuestions = faqClusters.reduce((acc: number, c: any) => acc + c.count
 const subcategories = faqClusters.map((c: any) => c.subcategory);
 ---
 
-<BaseLayout title="FAQ" description="Реальные вопросы жителей ЖК Skandi Klubb из Telegram-чатов — паркинг, СКУД, коммуникации, территория">
+<BaseLayout title="FAQ" description="Реальные вопросы жителей ЖК Skandi Klubb — паркинг, СКУД, коммуникации, территория">
   <PageHeader
     title="Частые вопросы жителей"
-    description={`${totalQuestions.toLocaleString('ru-RU')} вопросов из Telegram-чатов собственников, сгруппированных по ${faqClusters.length} темам`}
+    description={`${totalQuestions.toLocaleString('ru-RU')} вопросов жителей, сгруппированных по ${faqClusters.length} темам`}
     breadcrumbs={[{ label: 'FAQ' }]}
   />
 
   <section class="max-w-6xl mx-auto px-4 py-12">
-    <!-- Summary -->
-    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 p-5 mb-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
-      <span class="font-bold text-primary-950">{totalQuestions.toLocaleString('ru-RU')} вопросов</span>
-      <span class="text-accent-600">{faqClusters.length} тем</span>
-      <span class="text-accent-500">Источник: Telegram-чаты собственников</span>
-    </div>
-
     <!-- Search -->
     <div class="mb-6">
       <div class="relative">
@@ -40,8 +33,18 @@ const subcategories = faqClusters.map((c: any) => c.subcategory);
       </div>
     </div>
 
-    <!-- Filter buttons -->
-    <div class="flex flex-wrap gap-2 mb-8">
+    <!-- Filter: mobile select -->
+    <div class="md:hidden mb-8">
+      <select id="faq-filter-select" class="w-full rounded-xl border border-accent-200 py-3 px-4 text-sm bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all">
+        <option value="all">Все темы ({faqClusters.length})</option>
+        {faqClusters.map((c: any) => (
+          <option value={c.subcategory}>{c.label} ({c.count})</option>
+        ))}
+      </select>
+    </div>
+
+    <!-- Filter: desktop pills -->
+    <div class="hidden md:flex flex-wrap gap-2 mb-8">
       <button
         class="faq-filter-btn active px-4 py-2 rounded-full text-sm font-medium bg-primary-600 text-white transition-all duration-200"
         data-subcategory="all"
@@ -79,45 +82,55 @@ const subcategories = faqClusters.map((c: any) => c.subcategory);
       ))}
     </div>
 
-    <!-- Data source note -->
-    <div class="mt-12 text-center text-sm text-accent-400">
-      <p>Данные получены из анализа {summary.totalMessages.toLocaleString('ru-RU')} сообщений Telegram-чатов</p>
-      <p>Период: {summary.dateRange?.from} — {summary.dateRange?.to}</p>
-    </div>
   </section>
 </BaseLayout>
 
 <script>
-  // Filter by subcategory
   const filterBtns = document.querySelectorAll('.faq-filter-btn');
+  const filterSelect = document.getElementById('faq-filter-select') as HTMLSelectElement;
   const clusters = document.querySelectorAll('.faq-cluster');
 
+  // Shared filter logic
+  function filterBySubcategory(subcat: string) {
+    // Update pills
+    filterBtns.forEach(b => {
+      b.classList.remove('active', 'bg-primary-600', 'text-white');
+      b.classList.add('bg-white', 'text-accent-700', 'border', 'border-accent-200');
+    });
+    const activeBtn = document.querySelector(`[data-subcategory="${subcat}"]`);
+    activeBtn?.classList.add('active', 'bg-primary-600', 'text-white');
+    activeBtn?.classList.remove('bg-white', 'text-accent-700', 'border', 'border-accent-200');
+
+    // Update select
+    if (filterSelect) filterSelect.value = subcat;
+
+    // Filter clusters
+    let visibleCount = 0;
+    clusters.forEach(cluster => {
+      const parent = cluster.closest('.animate-fade-in') as HTMLElement;
+      if (!parent) return;
+      if (subcat === 'all' || (cluster as HTMLElement).dataset.subcategory === subcat) {
+        parent.style.display = '';
+        visibleCount++;
+      } else {
+        parent.style.display = 'none';
+      }
+    });
+
+    const noResults = document.getElementById('no-results');
+    if (noResults) noResults.classList.toggle('hidden', visibleCount > 0);
+  }
+
+  // Desktop pills
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      const subcat = (btn as HTMLElement).dataset.subcategory;
-
-      filterBtns.forEach(b => {
-        b.classList.remove('active', 'bg-primary-600', 'text-white');
-        b.classList.add('bg-white', 'text-accent-700', 'border', 'border-accent-200');
-      });
-      btn.classList.add('active', 'bg-primary-600', 'text-white');
-      btn.classList.remove('bg-white', 'text-accent-700', 'border', 'border-accent-200');
-
-      let visibleCount = 0;
-      clusters.forEach(cluster => {
-        const parent = cluster.closest('.animate-fade-in') as HTMLElement;
-        if (!parent) return;
-        if (subcat === 'all' || (cluster as HTMLElement).dataset.subcategory === subcat) {
-          parent.style.display = '';
-          visibleCount++;
-        } else {
-          parent.style.display = 'none';
-        }
-      });
-
-      const noResults = document.getElementById('no-results');
-      if (noResults) noResults.classList.toggle('hidden', visibleCount > 0);
+      filterBySubcategory((btn as HTMLElement).dataset.subcategory || 'all');
     });
+  });
+
+  // Mobile select
+  filterSelect?.addEventListener('change', () => {
+    filterBySubcategory(filterSelect.value);
   });
 
   // Text search
@@ -125,29 +138,15 @@ const subcategories = faqClusters.map((c: any) => c.subcategory);
   searchInput?.addEventListener('input', () => {
     const query = searchInput.value.toLowerCase().trim();
 
-    // Reset filter buttons
-    filterBtns.forEach(b => {
-      b.classList.remove('active', 'bg-primary-600', 'text-white');
-      b.classList.add('bg-white', 'text-accent-700', 'border', 'border-accent-200');
-    });
-    const allBtn = document.querySelector('[data-subcategory="all"]');
-    allBtn?.classList.add('active', 'bg-primary-600', 'text-white');
-    allBtn?.classList.remove('bg-white', 'text-accent-700', 'border', 'border-accent-200');
+    // Reset filter to "all"
+    filterBySubcategory('all');
+
+    if (!query) return;
 
     let visibleCount = 0;
     clusters.forEach(cluster => {
       const parent = cluster.closest('.animate-fade-in') as HTMLElement;
       if (!parent) return;
-
-      if (!query) {
-        parent.style.display = '';
-        // Show all questions
-        cluster.querySelectorAll('li').forEach(li => {
-          (li as HTMLElement).style.display = '';
-        });
-        visibleCount++;
-        return;
-      }
 
       let hasMatch = false;
       cluster.querySelectorAll('li').forEach(li => {
