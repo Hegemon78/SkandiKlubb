@@ -7,10 +7,10 @@ interface Props {
 const { status, size = 'sm' } = Astro.props;
 
 const config = {
-  collecting: { label: 'Сбор информации', color: 'bg-amber-50 text-amber-700', dot: 'bg-amber-400' },
-  preparing: { label: 'Подготовка', color: 'bg-primary-50 text-primary-700', dot: 'bg-primary-400' },
-  ready: { label: 'Готово', color: 'bg-green-50 text-green-700', dot: 'bg-green-400' },
-  investigation: { label: 'Требуются изыскания', color: 'bg-purple-50 text-purple-700', dot: 'bg-purple-400' },
+  collecting: { label: 'Сбор информации', color: 'bg-amber-50/60 text-amber-600/80', dot: 'bg-amber-300' },
+  preparing: { label: 'Подготовка', color: 'bg-primary-50 text-primary-600', dot: 'bg-primary-300' },
+  ready: { label: 'Готово', color: 'bg-green-50/60 text-green-600/80', dot: 'bg-green-300' },
+  investigation: { label: 'Требуются изыскания', color: 'bg-purple-50/60 text-purple-600/80', dot: 'bg-purple-300' },
 };
 
 const { label, color, dot } = config[status];

@@ -10,8 +10,8 @@ interface Props {
 const { id, obligation, clause, status, comment } = Astro.props;
 
 const statusConfig = {
-  violated: { label: 'Нарушается', bg: 'bg-red-50', text: 'text-red-700', dot: 'bg-red-400', icon: 'x' },
-  partial: { label: 'Частично', bg: 'bg-amber-50', text: 'text-amber-700', dot: 'bg-amber-400', icon: '~' },
+  violated: { label: 'Нарушается', bg: 'bg-red-50/60', text: 'text-red-600/80', dot: 'bg-red-300', icon: 'x' },
+  partial: { label: 'Частично', bg: 'bg-amber-50/60', text: 'text-amber-600/80', dot: 'bg-amber-300', icon: '~' },
   unknown: { label: 'Неизвестно', bg: 'bg-accent-50', text: 'text-accent-500', dot: 'bg-accent-400', icon: '?' },
 };
 
