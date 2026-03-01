@@ -26,13 +26,22 @@ CREATE TABLE IF NOT EXISTS messages (
     category TEXT,
     subcategory TEXT,
     processed INTEGER DEFAULT 0,
+    confidence REAL DEFAULT 0.5,
+    needs_ai_review INTEGER DEFAULT 0,
     UNIQUE(chat_id, message_id)
 );
 
 CREATE INDEX IF NOT EXISTS idx_messages_category ON messages(category);
 CREATE INDEX IF NOT EXISTS idx_messages_date ON messages(date);
 CREATE INDEX IF NOT EXISTS idx_messages_chat ON messages(chat_id);
+CREATE INDEX IF NOT EXISTS idx_messages_ai_review ON messages(needs_ai_review);
 """
+
+MIGRATION_V2 = [
+    "ALTER TABLE messages ADD COLUMN confidence REAL DEFAULT 0.5",
+    "ALTER TABLE messages ADD COLUMN needs_ai_review INTEGER DEFAULT 0",
+    "CREATE INDEX IF NOT EXISTS idx_messages_ai_review ON messages(needs_ai_review)",
+]
 
 
 class Database:
@@ -45,6 +54,19 @@ class Database:
         self._db.row_factory = aiosqlite.Row
         await self._db.executescript(SCHEMA)
         await self._db.commit()
+        await self._migrate()
+
+    async def _migrate(self) -> None:
+        """Apply schema migrations for existing databases."""
+        cursor = await self._db.execute("PRAGMA table_info(messages)")
+        columns = {row[1] for row in await cursor.fetchall()}
+        if "confidence" not in columns:
+            for sql in MIGRATION_V2:
+                try:
+                    await self._db.execute(sql)
+                except aiosqlite.OperationalError:
+                    pass  # column/index already exists
+            await self._db.commit()
 
     async def close(self) -> None:
         if self._db:

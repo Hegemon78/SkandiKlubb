@@ -1,4 +1,7 @@
-"""Keyword-based categorization of parsed Telegram messages.
+"""Weighted-scoring categorization of parsed Telegram messages.
+
+Replaces first-match with scoring: each pattern has a weight, negative
+patterns reduce score, confidence = max / (max + second + 1).
 
 Usage:
     python data_processor.py              # Categorize all uncategorized messages
@@ -25,9 +28,12 @@ SUBCATEGORY_RULES: list[tuple[str, list[str]]] = [
         r"машиноместо", r"паркоместо", r"въезд\w*парк", r"выезд\w*парк",
     ]),
     ("skud", [
-        r"ворота", r"калитк", r"домофон", r"[сc][кk][уy][дd]",
-        r"ключ\w*доступ", r"брелок", r"интерком", r"шлагбаум",
+        r"ворота", r"калитк", r"[сc][кk][уy][дd]",
+        r"ключ\w*доступ", r"брелок", r"шлагбаум",
         r"кодов\w+замо[кч]", r"магнитн\w+замо[кч]",
+    ]),
+    ("intercom", [
+        r"домофон", r"интерком", r"трубк\w+домофон", r"домофон\w+не\s",
     ]),
     ("elevator", [
         r"лифт",
@@ -39,7 +45,26 @@ SUBCATEGORY_RULES: list[tuple[str, list[str]]] = [
     ]),
     ("electricity", [
         r"электричеств", r"розетк", r"автомат\w+выбива", r"щиток",
-        r"освещен\w+парадн", r"электрик", r"напряжен\w+сети",
+        r"электрик", r"напряжен\w+сети",
+    ]),
+    ("lighting", [
+        r"освещен", r"фонар", r"светильник", r"лампочк",
+        r"темно\s+в\s+парадн", r"свет\w*\s+(?:в\s+)?парадн",
+        r"свет\w*\s+во\s+двор", r"не\s+гор\w+свет",
+    ]),
+    ("cleaning", [
+        r"убор\w+парадн", r"мыть\w+окн", r"помыть\w+окн", r"грязь\s+в\s+парадн",
+        r"грязн\w+парадн", r"не\s+убира", r"уборщиц", r"клининг",
+        r"мыли\s+(?:парадн|подъезд)", r"помыли\s+(?:парадн|подъезд)",
+    ]),
+    ("noise", [
+        r"шум\w*\s+(?:от|из|на|в)", r"громк\w+музык", r"стройк\w+шум",
+        r"сверл\w+(?:ночь|вечер|утр|выходн)", r"шумн\w+сосед",
+        r"шумят", r"шум\w+работ",
+    ]),
+    ("insects", [
+        r"таракан", r"клоп", r"дезинсекц", r"дезинфекц",
+        r"травить\w*\s+таракан", r"муравь", r"насеком",
     ]),
     ("repair", [
         r"фасад", r"кондиционер", r"остеклен", r"балкон",
@@ -83,67 +108,131 @@ SUBCATEGORY_RULES: list[tuple[str, list[str]]] = [
 ]
 
 # ---------------------------------------------------------------------------
-# Category rules: what type of message is this?
-# Priority: contact > ad > info > solution > problem > faq > other
+# Weighted category patterns: (regex, weight)
+# Score = sum of matched pattern weights - negative penalty
+# Winner = category with max score
 # ---------------------------------------------------------------------------
 
-# Regex patterns for each category
-CONTACT_PATTERNS = [
-    r"\+7[\s\-\(]?\d{3}[\s\-\)]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}",
-    r"\+7\d{10}",
-    r"8[\s\-\(]?\d{3}[\s\-\)]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}",
-    r"(?:телефон|контакт|номер)\w*\s*[:—–-]\s*\+?\d",
-    r"(?:звоните|обращайтесь)\s*(?:по|на)?\s*[:—–-]?\s*\+?\d",
-]
+CATEGORY_PATTERNS: dict[str, list[tuple[str, int]]] = {
+    "contact": [
+        (r"\+7[\s\-\(]?\d{3}[\s\-\)]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}", 10),
+        (r"\+7\d{10}", 10),
+        (r"8[\s\-\(]?\d{3}[\s\-\)]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}", 8),
+        (r"(?:телефон|контакт|номер)\w*\s*[:—–-]\s*\+?\d", 8),
+        (r"(?:звоните|обращайтесь)\s*(?:по|на)?\s*[:—–-]?\s*\+?\d", 7),
+    ],
+    "ad": [
+        (r"(?:предлагаю|предлагаем|оказываю|оказываем)\s+услуг", 6),
+        (r"ремонт\s+(?:под\s+ключ|квартир|балкон|ванн)", 5),
+        (r"(?:прайс|расценк|стоимость\s+услуг)", 6),
+        (r"(?:заказ|оформить|оставить\s+заявк)\w*\s*(?:по|на|у|в)", 4),
+        (r"(?:скидк\w+|акци[яю]|промокод)\s+\d", 6),
+        (r"(?:дизайн|монтаж|установк)\w*\s+(?:под|от|за)\s+\d", 5),
+        (r"(?:пишите|звоните)\s+(?:в\s+лс|в\s+личк|мне)", 4),
+        (r"(?:наша\s+компания|наша\s+фирма|мы\s+занимаемся)", 5),
+    ],
+    "info": [
+        (r"уважаемые\s+жител", 7),
+        (r"информируем", 6),
+        (r"(?:завтра|сегодня)\s+(?:с\s+\d|в\s+\d|будет\s+(?:проводи|осуществля|отключ|включ))", 5),
+        (r"плановые?\s+(?:работ|отключен|ремонт)", 6),
+        (r"просим\s+(?:вас|обратить|не\s+парковать|использовать)", 5),
+        (r"(?:ремонтные|профилактические)\s+работы\s+(?:завершен|начат|проводятся)", 6),
+    ],
+    "solution": [
+        (r"(?:починил|отремонтировал|исправил|устранил)\w*", 5),
+        (r"(?:заработал|включил|восстановил|запустил)\w*\s+(?:обратно|снова)?", 5),
+        (r"(?:мне|нам)\s+помогло", 5),
+        (r"работы\s+(?:завершены|выполнены)", 6),
+        (r"(?:проблем\w+\s+)?(?:реш[её]н[аоы]?\b|устранен)", 5),
+        (r"(?:скамейк|ворот|лифт|камер)\w*\s+(?:починил|отремонтировал|заработал)", 7),
+    ],
+    "problem": [
+        (r"не\s+работа[ею]т", 5),
+        (r"(?:сломал|поломал|вышл\w+из\s+строя|неисправн)\w*", 6),
+        (r"(?:протечк|затопил|течёт|течет|льётся|подтекает)\w*", 6),
+        (r"(?:когда\s+)?(?:починят|отремонтируют|исправят|устранят)", 5),
+        (r"(?:жалоб|претенз|обращен)\w+\s+(?:в|на|к)", 5),
+        (r"(?:опять|снова)\s+не\s+\w+", 5),
+        (r"(?:нараспашку|открыты\s+настежь)", 5),
+        (r"(?:проблем\w+\s+с|перебо\w+\s+с)", 5),
+        (r"(?:бездейств|игнорир|не\s+реагир)\w*", 5),
+        # New patterns — catch from OTHER
+        (r"темно\s+(?:в|на|у)", 4),
+        (r"(?:грязь|грязно)\s+(?:в|на|у)", 4),
+        (r"(?:воняет|вонь|запах\w*)\s+(?:в|на|из)", 4),
+        (r"таракан\w*\s+(?:в|на|у|опять|снова)", 4),
+        (r"не\s+убира[юе]т", 5),
+        (r"(?:разбит|разбили|разбилось)\w*", 4),
+        (r"(?:засорил|забил)\w*\s+(?:канализац|труб|слив)", 5),
+    ],
+    "faq": [
+        (r"(?:подскажите|посоветуйте|порекомендуйте)\b", 5),
+        (r"(?:у\s+кого|кто[\s-]+нибудь|кто\s+знает|кто\s+сталкивался)\b", 5),
+        (r"(?:как\s+(?:правильно|лучше|можно|вы)\s+\w+)\?", 5),
+        (r"(?:где\s+(?:можно|лучше|находит|искать))\b", 4),
+        (r"(?:какой|какую|каких)\s+\w+\s+(?:ставите|используете|выбрали|рекомендуете)", 5),
+        (r"(?:есть\s+(?:у\s+кого|ли)\s+\w+)\?", 4),
+        # New patterns — catch from OTHER
+        (r"(?:а\s+как|а\s+что|а\s+где|а\s+кто)\b", 3),
+        (r"(?:кто\s+делал|кто\s+ставил|кто\s+менял)\b", 4),
+        (r"(?:кто\s+(?:вам|вы)\s+\w+)\?", 3),
+        (r"(?:чем\s+лучше|что\s+лучше)\b", 4),
+    ],
+}
 
-AD_PATTERNS = [
-    r"(?:предлагаю|предлагаем|оказываю|оказываем)\s+услуг",
-    r"ремонт\s+(?:под\s+ключ|квартир|балкон|ванн)",
-    r"(?:прайс|расценк|стоимость\s+услуг)",
-    r"(?:заказ|оформить|оставить\s+заявк)\w*\s*(?:по|на|у|в)",
-    r"(?:скидк\w+|акци[яю]|промокод)\s+\d",
-    r"(?:дизайн|монтаж|установк)\w*\s+(?:под|от|за)\s+\d",
-]
+# ---------------------------------------------------------------------------
+# Negative patterns — reduce category score
+# ---------------------------------------------------------------------------
 
-INFO_PATTERNS = [
-    r"уважаемые\s+жител",
-    r"информируем",
-    r"(?:завтра|сегодня)\s+(?:с\s+\d|в\s+\d|будет\s+(?:проводи|осуществля|отключ|включ))",
-    r"плановые?\s+(?:работ|отключен|ремонт)",
-    r"просим\s+(?:вас|обратить|не\s+парковать|использовать)",
-    r"(?:ремонтные|профилактические)\s+работы\s+(?:завершен|начат|проводятся)",
-]
+NEGATIVE_PATTERNS: dict[str, list[tuple[str, int]]] = {
+    "ad": [
+        (r"\?", 4),                                   # questions are not ads
+        (r"(?:кто[\s-]+нибудь|у\s+кого)\b", 5),      # seeking advice, not selling
+        (r"(?:подскажите|посоветуйте)\b", 5),
+        (r"(?:где\s+(?:можно|лучше|заказ))\b", 4),   # asking where, not offering
+        (r"(?:какой|какую)\s+\w+\s+(?:выбрали|используете)", 4),
+    ],
+    "solution": [
+        (r"\?", 5),                                   # question, not a statement
+        (r"решение\s+(?:осс|собран|общего)", 6),      # "решение ОСС" != fix
+        (r"(?:осс|собран\w+собственник).{0,60}решен", 6),  # ОСС...решение nearby
+        (r"решен\w*.{0,60}(?:осс|собран\w+собственник)", 6),  # решение...ОСС nearby
+        (r"голосован\w+\s+(?:за|против)", 5),
+        (r"(?:я\s+)?решил\w*\s+(?:не\s+|что\s+)", 5),  # "решил не смотреть"
+        (r"(?:принял|вынес)\w*\s+решен", 5),            # formal decision, not fix
+        (r"решение\s+(?:оставляет|принять|вопрос)", 5),  # formal "decision"
+    ],
+    "problem": [
+        # standalone "опять/снова" without problem-keyword nearby
+        (r"^(?:опять|снова)\s+(?!не\s)(?!слома)(?!протеч)(?!затоп)(?!поломк)"
+         r"(?!течёт)(?!течет)(?!забил)(?!засор)(?!воня)(?!грязн)", 4),
+    ],
+}
 
-SOLUTION_PATTERNS = [
-    r"(?:починил|отремонтировал|исправил|устранил|решил)\w*",
-    r"(?:заработал|включил|восстановил|запустил)\w*\s+(?:обратно|снова)?",
-    r"(?:мне|нам)\s+помогло",
-    r"работы\s+(?:завершены|выполнены)",
-    r"(?:проблем\w+\s+)?(?:реш[иеё]н|устранен)",
-    r"(?:скамейк|ворот|лифт|камер)\w*\s+(?:починил|отремонтировал|заработал)",
-]
+# ---------------------------------------------------------------------------
+# Question detection — bonus/penalty
+# ---------------------------------------------------------------------------
 
-PROBLEM_PATTERNS = [
-    r"не\s+работа[ею]т",
-    r"(?:сломал|поломал|вышл\w+из\s+строя|неисправн)\w*",
-    r"(?:протечк|затопил|течёт|течет|льётся|подтекает)\w*",
-    r"(?:когда\s+)?(?:починят|отремонтируют|исправят|устранят)",
-    r"(?:жалоб|претенз|обращен)\w+\s+(?:в|на|к)",
-    r"(?:опять|снова|опять\s+не|снова\s+не)\s+\w+",
-    r"(?:нараспашку|открыты\s+настежь)",
-    r"(?:проблем\w+\s+с|перебо\w+\s+с)",
-    r"(?:бездейств|игнорир|не\s+реагир)\w*",
-]
+_QUESTION_START = re.compile(
+    r"^(?:как|где|кто|почему|что|когда|зачем|куда|откуда|сколько|чем|какой|какая|какие)\b",
+    re.IGNORECASE,
+)
 
-FAQ_PATTERNS = [
-    r"(?:подскажите|посоветуйте|порекомендуйте)\b",
-    r"(?:у\s+кого|кто[\s-]+нибудь|кто\s+знает|кто\s+сталкивался)\b",
-    r"(?:как\s+(?:правильно|лучше|можно|вы)\s+\w+)\?",
-    r"(?:где\s+(?:можно|лучше|находит|искать))\b",
-    r"(?:какой|какую|каких)\s+\w+\s+(?:ставите|используете|выбрали|рекомендуете)",
-    r"(?:есть\s+(?:у\s+кого|ли)\s+\w+)\?",
-]
 
+def _is_question(text: str) -> bool:
+    """Check if text is a question."""
+    stripped = text.strip()
+    if "?" in stripped:
+        return True
+    if _QUESTION_START.search(stripped):
+        return True
+    return False
+
+
+# ---------------------------------------------------------------------------
+# Core functions
+# ---------------------------------------------------------------------------
 
 def detect_subcategory(text: str) -> str | None:
     """Detect topic/subcategory from text."""
@@ -155,72 +244,106 @@ def detect_subcategory(text: str) -> str | None:
     return None
 
 
-def categorize_message(text: str, chat_id: int) -> tuple[str, str | None]:
-    """Categorize a single message.
+def categorize_message(
+    text: str, chat_id: int,
+) -> tuple[str, str | None, float, bool]:
+    """Categorize a single message using weighted scoring.
 
     Returns:
-        (category, subcategory) tuple.
+        (category, subcategory, confidence, needs_ai_review) tuple.
     """
     if not text or not text.strip():
-        return ("other", None)
+        return ("other", None, 1.0, False)
 
     # Short messages (< 15 chars) — almost always noise
     if len(text.strip()) < 15:
-        # Unless it contains a phone number
-        for pat in CONTACT_PATTERNS:
+        for pat, _ in CATEGORY_PATTERNS["contact"]:
             if re.search(pat, text):
-                return ("contact", None)
-        return ("other", None)
+                return ("contact", None, 0.9, False)
+        return ("other", None, 1.0, False)
 
     # UK channel (2081187522) — mostly info announcements
     if chat_id == 2081187522:
         subcat = detect_subcategory(text)
         # Check if it's a solution (repair completed)
-        for pat in SOLUTION_PATTERNS:
-            if re.search(pat, text, re.IGNORECASE):
-                return ("solution", subcat)
-        return ("info", subcat)
+        sol_score = 0
+        text_lower = text.lower()
+        for pat, weight in CATEGORY_PATTERNS.get("solution", []):
+            if re.search(pat, text_lower):
+                sol_score += weight
+        # Apply solution negatives
+        for pat, penalty in NEGATIVE_PATTERNS.get("solution", []):
+            if re.search(pat, text_lower):
+                sol_score -= penalty
+        if sol_score > 3:
+            return ("solution", subcat, 0.85, False)
+        return ("info", subcat, 0.9, False)
 
     text_lower = text.lower()
+    is_q = _is_question(text)
 
-    # 1. Contact — phone numbers, contact sharing
-    for pat in CONTACT_PATTERNS:
-        if re.search(pat, text):
-            subcat = detect_subcategory(text)
-            return ("contact", subcat)
+    # Compute scores for all categories
+    scores: dict[str, float] = {}
+    for cat, patterns in CATEGORY_PATTERNS.items():
+        score = 0.0
+        for pat, weight in patterns:
+            if re.search(pat, text_lower):
+                score += weight
+        # Apply negative patterns
+        for neg_pat, penalty in NEGATIVE_PATTERNS.get(cat, []):
+            if re.search(neg_pat, text_lower):
+                score -= penalty
+        scores[cat] = score
 
-    # 2. Ad — service offers
-    for pat in AD_PATTERNS:
-        if re.search(pat, text_lower):
-            return ("ad", detect_subcategory(text))
+    # Question detection bonus/penalty
+    if is_q:
+        scores["faq"] = scores.get("faq", 0) + 3
+        scores["ad"] = scores.get("ad", 0) - 3
+        scores["solution"] = scores.get("solution", 0) - 3
 
-    # 3. Info — official announcements (from forwarded UK messages)
-    for pat in INFO_PATTERNS:
-        if re.search(pat, text_lower):
-            return ("info", detect_subcategory(text))
+    # Clamp negatives to 0
+    for cat in scores:
+        if scores[cat] < 0:
+            scores[cat] = 0
 
-    # 4. Solution — something was fixed
-    for pat in SOLUTION_PATTERNS:
-        if re.search(pat, text_lower):
-            return ("solution", detect_subcategory(text))
+    # Find winner
+    sorted_cats = sorted(scores.items(), key=lambda x: -x[1])
+    max_score = sorted_cats[0][1] if sorted_cats else 0
+    second_score = sorted_cats[1][1] if len(sorted_cats) > 1 else 0
 
-    # 5. Problem — complaints, broken things
-    for pat in PROBLEM_PATTERNS:
-        if re.search(pat, text_lower):
-            return ("problem", detect_subcategory(text))
+    # Category with highest positive score wins
+    if max_score > 0:
+        winner = sorted_cats[0][0]
+        subcat = detect_subcategory(text)
+        confidence = max_score / (max_score + second_score + 1)
+        needs_review = confidence < 0.6
+        return (winner, subcat, round(confidence, 2), needs_review)
 
-    # 6. FAQ — questions, advice seeking
-    for pat in FAQ_PATTERNS:
-        if re.search(pat, text_lower):
-            return ("faq", detect_subcategory(text))
-
-    # 7. Topic-only (has subcategory but no clear category)
+    # Fallback: topic-only (has subcategory but no clear category)
     subcat = detect_subcategory(text)
     if subcat:
-        # Has a topic but unclear sentiment — mark for AI review later
-        return ("topic", subcat)
+        return ("topic", subcat, 0.3, True)
 
-    return ("other", None)
+    return ("other", None, 1.0, False)
+
+
+# ---------------------------------------------------------------------------
+# DB processing
+# ---------------------------------------------------------------------------
+
+def _migrate_db(db: sqlite3.Connection) -> None:
+    """Add confidence/needs_ai_review columns if missing."""
+    cols = {r[1] for r in db.execute("PRAGMA table_info(messages)").fetchall()}
+    if "confidence" not in cols:
+        for sql in [
+            "ALTER TABLE messages ADD COLUMN confidence REAL DEFAULT 0.5",
+            "ALTER TABLE messages ADD COLUMN needs_ai_review INTEGER DEFAULT 0",
+        ]:
+            try:
+                db.execute(sql)
+            except sqlite3.OperationalError:
+                pass  # already exists
+        db.commit()
 
 
 def process_all(db_path: str, reset: bool = False) -> dict:
@@ -234,9 +357,13 @@ def process_all(db_path: str, reset: bool = False) -> dict:
         Stats dict with category counts.
     """
     db = sqlite3.connect(db_path)
+    _migrate_db(db)
 
     if reset:
-        db.execute("UPDATE messages SET category = NULL, subcategory = NULL, processed = 0")
+        db.execute(
+            "UPDATE messages SET category = NULL, subcategory = NULL, "
+            "processed = 0, confidence = 0.5, needs_ai_review = 0"
+        )
         db.commit()
         print("Reset all categories.")
 
@@ -256,14 +383,18 @@ def process_all(db_path: str, reset: bool = False) -> dict:
     batch = []
 
     for i, (msg_id, chat_id, text) in enumerate(rows):
-        category, subcategory = categorize_message(text or "", chat_id)
+        category, subcategory, confidence, needs_review = categorize_message(
+            text or "", chat_id,
+        )
 
-        batch.append((category, subcategory, msg_id))
+        batch.append((category, subcategory, confidence, int(needs_review), msg_id))
         stats[category] = stats.get(category, 0) + 1
 
         if len(batch) >= 1000:
             db.executemany(
-                "UPDATE messages SET category = ?, subcategory = ?, processed = 1 WHERE id = ?",
+                "UPDATE messages SET category = ?, subcategory = ?, "
+                "confidence = ?, needs_ai_review = ?, processed = 1 "
+                "WHERE id = ?",
                 batch,
             )
             db.commit()
@@ -273,7 +404,9 @@ def process_all(db_path: str, reset: bool = False) -> dict:
     # Flush remaining
     if batch:
         db.executemany(
-            "UPDATE messages SET category = ?, subcategory = ?, processed = 1 WHERE id = ?",
+            "UPDATE messages SET category = ?, subcategory = ?, "
+            "confidence = ?, needs_ai_review = ?, processed = 1 "
+            "WHERE id = ?",
             batch,
         )
         db.commit()
@@ -286,20 +419,41 @@ def process_all(db_path: str, reset: bool = False) -> dict:
 
 
 def show_stats(db_path: str) -> None:
-    """Show category distribution."""
+    """Show category distribution with confidence metrics."""
     db = sqlite3.connect(db_path)
+    _migrate_db(db)
 
     print("\n=== КАТЕГОРИИ ===")
     total = db.execute("SELECT COUNT(*) FROM messages").fetchone()[0]
+    if total == 0:
+        print("  No messages in database.")
+        db.close()
+        return
     rows = db.execute(
-        "SELECT category, COUNT(*) as cnt FROM messages GROUP BY category ORDER BY cnt DESC"
+        "SELECT category, COUNT(*) as cnt, ROUND(AVG(confidence), 2) as avg_conf "
+        "FROM messages GROUP BY category ORDER BY cnt DESC"
     ).fetchall()
-    for cat, cnt in rows:
+    for cat, cnt, avg_conf in rows:
         pct = cnt * 100 / total
         bar = "#" * int(pct)
-        print(f"  {cat or 'NULL':<12} {cnt:>6}  ({pct:>5.1f}%)  {bar}")
+        print(f"  {cat or 'NULL':<12} {cnt:>6}  ({pct:>5.1f}%)  conf={avg_conf}  {bar}")
 
     print(f"\n  Total: {total}")
+
+    # AI review stats
+    review_count = db.execute(
+        "SELECT COUNT(*) FROM messages WHERE needs_ai_review = 1"
+    ).fetchone()[0]
+    print(f"\n  Needs AI review: {review_count} ({review_count * 100 / total:.1f}%)")
+
+    review_by_cat = db.execute(
+        "SELECT category, COUNT(*) as cnt FROM messages "
+        "WHERE needs_ai_review = 1 GROUP BY category ORDER BY cnt DESC"
+    ).fetchall()
+    if review_by_cat:
+        print("  By category:")
+        for cat, cnt in review_by_cat:
+            print(f"    {cat:<12} {cnt:>5}")
 
     print("\n=== ПОДКАТЕГОРИИ (топ-20) ===")
     rows = db.execute(
@@ -324,11 +478,13 @@ def show_stats(db_path: str) -> None:
 
 
 def show_samples(db_path: str, n: int) -> None:
-    """Show random samples for each category."""
+    """Show random samples for each category with confidence."""
     db = sqlite3.connect(db_path)
+    _migrate_db(db)
 
     categories = [r[0] for r in db.execute(
-        "SELECT DISTINCT category FROM messages WHERE category IS NOT NULL ORDER BY category"
+        "SELECT DISTINCT category FROM messages "
+        "WHERE category IS NOT NULL ORDER BY category"
     ).fetchall()]
 
     for cat in categories:
@@ -336,12 +492,15 @@ def show_samples(db_path: str, n: int) -> None:
         print(f"  CATEGORY: {cat}")
         print(f"{'=' * 60}")
         rows = db.execute(
-            "SELECT sender_name, substr(text, 1, 200) FROM messages "
-            "WHERE category = ? AND length(text) > 20 ORDER BY RANDOM() LIMIT ?",
+            "SELECT sender_name, substr(text, 1, 200), confidence, needs_ai_review "
+            "FROM messages "
+            "WHERE category = ? AND length(text) > 20 "
+            "ORDER BY RANDOM() LIMIT ?",
             (cat, n),
         ).fetchall()
-        for name, text in rows:
-            print(f"  [{name}] {text}")
+        for name, text, conf, review in rows:
+            flag = " [AI?]" if review else ""
+            print(f"  [{name}] (conf={conf}){flag} {text}")
             print()
 
     db.close()
@@ -351,7 +510,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Categorize parsed messages")
     parser.add_argument("--reset", action="store_true", help="Reset all categories")
     parser.add_argument("--stats", action="store_true", help="Show category stats")
-    parser.add_argument("--sample", type=int, default=0, help="Show N samples per category")
+    parser.add_argument(
+        "--sample", type=int, default=0, help="Show N samples per category",
+    )
     args = parser.parse_args()
 
     cfg = load_config()
