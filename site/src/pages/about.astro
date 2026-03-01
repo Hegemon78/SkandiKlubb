@@ -1,87 +1,92 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
 import { house } from '../data/house';
 ---
 
 <BaseLayout title="О доме" description="Информация о доме ЖК Skandi Klubb — адрес, структура, площадь, застройщик">
-  <section class="max-w-4xl mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold mb-8">О доме</h1>
+  <PageHeader
+    title="О доме"
+    description="Основная информация о здании, структура и дополнительные помещения"
+    breadcrumbs={[{ label: 'О доме' }]}
+  />
 
+  <section class="max-w-5xl mx-auto px-4 py-12">
     <!-- Main info -->
-    <div class="bg-white rounded-xl border border-accent-200 overflow-hidden mb-8">
-      <div class="bg-primary-50 px-6 py-4 border-b border-accent-200">
-        <h2 class="text-xl font-bold text-primary-900">Основная информация</h2>
+    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden mb-8">
+      <div class="px-6 py-4 border-b border-accent-100">
+        <h2 class="text-xl font-bold text-primary-950">Основная информация</h2>
       </div>
       <div class="p-6">
-        <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+        <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
           <div>
-            <dt class="text-sm text-accent-500">Адрес</dt>
-            <dd class="font-medium">{house.address}</dd>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Адрес</dt>
+            <dd class="font-medium text-primary-950">{house.address}</dd>
           </div>
           <div>
-            <dt class="text-sm text-accent-500">ЖК</dt>
-            <dd class="font-medium">{house.name}</dd>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">ЖК</dt>
+            <dd class="font-medium text-primary-950">{house.name}</dd>
           </div>
           <div>
-            <dt class="text-sm text-accent-500">Застройщик</dt>
-            <dd class="font-medium">{house.developer}</dd>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Застройщик</dt>
+            <dd class="font-medium text-primary-950">{house.developer}</dd>
           </div>
           <div>
-            <dt class="text-sm text-accent-500">Год постройки</dt>
-            <dd class="font-medium">{house.yearBuilt}</dd>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Год постройки</dt>
+            <dd class="font-medium text-primary-950">{house.yearBuilt}</dd>
           </div>
           <div>
-            <dt class="text-sm text-accent-500">Район</dt>
-            <dd class="font-medium">{house.district}</dd>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Район</dt>
+            <dd class="font-medium text-primary-950">{house.district}</dd>
           </div>
           <div>
-            <dt class="text-sm text-accent-500">Кадастровый номер</dt>
-            <dd class="font-medium font-mono text-sm">{house.cadastralNumber}</dd>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Кадастровый номер</dt>
+            <dd class="font-medium font-mono text-sm text-primary-950">{house.cadastralNumber}</dd>
           </div>
           <div>
-            <dt class="text-sm text-accent-500">Общая площадь</dt>
-            <dd class="font-medium">
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Общая площадь</dt>
+            <dd class="font-medium text-primary-950">
               {house.totalArea}
-              <span class="text-xs text-yellow-600 ml-1">({house.totalAreaNote})</span>
+              <span class="text-xs text-amber-600 ml-1">({house.totalAreaNote})</span>
             </dd>
           </div>
           <div>
-            <dt class="text-sm text-accent-500">Количество квартир</dt>
-            <dd class="font-medium">
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Количество квартир</dt>
+            <dd class="font-medium text-primary-950">
               {house.apartments}
-              <span class="text-xs text-yellow-600 ml-1">({house.apartmentsNote})</span>
+              <span class="text-xs text-amber-600 ml-1">({house.apartmentsNote})</span>
             </dd>
           </div>
           <div>
-            <dt class="text-sm text-accent-500">Подъездов (парадных)</dt>
-            <dd class="font-medium">{house.entrances}</dd>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Подъездов (парадных)</dt>
+            <dd class="font-medium text-primary-950">{house.entrances}</dd>
           </div>
           <div>
-            <dt class="text-sm text-accent-500">Лифтов</dt>
-            <dd class="font-medium">{house.elevators}</dd>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Лифтов</dt>
+            <dd class="font-medium text-primary-950">{house.elevators}</dd>
           </div>
           <div>
-            <dt class="text-sm text-accent-500">Этажность</dt>
-            <dd class="font-medium">{house.floors}</dd>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Этажность</dt>
+            <dd class="font-medium text-primary-950">{house.floors}</dd>
           </div>
         </dl>
       </div>
     </div>
 
     <!-- Structure -->
-    <div class="bg-white rounded-xl border border-accent-200 overflow-hidden mb-8">
-      <div class="bg-primary-50 px-6 py-4 border-b border-accent-200">
-        <h2 class="text-xl font-bold text-primary-900">Структура дома (4 очереди)</h2>
+    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden mb-8">
+      <div class="px-6 py-4 border-b border-accent-100">
+        <h2 class="text-xl font-bold text-primary-950">Структура дома (4 очереди)</h2>
       </div>
       <div class="p-6">
-        <p class="text-sm text-accent-600 mb-4">
+        <p class="text-sm text-accent-600 mb-5">
           Дом фактически состоит из 4 корпусов (очередей) под одним адресом.
         </p>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           {house.queues.map(q => (
-            <div class="bg-accent-50 rounded-lg p-4 text-center">
+            <div class="rounded-xl border-l-4 border-primary-500 bg-primary-50/50 p-4">
               <div class="text-lg font-bold text-primary-800">{q.number} очередь</div>
-              <div class="text-sm text-accent-600">Парадные {q.entrances}</div>
+              <div class="text-sm text-accent-600 mt-1">Парадные {q.entrances}</div>
             </div>
           ))}
         </div>
@@ -89,9 +94,9 @@ import { house } from '../data/house';
     </div>
 
     <!-- Facilities -->
-    <div class="bg-white rounded-xl border border-accent-200 overflow-hidden">
-      <div class="bg-primary-50 px-6 py-4 border-b border-accent-200">
-        <h2 class="text-xl font-bold text-primary-900">Дополнительные помещения</h2>
+    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden">
+      <div class="px-6 py-4 border-b border-accent-100">
+        <h2 class="text-xl font-bold text-primary-950">Дополнительные помещения</h2>
       </div>
       <div class="p-6">
         <div class="space-y-4">
@@ -99,7 +104,7 @@ import { house } from '../data/house';
             <div class="flex items-start gap-3">
               <div class="w-2 h-2 rounded-full bg-primary-500 mt-2 shrink-0"></div>
               <div>
-                <span class="font-medium">{f.type}</span>
+                <span class="font-medium text-primary-950">{f.type}</span>
                 <span class="text-accent-600"> — {f.description}</span>
               </div>
             </div>

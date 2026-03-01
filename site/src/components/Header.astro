@@ -1,4 +1,9 @@
 ---
+interface Props {
+  transparent?: boolean;
+}
+
+const { transparent = false } = Astro.props;
 const currentPath = Astro.url.pathname;
 
 const navLinks = [
@@ -16,11 +21,30 @@ function isActive(href: string): boolean {
 }
 ---
 
-<header class="bg-primary-900 text-white sticky top-0 z-50 shadow-lg">
+<header
+  id="site-header"
+  class:list={[
+    'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+    transparent ? 'header-transparent' : 'bg-white shadow-sm'
+  ]}
+  data-transparent={transparent ? 'true' : 'false'}
+>
   <div class="max-w-6xl mx-auto px-4">
     <div class="flex items-center justify-between h-16">
-      <a href="/" class="text-xl font-bold tracking-tight hover:text-primary-200 transition-colors">
-        Skandi Klubb
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2.5 group">
+        <div class:list={[
+          'w-9 h-9 rounded-lg flex items-center justify-center font-extrabold text-sm transition-colors duration-300',
+          transparent ? 'bg-white/20 text-white logo-box' : 'bg-primary-600 text-white'
+        ]}>
+          SK
+        </div>
+        <span class:list={[
+          'text-lg font-bold tracking-tight transition-colors duration-300',
+          transparent ? 'text-white logo-text' : 'text-primary-950'
+        ]}>
+          Skandi Klubb
+        </span>
       </a>
 
       <!-- Desktop nav -->
@@ -29,10 +53,10 @@ function isActive(href: string): boolean {
           <a
             href={link.href}
             class:list={[
-              'px-3 py-2 rounded-md text-sm font-medium transition-colors',
+              'nav-link px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
               isActive(link.href)
-                ? 'bg-primary-700 text-white'
-                : 'text-primary-100 hover:bg-primary-800 hover:text-white'
+                ? (transparent ? 'bg-white/20 text-white nav-active' : 'bg-primary-50 text-primary-700')
+                : (transparent ? 'text-white/80 hover:text-white hover:bg-white/10 nav-default' : 'text-accent-600 hover:text-primary-700 hover:bg-primary-50')
             ]}
           >
             {link.label}
@@ -43,45 +67,108 @@ function isActive(href: string): boolean {
       <!-- Mobile burger -->
       <button
         id="mobile-menu-btn"
-        class="md:hidden p-2 rounded-md text-primary-100 hover:bg-primary-800 hover:text-white"
-        aria-label="Menu"
+        class:list={[
+          'md:hidden p-2 rounded-lg transition-colors',
+          transparent ? 'text-white hover:bg-white/10 burger-btn' : 'text-accent-600 hover:bg-accent-100'
+        ]}
+        aria-label="Открыть меню"
       >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path id="burger-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          <path id="close-icon" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        <svg id="burger-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <line x1="4" x2="20" y1="6" y2="6" stroke-width="2" stroke-linecap="round"/>
+          <line x1="4" x2="20" y1="12" y2="12" stroke-width="2" stroke-linecap="round"/>
+          <line x1="4" x2="20" y1="18" y2="18" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M18 6 6 18" stroke-width="2" stroke-linecap="round"/>
+          <path d="m6 6 12 12" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </button>
     </div>
 
     <!-- Mobile nav -->
-    <nav id="mobile-menu" class="hidden md:hidden pb-4">
-      {navLinks.map(link => (
-        <a
-          href={link.href}
-          class:list={[
-            'block px-3 py-2 rounded-md text-base font-medium transition-colors',
-            isActive(link.href)
-              ? 'bg-primary-700 text-white'
-              : 'text-primary-100 hover:bg-primary-800 hover:text-white'
-          ]}
-        >
-          {link.label}
-        </a>
-      ))}
+    <nav id="mobile-menu" class="hidden md:hidden overflow-hidden transition-all duration-300 max-h-0">
+      <div class="pb-4 space-y-1">
+        {navLinks.map(link => (
+          <a
+            href={link.href}
+            class:list={[
+              'block px-4 py-2.5 rounded-lg text-base font-medium transition-colors',
+              isActive(link.href)
+                ? 'bg-primary-50 text-primary-700'
+                : 'text-accent-700 hover:bg-accent-100 hover:text-primary-700'
+            ]}
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
     </nav>
   </div>
 </header>
 
+<!-- Spacer to prevent content from going under fixed header -->
+<div class:list={[transparent ? '' : 'h-16']}></div>
+
 <script>
+  const header = document.getElementById('site-header');
   const btn = document.getElementById('mobile-menu-btn');
   const menu = document.getElementById('mobile-menu');
   const burgerIcon = document.getElementById('burger-icon');
   const closeIcon = document.getElementById('close-icon');
+  const isTransparent = header?.dataset.transparent === 'true';
 
+  // Scroll-aware header for transparent mode
+  if (isTransparent && header) {
+    const onScroll = () => {
+      if (window.scrollY > 50) {
+        header.classList.remove('header-transparent');
+        header.classList.add('bg-white', 'shadow-sm', 'header-scrolled');
+      } else {
+        header.classList.add('header-transparent');
+        header.classList.remove('bg-white', 'shadow-sm', 'header-scrolled');
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  // Mobile menu toggle
   btn?.addEventListener('click', () => {
-    const isOpen = !menu?.classList.contains('hidden');
-    menu?.classList.toggle('hidden');
-    burgerIcon?.classList.toggle('hidden', !isOpen);
-    closeIcon?.classList.toggle('hidden', isOpen);
+    const isOpen = menu?.classList.contains('max-h-0');
+    if (isOpen) {
+      menu?.classList.remove('max-h-0');
+      menu?.classList.add('max-h-96');
+      menu?.classList.remove('hidden');
+    } else {
+      menu?.classList.add('max-h-0');
+      menu?.classList.remove('max-h-96');
+    }
+    burgerIcon?.classList.toggle('hidden', !!isOpen);
+    closeIcon?.classList.toggle('hidden', !isOpen);
   });
 </script>
+
+<style>
+  /* Transparent header → scrolled: recolor elements */
+  .header-scrolled .logo-box {
+    background-color: var(--color-primary-600);
+    color: white;
+  }
+  .header-scrolled .logo-text {
+    color: var(--color-primary-950);
+  }
+  .header-scrolled .nav-link.nav-active {
+    background-color: var(--color-primary-50);
+    color: var(--color-primary-700);
+  }
+  .header-scrolled .nav-link.nav-default {
+    color: var(--color-accent-600);
+  }
+  .header-scrolled .nav-link.nav-default:hover {
+    color: var(--color-primary-700);
+    background-color: var(--color-primary-50);
+  }
+  .header-scrolled .burger-btn {
+    color: var(--color-accent-600);
+  }
+</style>

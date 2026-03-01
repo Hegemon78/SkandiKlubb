@@ -1,42 +1,76 @@
 ---
+import IconPhone from './icons/IconPhone.astro';
+import IconMail from './icons/IconMail.astro';
+import IconMapPin from './icons/IconMapPin.astro';
+
 const year = new Date().getFullYear();
 ---
 
-<footer class="bg-accent-950 text-accent-300 mt-auto">
-  <div class="max-w-6xl mx-auto px-4 py-8">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<footer class="bg-primary-950 text-accent-300 mt-auto">
+  <!-- Gradient divider -->
+  <div class="h-1 bg-gradient-to-r from-primary-600 via-amber-400 to-primary-600"></div>
+
+  <div class="max-w-6xl mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <!-- Brand -->
       <div>
-        <h3 class="text-white font-bold text-lg mb-3">Skandi Klubb</h3>
-        <p class="text-sm">
-          Информационный портал для жителей<br />
-          ЖК Skandi Klubb
+        <div class="flex items-center gap-2.5 mb-4">
+          <div class="w-9 h-9 rounded-lg bg-primary-600 flex items-center justify-center font-extrabold text-sm text-white">
+            SK
+          </div>
+          <span class="text-lg font-bold text-white tracking-tight">Skandi Klubb</span>
+        </div>
+        <p class="text-sm text-accent-400 leading-relaxed">
+          Информационный портал для жителей ЖК Skandi Klubb. Создан инициативной группой.
         </p>
       </div>
 
+      <!-- Navigation -->
       <div>
-        <h4 class="text-white font-semibold mb-3">Диспетчерская УК</h4>
-        <p class="text-sm">
-          <a href="tel:+78126779802" class="hover:text-white transition-colors">
-            +7 (812) 677-98-02
-          </a>
-        </p>
-        <p class="text-sm mt-1">
-          <a href="mailto:info@ecvida-service.ru" class="hover:text-white transition-colors">
-            info@ecvida-service.ru
-          </a>
-        </p>
+        <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Навигация</h4>
+        <ul class="space-y-2.5">
+          <li><a href="/about" class="text-sm text-accent-400 hover:text-white transition-colors">О доме</a></li>
+          <li><a href="/management" class="text-sm text-accent-400 hover:text-white transition-colors">Управляющая компания</a></li>
+          <li><a href="/problems" class="text-sm text-accent-400 hover:text-white transition-colors">Проблемы</a></li>
+          <li><a href="/complaints" class="text-sm text-accent-400 hover:text-white transition-colors">Куда жаловаться</a></li>
+          <li><a href="/oss" class="text-sm text-accent-400 hover:text-white transition-colors">ОСС 2025</a></li>
+        </ul>
       </div>
 
+      <!-- Contacts -->
       <div>
-        <h4 class="text-white font-semibold mb-3">Адрес</h4>
-        <p class="text-sm">
-          Санкт-Петербург,<br />
-          Аптекарский пр-кт, 18, лит. А
-        </p>
+        <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Диспетчерская УК</h4>
+        <ul class="space-y-3">
+          <li>
+            <a href="tel:+78126779802" class="flex items-center gap-2.5 text-sm text-accent-400 hover:text-white transition-colors">
+              <IconPhone size={16} class="shrink-0 text-primary-400" />
+              +7 (812) 677-98-02
+            </a>
+          </li>
+          <li>
+            <a href="mailto:info@ecvida-service.ru" class="flex items-center gap-2.5 text-sm text-accent-400 hover:text-white transition-colors">
+              <IconMail size={16} class="shrink-0 text-primary-400" />
+              info@ecvida-service.ru
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Address -->
+      <div>
+        <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Адрес</h4>
+        <div class="flex items-start gap-2.5 text-sm text-accent-400">
+          <IconMapPin size={16} class="shrink-0 mt-0.5 text-primary-400" />
+          <span>
+            Санкт-Петербург,<br />
+            Аптекарский пр-кт, 18,<br />
+            лит. А
+          </span>
+        </div>
       </div>
     </div>
 
-    <div class="border-t border-accent-800 mt-8 pt-4 text-sm text-center text-accent-500">
+    <div class="border-t border-white/10 mt-10 pt-6 text-sm text-center text-accent-500">
       &copy; {year} Жители ЖК Skandi Klubb. Проект создан инициативной группой.
     </div>
   </div>

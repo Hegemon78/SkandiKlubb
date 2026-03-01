@@ -1,58 +1,66 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
 import InstanceCard from '../components/InstanceCard.astro';
+import IconInfo from '../components/icons/IconInfo.astro';
 import { instances, escalationSteps } from '../data/instances';
 ---
 
 <BaseLayout title="Куда жаловаться" description="Реестр инстанций Санкт-Петербурга для подачи жалоб на управляющую компанию">
-  <section class="max-w-4xl mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold mb-2">Куда жаловаться</h1>
-    <p class="text-accent-600 mb-8">
-      Реестр инстанций Санкт-Петербурга. Район: Петроградский.
-    </p>
+  <PageHeader
+    title="Куда жаловаться"
+    description="Реестр инстанций Санкт-Петербурга. Район: Петроградский."
+    breadcrumbs={[{ label: 'Куда жаловаться' }]}
+  />
 
-    <!-- Escalation -->
-    <div class="bg-primary-50 rounded-xl p-6 mb-10 border border-primary-200">
-      <h2 class="text-xl font-bold text-primary-900 mb-4">Порядок эскалации</h2>
-      <div class="space-y-3">
-        {escalationSteps.map((step, i) => (
-          <div class="flex items-start gap-3">
-            <div class="w-7 h-7 rounded-full bg-primary-600 text-white flex items-center justify-center text-sm font-bold shrink-0">
-              {i + 1}
+  <section class="max-w-5xl mx-auto px-4 py-12">
+    <!-- Escalation timeline -->
+    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 p-6 md:p-8 mb-12">
+      <h2 class="text-xl font-bold text-primary-950 mb-6">Порядок эскалации</h2>
+      <div class="relative">
+        <!-- Vertical line -->
+        <div class="absolute left-[15px] top-4 bottom-4 w-0.5 bg-gradient-to-b from-primary-400 via-primary-500 to-primary-600 rounded-full"></div>
+
+        <div class="space-y-5">
+          {escalationSteps.map((step, i) => (
+            <div class="flex items-start gap-4 relative">
+              <div class="w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center text-sm font-bold shrink-0 z-10 shadow-sm">
+                {i + 1}
+              </div>
+              <p class="text-accent-700 pt-1 leading-relaxed">{step}</p>
             </div>
-            <div class="pt-0.5">
-              <p class="text-accent-700">{step}</p>
-              {i < escalationSteps.length - 1 && (
-                <div class="text-primary-400 text-xs mt-1 ml-1">&darr;</div>
-              )}
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
 
     <!-- Instances -->
-    <h2 class="text-2xl font-bold text-primary-900 mb-6">Инстанции</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {instances.map(inst => (
-        <InstanceCard
-          step={inst.step}
-          name={inst.name}
-          description={inst.description}
-          phone={inst.phone}
-          email={inst.email}
-          address={inst.address}
-          url={inst.url}
-          deadline={inst.deadline}
-          basis={inst.basis}
-        />
+    <h2 class="text-2xl font-bold text-primary-950 mb-6">Инстанции</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+      {instances.map((inst, i) => (
+        <div class="animate-fade-in" style={`transition-delay: ${i * 80}ms`}>
+          <InstanceCard
+            step={inst.step}
+            name={inst.name}
+            description={inst.description}
+            phone={inst.phone}
+            email={inst.email}
+            address={inst.address}
+            url={inst.url}
+            deadline={inst.deadline}
+            basis={inst.basis}
+          />
+        </div>
       ))}
     </div>
 
     <!-- Note -->
-    <div class="mt-10 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
-      <strong>Важно:</strong> Всегда фиксируйте обращения письменно. Отправляйте заказные письма или
-      получайте отметку о вручении. Дублируйте обращения через ГИС ЖКХ для электронной фиксации.
+    <div class="animate-fade-in flex items-start gap-3 p-5 bg-amber-50 border border-amber-200 rounded-2xl text-sm text-amber-800">
+      <IconInfo size={20} class="text-amber-500 shrink-0 mt-0.5" />
+      <div>
+        <strong>Важно:</strong> Всегда фиксируйте обращения письменно. Отправляйте заказные письма или
+        получайте отметку о вручении. Дублируйте обращения через ГИС ЖКХ для электронной фиксации.
+      </div>
     </div>
   </section>
 </BaseLayout>

@@ -1,0 +1,36 @@
+---
+interface Props {
+  href: string;
+  title: string;
+  description: string;
+  iconColor?: string;
+  comingSoon?: boolean;
+}
+
+const { href, title, description, iconColor = 'text-primary-600', comingSoon = false } = Astro.props;
+---
+
+{comingSoon ? (
+  <div class="bg-white/80 rounded-2xl border-2 border-dashed border-accent-200 p-6 flex items-start gap-4">
+    <div class="w-11 h-11 rounded-xl bg-accent-100 flex items-center justify-center shrink-0">
+      <slot />
+    </div>
+    <div>
+      <h3 class="text-lg font-bold text-accent-400 mb-1">{title}</h3>
+      <p class="text-sm text-accent-400">{description}</p>
+    </div>
+  </div>
+) : (
+  <a
+    href={href}
+    class="group bg-white rounded-2xl border border-accent-200 p-6 flex items-start gap-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+  >
+    <div class:list={['w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110', iconColor === 'text-primary-600' ? 'bg-primary-50' : 'bg-accent-50']}>
+      <slot />
+    </div>
+    <div class="min-w-0">
+      <h3 class="text-lg font-bold text-primary-950 mb-1 group-hover:text-primary-600 transition-colors">{title}</h3>
+      <p class="text-sm text-accent-600">{description}</p>
+    </div>
+  </a>
+)}

@@ -1,82 +1,108 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import QuickLinkCard from '../components/QuickLinkCard.astro';
+import IconHome from '../components/icons/IconHome.astro';
+import IconBuilding from '../components/icons/IconBuilding.astro';
+import IconAlertTriangle from '../components/icons/IconAlertTriangle.astro';
+import IconMegaphone from '../components/icons/IconMegaphone.astro';
+import IconVote from '../components/icons/IconVote.astro';
+import IconFileText from '../components/icons/IconFileText.astro';
 import { house } from '../data/house';
 ---
 
-<BaseLayout title="Главная" description="Информационный портал для жителей ЖК Skandi Klubb — Аптекарский проспект, 18">
+<BaseLayout title="Главная" description="Информационный портал для жителей ЖК Skandi Klubb — Аптекарский проспект, 18" transparentHeader={true}>
   <!-- Hero -->
-  <section class="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-950 text-white py-20">
-    <div class="max-w-6xl mx-auto px-4 text-center">
-      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Skandi Klubb</h1>
-      <p class="text-xl text-primary-200 mb-2">{house.address}</p>
+  <section class="relative bg-primary-950 text-white pt-24 pb-28 overflow-hidden">
+    <!-- Background gradient -->
+    <div class="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-950 to-primary-900"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--color-primary-700)_0%,_transparent_50%)] opacity-40"></div>
+
+    <div class="relative max-w-6xl mx-auto px-4 text-center">
+      <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur rounded-full px-4 py-1.5 text-sm text-primary-200 mb-6">
+        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+        Инициатива жителей
+      </div>
+
+      <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-4 tracking-tight">
+        Skandi Klubb
+      </h1>
+      <p class="text-xl md:text-2xl text-primary-200 mb-2 font-light">{house.address}</p>
       <p class="text-primary-300">Информационный портал для жителей</p>
 
-      <div class="grid grid-cols-3 gap-4 max-w-lg mx-auto mt-10">
-        <div class="bg-white/10 backdrop-blur rounded-lg p-4">
-          <div class="text-3xl font-bold">{house.apartments}</div>
-          <div class="text-sm text-primary-200">квартир</div>
+      <!-- Stats -->
+      <div class="grid grid-cols-3 gap-4 max-w-md mx-auto mt-12">
+        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+          <div class="text-3xl md:text-4xl font-extrabold">{house.apartments}</div>
+          <div class="text-sm text-primary-300 mt-1">квартир</div>
         </div>
-        <div class="bg-white/10 backdrop-blur rounded-lg p-4">
-          <div class="text-3xl font-bold">{house.entrances}</div>
-          <div class="text-sm text-primary-200">подъездов</div>
+        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+          <div class="text-3xl md:text-4xl font-extrabold">{house.entrances}</div>
+          <div class="text-sm text-primary-300 mt-1">подъездов</div>
         </div>
-        <div class="bg-white/10 backdrop-blur rounded-lg p-4">
-          <div class="text-3xl font-bold">9+</div>
-          <div class="text-sm text-primary-200">проблем</div>
+        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+          <div class="text-3xl md:text-4xl font-extrabold">9+</div>
+          <div class="text-sm text-primary-300 mt-1">проблем</div>
         </div>
       </div>
+    </div>
+
+    <!-- Wave transition -->
+    <div class="absolute bottom-0 left-0 right-0">
+      <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+        <path d="M0 80V40C240 10 480 0 720 20C960 40 1200 50 1440 30V80H0Z" fill="#fafaf8"/>
+      </svg>
     </div>
   </section>
 
   <!-- Quick links -->
-  <section class="max-w-6xl mx-auto px-4 -mt-8 relative z-10">
+  <section class="max-w-6xl mx-auto px-4 -mt-6 relative z-10">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <a href="/about" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
-        <h3 class="text-lg font-bold text-primary-900 mb-2 group-hover:text-primary-600 transition-colors">О доме</h3>
-        <p class="text-sm text-accent-600">Адрес, структура, 4 очереди, парадные, площадь</p>
-      </a>
+      <QuickLinkCard href="/about" title="О доме" description="Адрес, структура, 4 очереди, парадные, площадь">
+        <IconHome size={22} class="text-primary-600" />
+      </QuickLinkCard>
 
-      <a href="/management" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
-        <h3 class="text-lg font-bold text-primary-900 mb-2 group-hover:text-primary-600 transition-colors">Управляющая компания</h3>
-        <p class="text-sm text-accent-600">ЭКВИДА-СЕРВИС: реквизиты, контакты, режим работы</p>
-      </a>
+      <QuickLinkCard href="/management" title="Управляющая компания" description="ЭКВИДА-СЕРВИС: реквизиты, контакты, режим работы">
+        <IconBuilding size={22} class="text-primary-600" />
+      </QuickLinkCard>
 
-      <a href="/problems" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
-        <h3 class="text-lg font-bold text-primary-900 mb-2 group-hover:text-primary-600 transition-colors">Проблемы</h3>
-        <p class="text-sm text-accent-600">9 категорий проблем с подробным описанием и статусами</p>
-      </a>
+      <QuickLinkCard href="/problems" title="Проблемы" description="9 категорий проблем с подробным описанием и статусами">
+        <IconAlertTriangle size={22} class="text-amber-600" />
+      </QuickLinkCard>
 
-      <a href="/complaints" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
-        <h3 class="text-lg font-bold text-primary-900 mb-2 group-hover:text-primary-600 transition-colors">Куда жаловаться</h3>
-        <p class="text-sm text-accent-600">8 инстанций с контактами и порядком эскалации</p>
-      </a>
+      <QuickLinkCard href="/complaints" title="Куда жаловаться" description="8 инстанций с контактами и порядком эскалации">
+        <IconMegaphone size={22} class="text-red-500" />
+      </QuickLinkCard>
 
-      <a href="/oss" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
-        <h3 class="text-lg font-bold text-primary-900 mb-2 group-hover:text-primary-600 transition-colors">ОСС 2025</h3>
-        <p class="text-sm text-accent-600">Проект повестки, 13 вопросов, кворумы, статусы</p>
-      </a>
+      <QuickLinkCard href="/oss" title="ОСС 2025" description="Проект повестки, 13 вопросов, кворумы, статусы">
+        <IconVote size={22} class="text-primary-600" />
+      </QuickLinkCard>
 
-      <div class="bg-accent-50 rounded-xl shadow-lg p-6 border-2 border-dashed border-accent-200">
-        <h3 class="text-lg font-bold text-accent-500 mb-2">Генератор жалоб</h3>
-        <p class="text-sm text-accent-400">Скоро: автоматическая генерация документов для инстанций</p>
-      </div>
+      <QuickLinkCard href="#" title="Генератор жалоб" description="Скоро: автоматическая генерация документов для инстанций" comingSoon={true}>
+        <IconFileText size={22} class="text-accent-400" />
+      </QuickLinkCard>
     </div>
   </section>
 
   <!-- About section -->
-  <section class="max-w-6xl mx-auto px-4 py-16">
-    <h2 class="text-2xl font-bold text-primary-900 mb-6">О проекте</h2>
-    <div class="prose max-w-none text-accent-700">
-      <p>
-        Этот портал создан инициативной группой жителей ЖК Skandi Klubb для решения
-        общих проблем дома. Здесь собрана информация о выявленных проблемах, контактах
-        инстанций для подачи жалоб и материалы для подготовки общего собрания собственников.
-      </p>
-      <p class="mt-4">
-        Наша цель — обеспечить прозрачность управления домом, зафиксировать и решить
-        комплекс проблем с управляющей компанией, и включить в повестку ОСС необходимые
-        вопросы.
-      </p>
+  <section class="max-w-5xl mx-auto px-4 py-20">
+    <div class="animate-fade-in">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="h-px flex-1 bg-accent-200"></div>
+        <h2 class="text-2xl font-bold text-primary-950">О проекте</h2>
+        <div class="h-px flex-1 bg-accent-200"></div>
+      </div>
+      <div class="max-w-3xl mx-auto text-center">
+        <p class="text-accent-600 leading-relaxed text-lg">
+          Этот портал создан инициативной группой жителей ЖК Skandi Klubb для решения
+          общих проблем дома. Здесь собрана информация о выявленных проблемах, контактах
+          инстанций для подачи жалоб и материалы для подготовки общего собрания собственников.
+        </p>
+        <p class="text-accent-600 leading-relaxed text-lg mt-4">
+          Наша цель — обеспечить прозрачность управления домом, зафиксировать и решить
+          комплекс проблем с управляющей компанией, и включить в повестку ОСС необходимые
+          вопросы.
+        </p>
+      </div>
     </div>
   </section>
 </BaseLayout>

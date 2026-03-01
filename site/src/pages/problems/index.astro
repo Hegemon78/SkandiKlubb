@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
 import ProblemCard from '../../components/ProblemCard.astro';
 import { getCollection } from 'astro:content';
 
@@ -10,22 +11,23 @@ const categories = [...new Set(problems.map(p => p.data.category))];
 ---
 
 <BaseLayout title="Проблемы" description="Каталог проблем ЖК Skandi Klubb — безопасность, технические, финансовые, организационные">
-  <section class="max-w-6xl mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold mb-2">Проблемы ЖК</h1>
-    <p class="text-accent-600 mb-8">
-      Выявленные проблемы, сгруппированные по категориям. Нажмите на карточку для подробной информации.
-    </p>
+  <PageHeader
+    title="Проблемы ЖК"
+    description="Выявленные проблемы, сгруппированные по категориям. Нажмите на карточку для подробной информации."
+    breadcrumbs={[{ label: 'Проблемы' }]}
+  />
 
+  <section class="max-w-6xl mx-auto px-4 py-12">
     <!-- Category filter -->
     <div class="flex flex-wrap gap-2 mb-8">
-      <button class="category-btn active px-4 py-2 rounded-full text-sm font-medium bg-primary-600 text-white" data-category="all">
+      <button class="category-btn active px-4 py-2 rounded-full text-sm font-medium bg-primary-600 text-white transition-all duration-200" data-category="all">
         Все ({problems.length})
       </button>
       {categories.map(cat => {
         const count = problems.filter(p => p.data.category === cat).length;
         return (
           <button
-            class="category-btn px-4 py-2 rounded-full text-sm font-medium bg-accent-100 text-accent-700 hover:bg-accent-200 transition-colors"
+            class="category-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-accent-700 border border-accent-200 hover:border-primary-300 hover:text-primary-700 transition-all duration-200"
             data-category={cat}
           >
             {cat} ({count})
@@ -35,9 +37,9 @@ const categories = [...new Set(problems.map(p => p.data.category))];
     </div>
 
     <!-- Problems grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="problems-grid">
-      {problems.map(problem => (
-        <div class="problem-item" data-category={problem.data.category}>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="problems-grid">
+      {problems.map((problem, i) => (
+        <div class="problem-item animate-fade-in" data-category={problem.data.category} style={`transition-delay: ${i * 50}ms`}>
           <ProblemCard
             title={problem.data.title}
             slug={problem.id}
@@ -64,10 +66,10 @@ const categories = [...new Set(problems.map(p => p.data.category))];
 
       buttons.forEach(b => {
         b.classList.remove('active', 'bg-primary-600', 'text-white');
-        b.classList.add('bg-accent-100', 'text-accent-700');
+        b.classList.add('bg-white', 'text-accent-700', 'border', 'border-accent-200');
       });
       btn.classList.add('active', 'bg-primary-600', 'text-white');
-      btn.classList.remove('bg-accent-100', 'text-accent-700');
+      btn.classList.remove('bg-white', 'text-accent-700', 'border', 'border-accent-200');
 
       items.forEach(item => {
         const el = item as HTMLElement;

@@ -1,95 +1,116 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import IconPhone from '../components/icons/IconPhone.astro';
+import IconMail from '../components/icons/IconMail.astro';
+import IconClock from '../components/icons/IconClock.astro';
 import { managementCompany } from '../data/house';
 ---
 
 <BaseLayout title="Управляющая компания" description="ООО ЭКВИДА-СЕРВИС — реквизиты, контакты, режим работы">
-  <section class="max-w-4xl mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold mb-8">Управляющая компания</h1>
+  <PageHeader
+    title="Управляющая компания"
+    description="ООО «ЭКВИДА-СЕРВИС» — реквизиты, контакты, режим работы"
+    breadcrumbs={[{ label: 'Управляющая компания' }]}
+  />
 
+  <section class="max-w-5xl mx-auto px-4 py-12">
     <!-- Company info -->
-    <div class="bg-white rounded-xl border border-accent-200 overflow-hidden mb-8">
-      <div class="bg-primary-50 px-6 py-4 border-b border-accent-200">
-        <h2 class="text-xl font-bold text-primary-900">{managementCompany.name}</h2>
+    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden mb-8">
+      <div class="px-6 py-4 border-b border-accent-100">
+        <h2 class="text-xl font-bold text-primary-950">{managementCompany.name}</h2>
       </div>
       <div class="p-6">
-        <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+        <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
           <div>
-            <dt class="text-sm text-accent-500">ИНН</dt>
-            <dd class="font-medium font-mono">{managementCompany.inn}</dd>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">ИНН</dt>
+            <dd class="font-medium font-mono text-primary-950">{managementCompany.inn}</dd>
           </div>
           <div>
-            <dt class="text-sm text-accent-500">ОГРН</dt>
-            <dd class="font-medium font-mono">{managementCompany.ogrn}</dd>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">ОГРН</dt>
+            <dd class="font-medium font-mono text-primary-950">{managementCompany.ogrn}</dd>
           </div>
           <div>
-            <dt class="text-sm text-accent-500">Юридический адрес</dt>
-            <dd class="font-medium text-sm">{managementCompany.legalAddress}</dd>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Юридический адрес</dt>
+            <dd class="font-medium text-sm text-primary-950">{managementCompany.legalAddress}</dd>
           </div>
           <div>
-            <dt class="text-sm text-accent-500">Адрес офиса</dt>
-            <dd class="font-medium text-sm">{managementCompany.officeAddress}</dd>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Адрес офиса</dt>
+            <dd class="font-medium text-sm text-primary-950">{managementCompany.officeAddress}</dd>
           </div>
           <div>
-            <dt class="text-sm text-accent-500">Директор</dt>
-            <dd class="font-medium">{managementCompany.director}</dd>
-            <dd class="text-xs text-accent-400">с {managementCompany.directorSince}</dd>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Директор</dt>
+            <dd class="font-medium text-primary-950">{managementCompany.director}</dd>
+            <dd class="text-xs text-accent-400 mt-0.5">с {managementCompany.directorSince}</dd>
           </div>
           <div>
-            <dt class="text-sm text-accent-500">Управляет домом с</dt>
-            <dd class="font-medium">{managementCompany.managingSince}</dd>
+            <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Управляет домом с</dt>
+            <dd class="font-medium text-primary-950">{managementCompany.managingSince}</dd>
           </div>
         </dl>
       </div>
     </div>
 
     <!-- Contacts -->
-    <div class="bg-white rounded-xl border border-accent-200 overflow-hidden mb-8">
-      <div class="bg-primary-50 px-6 py-4 border-b border-accent-200">
-        <h2 class="text-xl font-bold text-primary-900">Контакты</h2>
+    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden mb-8">
+      <div class="px-6 py-4 border-b border-accent-100">
+        <h2 class="text-xl font-bold text-primary-950">Контакты</h2>
       </div>
       <div class="p-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-primary-50 rounded-lg p-5">
-            <h3 class="font-bold text-primary-900 mb-2">Диспетчер</h3>
-            <a
-              href={`tel:${managementCompany.phone.replace(/[^\d+]/g, '')}`}
-              class="text-2xl font-bold text-primary-600 hover:text-primary-800 transition-colors"
-            >
-              {managementCompany.phone}
-            </a>
-          </div>
-          <div class="bg-accent-50 rounded-lg p-5">
-            <h3 class="font-bold text-primary-900 mb-2">Email</h3>
-            <a
-              href={`mailto:${managementCompany.email}`}
-              class="text-lg text-primary-600 hover:text-primary-800 transition-colors"
-            >
-              {managementCompany.email}
-            </a>
-          </div>
+          <a
+            href={`tel:${managementCompany.phone.replace(/[^\d+]/g, '')}`}
+            class="group flex items-center gap-4 bg-primary-50 rounded-xl p-5 border border-primary-100 hover:shadow-md transition-all duration-300"
+          >
+            <div class="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <IconPhone size={24} class="text-primary-600" />
+            </div>
+            <div>
+              <div class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Диспетчер</div>
+              <div class="text-xl font-bold text-primary-700 group-hover:text-primary-800 transition-colors">
+                {managementCompany.phone}
+              </div>
+            </div>
+          </a>
+          <a
+            href={`mailto:${managementCompany.email}`}
+            class="group flex items-center gap-4 bg-accent-50 rounded-xl p-5 border border-accent-200 hover:shadow-md transition-all duration-300"
+          >
+            <div class="w-12 h-12 rounded-xl bg-accent-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <IconMail size={24} class="text-accent-600" />
+            </div>
+            <div>
+              <div class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Email</div>
+              <div class="text-lg font-bold text-primary-700 group-hover:text-primary-800 transition-colors">
+                {managementCompany.email}
+              </div>
+            </div>
+          </a>
         </div>
       </div>
     </div>
 
     <!-- Schedule -->
-    <div class="bg-white rounded-xl border border-accent-200 overflow-hidden">
-      <div class="bg-primary-50 px-6 py-4 border-b border-accent-200">
-        <h2 class="text-xl font-bold text-primary-900">Режим работы офиса</h2>
+    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden">
+      <div class="px-6 py-4 border-b border-accent-100">
+        <h2 class="text-xl font-bold text-primary-950 flex items-center gap-2">
+          <IconClock size={20} class="text-primary-600" />
+          Режим работы офиса
+        </h2>
       </div>
       <div class="p-6">
         <div class="space-y-3">
           <div class="flex items-center gap-3">
             <div class="w-2 h-2 rounded-full bg-green-500 shrink-0"></div>
-            <span>{managementCompany.schedule.weekdays}</span>
+            <span class="text-accent-700">{managementCompany.schedule.weekdays}</span>
           </div>
           <div class="flex items-center gap-3">
             <div class="w-2 h-2 rounded-full bg-green-500 shrink-0"></div>
-            <span>{managementCompany.schedule.friday}</span>
+            <span class="text-accent-700">{managementCompany.schedule.friday}</span>
           </div>
-          <div class="flex items-center gap-3 mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-            <div class="w-2 h-2 rounded-full bg-yellow-500 shrink-0"></div>
-            <span class="font-medium text-yellow-800">{managementCompany.schedule.reception}</span>
+          <div class="flex items-center gap-3 mt-4 p-3 bg-amber-50 rounded-xl border border-amber-200">
+            <div class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></div>
+            <span class="font-medium text-amber-800">{managementCompany.schedule.reception}</span>
           </div>
         </div>
       </div>

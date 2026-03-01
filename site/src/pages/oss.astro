@@ -1,59 +1,74 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import IconInfo from '../components/icons/IconInfo.astro';
 import { ossBlocks, quorumTable, currentSituation, statusLabels } from '../data/oss';
 
 const statusColors: Record<string, string> = {
-  preparing: 'bg-blue-100 text-blue-800',
-  clarifying: 'bg-yellow-100 text-yellow-800',
-  investigation: 'bg-purple-100 text-purple-800',
-  waiting: 'bg-orange-100 text-orange-800',
+  preparing: 'bg-blue-50 text-blue-700',
+  clarifying: 'bg-amber-50 text-amber-700',
+  investigation: 'bg-purple-50 text-purple-700',
+  waiting: 'bg-orange-50 text-orange-700',
+};
+
+const statusDots: Record<string, string> = {
+  preparing: 'bg-blue-400',
+  clarifying: 'bg-amber-400',
+  investigation: 'bg-purple-400',
+  waiting: 'bg-orange-400',
 };
 ---
 
 <BaseLayout title="ОСС 2025" description="Проект повестки общего собрания собственников ЖК Skandi Klubb 2025">
-  <section class="max-w-4xl mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold mb-2">Общее собрание собственников 2025</h1>
-    <p class="text-accent-600 mb-4">Форма: очно-заочная</p>
+  <PageHeader
+    title="Общее собрание собственников 2025"
+    description="Форма: очно-заочная"
+    breadcrumbs={[{ label: 'ОСС 2025' }]}
+  />
 
+  <section class="max-w-5xl mx-auto px-4 py-12">
     <!-- Current situation -->
-    <div class="bg-accent-50 rounded-xl p-6 mb-10 border border-accent-200">
-      <h2 class="text-lg font-bold text-primary-900 mb-3">Текущая ситуация</h2>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-        <div>
-          <dt class="text-accent-500">Совет дома</dt>
-          <dd class="font-medium text-red-600">{currentSituation.council}</dd>
+    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 p-6 mb-8">
+      <h2 class="text-lg font-bold text-primary-950 mb-4">Текущая ситуация</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-accent-50 rounded-xl p-4">
+          <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Совет дома</dt>
+          <dd class="font-semibold text-red-600">{currentSituation.council}</dd>
         </div>
-        <div>
-          <dt class="text-accent-500">Система доступа</dt>
-          <dd class="font-medium">{currentSituation.accessSystem}</dd>
+        <div class="bg-accent-50 rounded-xl p-4">
+          <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Система доступа</dt>
+          <dd class="font-semibold text-primary-950">{currentSituation.accessSystem}</dd>
         </div>
-        <div>
-          <dt class="text-accent-500">Ворота</dt>
-          <dd class="font-medium">{currentSituation.gates}</dd>
+        <div class="bg-accent-50 rounded-xl p-4">
+          <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Ворота</dt>
+          <dd class="font-semibold text-primary-950">{currentSituation.gates}</dd>
         </div>
-        <div>
-          <dt class="text-accent-500">Шлагбаум</dt>
-          <dd class="font-medium text-red-600">{currentSituation.barrier}</dd>
+        <div class="bg-accent-50 rounded-xl p-4">
+          <dt class="text-xs font-medium text-accent-500 uppercase tracking-wider mb-1">Шлагбаум</dt>
+          <dd class="font-semibold text-red-600">{currentSituation.barrier}</dd>
         </div>
       </div>
     </div>
 
     <!-- Quorum reference -->
-    <div class="bg-primary-50 rounded-xl p-6 mb-10 border border-primary-200">
-      <h2 class="text-lg font-bold text-primary-900 mb-3">Справка: кворумы</h2>
+    <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 p-6 mb-10">
+      <h2 class="text-lg font-bold text-primary-950 mb-4 flex items-center gap-2">
+        <IconInfo size={18} class="text-primary-500" />
+        Справка: кворумы
+      </h2>
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead>
-            <tr class="border-b border-primary-200">
-              <th class="text-left py-2 pr-4 text-accent-600">Тип решения</th>
-              <th class="text-left py-2 text-accent-600">Требуется голосов</th>
+            <tr class="border-b border-accent-200">
+              <th class="text-left py-3 pr-4 text-xs font-medium text-accent-500 uppercase tracking-wider">Тип решения</th>
+              <th class="text-left py-3 text-xs font-medium text-accent-500 uppercase tracking-wider">Требуется голосов</th>
             </tr>
           </thead>
           <tbody>
             {quorumTable.map(row => (
-              <tr class="border-b border-primary-100 last:border-0">
-                <td class="py-2 pr-4">{row.type}</td>
-                <td class="py-2 font-medium">{row.required}</td>
+              <tr class="border-b border-accent-100 last:border-0">
+                <td class="py-3 pr-4 text-accent-700">{row.type}</td>
+                <td class="py-3 font-semibold text-primary-950">{row.required}</td>
               </tr>
             ))}
           </tbody>
@@ -62,18 +77,19 @@ const statusColors: Record<string, string> = {
     </div>
 
     <!-- Blocks -->
-    <h2 class="text-2xl font-bold text-primary-900 mb-6">Вопросы повестки</h2>
+    <h2 class="text-2xl font-bold text-primary-950 mb-6">Вопросы повестки</h2>
 
     <div class="space-y-8">
-      {ossBlocks.map(block => (
-        <div class="bg-white rounded-xl border border-accent-200 overflow-hidden">
-          <div class="bg-primary-50 px-6 py-4 border-b border-accent-200">
-            <h3 class="text-xl font-bold text-primary-900">{block.title}</h3>
+      {ossBlocks.map((block, bi) => (
+        <div class="animate-fade-in bg-white rounded-2xl border border-accent-200 overflow-hidden" style={`transition-delay: ${bi * 100}ms`}>
+          <div class="px-6 py-4 border-b border-accent-100">
+            <h3 class="text-xl font-bold text-primary-950">{block.title}</h3>
             <p class="text-xs text-accent-500 mt-1">Основание: {block.legalBasis}</p>
           </div>
 
           {block.note && (
-            <div class="px-6 py-3 bg-yellow-50 border-b border-yellow-200 text-sm text-yellow-800">
+            <div class="px-6 py-3 bg-amber-50 border-b border-amber-200 text-sm text-amber-800 flex items-start gap-2">
+              <IconInfo size={16} class="text-amber-500 shrink-0 mt-0.5" />
               {block.note}
             </div>
           )}
@@ -83,12 +99,13 @@ const statusColors: Record<string, string> = {
               <div class="px-6 py-4">
                 <div class="flex items-start justify-between gap-4 mb-2">
                   <div class="flex items-center gap-3">
-                    <span class="w-7 h-7 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-sm font-bold shrink-0">
+                    <span class="w-7 h-7 rounded-full bg-primary-50 text-primary-700 flex items-center justify-center text-sm font-bold shrink-0 border border-primary-200">
                       {q.number}
                     </span>
                     <span class="text-sm font-medium text-accent-700">{q.notification}</span>
                   </div>
-                  <span class:list={['text-xs font-medium px-2 py-0.5 rounded-full whitespace-nowrap', statusColors[q.status]]}>
+                  <span class:list={['inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap', statusColors[q.status]]}>
+                    <span class:list={['w-1.5 h-1.5 rounded-full', statusDots[q.status]]}></span>
                     {statusLabels[q.status]}
                   </span>
                 </div>
@@ -102,8 +119,8 @@ const statusColors: Record<string, string> = {
     </div>
 
     <!-- Total -->
-    <div class="mt-10 p-4 bg-accent-50 border border-accent-200 rounded-lg text-sm text-accent-700">
-      <strong>Итого:</strong> {ossBlocks.reduce((sum, b) => sum + b.questions.length, 0)} вопросов в {ossBlocks.length} блоках.
+    <div class="animate-fade-in mt-10 p-5 bg-white border border-accent-200 rounded-2xl text-sm text-accent-700">
+      <strong class="text-primary-950">Итого:</strong> {ossBlocks.reduce((sum, b) => sum + b.questions.length, 0)} вопросов в {ossBlocks.length} блоках.
       Статус подготовки: часть вопросов требует изысканий и получения смет от подрядчиков.
     </div>
   </section>
